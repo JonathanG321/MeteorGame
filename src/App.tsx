@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
 import Canvas from "./components/Canvas";
 import $ from "jquery";
-
-const heroSize = 40;
-const heroSpeed = 6;
-const frameRate = 1000 / 60;
-const screenHeight = 480;
-const screenWidth = 800;
-const jumpHeight = 20;
-const gravity = 2;
-const maxVelocityDown = 10;
+import {
+  frameRate,
+  heroGravity,
+  heroJumpHeight,
+  heroSize,
+  heroSpawnPoint,
+  heroSpeed,
+  maxHeroVelocityDown,
+  screenHeight,
+  screenWidth,
+} from "./variables";
 
 function App() {
   const [velocityDown, setVelocityDown] = useState(0);
   const [grounded, setGrounded] = useState(false);
+  const [heroOriginPoint, setHeroOriginPoint] = useState(heroSpawnPoint);
   const [pressedKeys, setPressedKeys] = useState({
     ArrowUp: false,
     ArrowDown: false,
@@ -41,13 +44,12 @@ function App() {
   function heroControls() {
     const intervalId = setInterval(() => {
       const hero = $("#hero");
-      let newY = parseInt(hero.css("top"));
       let newX = parseInt(hero.css("left"));
 
       // handle controls
       if (pressedKeys["ArrowUp"] && grounded) {
         setGrounded(false);
-        setVelocityDown(-jumpHeight);
+        setVelocityDown(-heroJumpHeight);
       }
       if (pressedKeys["ArrowLeft"]) newX -= heroSpeed;
       if (pressedKeys["ArrowRight"]) newX += heroSpeed;
@@ -55,7 +57,7 @@ function App() {
       if (newX < 0) newX = 0;
       if (newX > screenWidth - heroSize) newX = screenWidth - heroSize;
 
-      hero.css("top", newY);
+      setHeroOriginPoint({ ...heroOriginPoint, X: newX });
       hero.css("left", newX);
     }, frameRate);
 
@@ -64,11 +66,10 @@ function App() {
     };
   }
 
-  function heroGravity() {
+  function heroheroGravity() {
     const intervalId = setInterval(() => {
       const hero = $("#hero");
       let newY = parseInt(hero.css("top"));
-      let newX = parseInt(hero.css("left"));
 
       newY += velocityDown;
 
@@ -78,15 +79,15 @@ function App() {
         setGrounded(true);
         setVelocityDown(0);
       } else {
-        if (velocityDown < maxVelocityDown) {
-          setVelocityDown(velocityDown + gravity);
+        if (velocityDown < maxHeroVelocityDown) {
+          setVelocityDown(velocityDown + heroGravity);
         } else {
-          setVelocityDown(maxVelocityDown);
+          setVelocityDown(maxHeroVelocityDown);
         }
       }
 
+      setHeroOriginPoint({ ...heroOriginPoint, Y: newY });
       hero.css("top", newY);
-      hero.css("left", newX);
     }, frameRate);
 
     return () => {
@@ -94,15 +95,15 @@ function App() {
     };
   }
 
-  useEffect(heroControls, [pressedKeys, grounded]);
-  useEffect(heroGravity, [velocityDown, grounded]);
+  useEffect(heroControls, [pressedKeys, grounded, heroOriginPoint]);
+  useEffect(heroheroGravity, [velocityDown, grounded, heroOriginPoint]);
 
   return (
     <div className="flex h-screen w-full items-center justify-center">
       <Canvas>
         <div
           id="hero"
-          style={{ top: 0, left: 0 }}
+          style={{ top: heroSpawnPoint.Y, left: heroSpawnPoint.X }}
           className={`relative h-[${heroSize}px] w-[${heroSize}px] bg-red-500`}
         />
       </Canvas>
