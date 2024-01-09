@@ -1,64 +1,67 @@
 import { useState } from "react";
-import logo from "./logo.svg";
-import poweredBy from "./powered-by-vitawind-dark.png";
+import Canvas from "./components/Canvas";
+import $ from "jquery";
 
 function App() {
-  const [count, setCount] = useState(0);
+  if (!window) return;
+  // const [x, setX] = useState(0);
+  // const [y, setY] = useState(0);
+  const [delaying, setDelaying] = useState(false);
+  document.addEventListener("keyup", (e) => {
+    if (!delaying) {
+      const hero = $("#hero");
+      const top = parseInt(hero.css("top"));
+      const left = parseInt(hero.css("left"));
+      console.log(e.key);
+      switch (e.key) {
+        case "ArrowUp":
+          if (top > 0) hero.css("top", (_, value) => parseInt(value) - 1);
+        case "ArrowDown":
+          if (top < 480) hero.css("top", (_, value) => parseInt(value) + 1);
+        case "ArrowLeft":
+          if (left > 0) hero.css("left", (_, value) => parseInt(value) - 1);
+        case "ArrowRight":
+          if (left < 800) hero.css("left", (_, value) => parseInt(value) + 1);
+      }
+      setDelaying(true);
+      setTimeout(() => {
+        setDelaying(false);
+      }, 1000 / 30);
+    }
+  });
+  // $("html").on("keydown", (e) => {
+  //   if (!delaying) {
+  //     switch (e.code) {
+  //       case "ArrowUp":
+  //         console.log("test");
+  //         if (y > 0) setY(y - 1);
+  //         break;
+  //       case "ArrowDown":
+  //         if (y < 480) setY(y + 1);
+  //         break;
+  //       case "ArrowLeft":
+  //         if (x > 0) setX(x - 1);
+  //         break;
+  //       case "ArrowRight":
+  //         if (x < 800) setX(x + 1);
+  //         break;
+  //     }
+  //     setDelaying(true);
+  //     setTimeout(() => {
+  //       setDelaying(false);
+  //     }, 1000 / 30);
+  //   }
+  // });
 
   return (
-    <div className="text-center selection:bg-green-900">
-      <header className="flex min-h-screen flex-col items-center justify-center bg-[#282c34] text-white">
-        <img
-          src={logo}
-          className="animate-speed h-60 motion-safe:animate-spin"
-          alt="logo"
+    <div className="flex h-screen w-full items-center justify-center">
+      <Canvas>
+        <div
+          id="hero"
+          style={{ top: 0, left: 0 }}
+          className={`relative h-10 w-10 bg-red-500`}
         />
-        <style>
-          {
-            "\
-            .animate-speed{\
-              animation-duration:20s;\
-            }\
-          "
-          }
-        </style>
-        <p className="bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-5xl font-black text-transparent selection:bg-transparent">
-          Vite + React + Typescript + Tailwindcss v3
-        </p>
-        <p className="mt-3">
-          <button
-            type="button"
-            className="my-6 rounded bg-gray-300 px-2 py-2 text-[#282C34] transition-all hover:bg-gray-200"
-            onClick={() => setCount((count) => count + 1)}
-          >
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code className="text-[#8d96a7]">App.tsx</code> and save to test
-          HMR updates.
-        </p>
-        <p className="mt-3 flex gap-3 text-center text-[#8d96a7]">
-          <a
-            className="text-[#61dafb] transition-all hover:text-blue-400"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {" | "}
-          <a
-            className="text-[#61dafb] transition-all hover:text-blue-400"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-        <img src={poweredBy} className="mx-auto my-8" alt="powered-by" />
-      </header>
+      </Canvas>
     </div>
   );
 }
