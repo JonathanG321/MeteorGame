@@ -10,3 +10,4 @@ export const heroSpawnPoint = {
   X: screenWidth / 2 - heroSize,
   Y: screenHeight - heroSize,
 };
+export const meteorSize = 40;

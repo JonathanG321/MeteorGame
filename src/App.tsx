@@ -21,10 +21,10 @@ function App() {
   });
 
   useEffect(() => addEventListeners(setPressedKeys), []);
-  // useEffect(
-  //   () => handleMeteorSpawning(meteorOriginPoints, setMeteorOriginPoints),
-  //   [meteorOriginPoints]
-  // );
+  useEffect(
+    () => handleMeteorSpawning(meteorOriginPoints, setMeteorOriginPoints),
+    [meteorOriginPoints]
+  );
   // useEffect(
   //   () => handleMeteorGravity(setMeteorOriginPoints),
   //   [meteorOriginPoints]
