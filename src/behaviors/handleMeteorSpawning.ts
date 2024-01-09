@@ -1,5 +1,5 @@
 import { Position } from "../utils/types";
-import { meteorSize, screenWidth } from "../utils/variables";
+import { meteorSize, meteorsPerSecond, screenWidth } from "../utils/variables";
 import $ from "jquery";
 
 export function handleMeteorSpawning(
@@ -15,7 +15,7 @@ export function handleMeteorSpawning(
       `<div style="top: ${newMeteorPosition.Y}px; left: ${newMeteorPosition.X}px;" class="h-[${meteorSize}px] w-[${meteorSize}px] bg-red-500 absolute meteor"></div>`
     ).appendTo("#canvas");
     setMeteorOriginPoints(meteorOriginPoints.concat([newMeteorPosition]));
-  }, 1000);
+  }, 1000 / meteorsPerSecond);
 
   return () => {
     clearInterval(intervalId);
