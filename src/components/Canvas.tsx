@@ -13,7 +13,7 @@ export default function Canvas({
       <div
         id="canvas"
         {...rest}
-        className={classNames("h-[30rem] w-[50rem]", className)}
+        className={classNames("relative h-[30rem] w-[50rem]", className)}
       >
         {children}
       </div>

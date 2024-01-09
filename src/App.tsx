@@ -1,22 +1,18 @@
 import { useState, useEffect } from "react";
 import Canvas from "./components/Canvas";
-import $ from "jquery";
-import {
-  frameRate,
-  heroGravity,
-  heroJumpHeight,
-  heroSize,
-  heroSpawnPoint,
-  heroSpeed,
-  maxHeroVelocityDown,
-  screenHeight,
-  screenWidth,
-} from "./variables";
+import { heroSize, heroSpawnPoint } from "./utils/variables";
+import heroControls from "./behaviors/handleHeroControls";
+import { handleHeroGravity } from "./behaviors/handleHeroGravity";
+import addEventListeners from "./behaviors/addEventListeners";
+import { Position } from "./utils/types";
+import { handleMeteorGravity } from "./behaviors/handleMeteorGravity";
+import { handleMeteorSpawning } from "./behaviors/handleMeteorSpawning";
 
 function App() {
   const [velocityDown, setVelocityDown] = useState(0);
-  const [grounded, setGrounded] = useState(false);
+  const [isGrounded, setIsGrounded] = useState(false);
   const [heroOriginPoint, setHeroOriginPoint] = useState(heroSpawnPoint);
+  const [meteorOriginPoints, setMeteorOriginPoints] = useState<Position[]>([]);
   const [pressedKeys, setPressedKeys] = useState({
     ArrowUp: false,
     ArrowDown: false,
@@ -24,79 +20,38 @@ function App() {
     ArrowRight: false,
   });
 
-  function handleKeyDown(e: KeyboardEvent) {
-    setPressedKeys((prevKeys) => ({ ...prevKeys, [e.key]: true }));
-  }
-  function handleKeyUp(e: KeyboardEvent) {
-    setPressedKeys((prevKeys) => ({ ...prevKeys, [e.key]: false }));
-  }
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("keyup", handleKeyUp);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
-
-  function heroControls() {
-    const intervalId = setInterval(() => {
-      const hero = $("#hero");
-      let newX = parseInt(hero.css("left"));
-
-      // handle controls
-      if (pressedKeys["ArrowUp"] && grounded) {
-        setGrounded(false);
-        setVelocityDown(-heroJumpHeight);
-      }
-      if (pressedKeys["ArrowLeft"]) newX -= heroSpeed;
-      if (pressedKeys["ArrowRight"]) newX += heroSpeed;
-
-      if (newX < 0) newX = 0;
-      if (newX > screenWidth - heroSize) newX = screenWidth - heroSize;
-
-      setHeroOriginPoint({ ...heroOriginPoint, X: newX });
-      hero.css("left", newX);
-    }, frameRate);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }
-
-  function heroheroGravity() {
-    const intervalId = setInterval(() => {
-      const hero = $("#hero");
-      let newY = parseInt(hero.css("top"));
-
-      newY += velocityDown;
-
-      if (newY < 0) newY = 0;
-      if (newY > screenHeight - heroSize) {
-        newY = screenHeight - heroSize;
-        setGrounded(true);
-        setVelocityDown(0);
-      } else {
-        if (velocityDown < maxHeroVelocityDown) {
-          setVelocityDown(velocityDown + heroGravity);
-        } else {
-          setVelocityDown(maxHeroVelocityDown);
-        }
-      }
-
-      setHeroOriginPoint({ ...heroOriginPoint, Y: newY });
-      hero.css("top", newY);
-    }, frameRate);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }
-
-  useEffect(heroControls, [pressedKeys, grounded, heroOriginPoint]);
-  useEffect(heroheroGravity, [velocityDown, grounded, heroOriginPoint]);
+  useEffect(() => addEventListeners(setPressedKeys), []);
+  // useEffect(
+  //   () => handleMeteorSpawning(meteorOriginPoints, setMeteorOriginPoints),
+  //   [meteorOriginPoints]
+  // );
+  // useEffect(
+  //   () => handleMeteorGravity(setMeteorOriginPoints),
+  //   [meteorOriginPoints]
+  // );
+  useEffect(
+    () =>
+      heroControls(
+        pressedKeys,
+        isGrounded,
+        heroOriginPoint,
+        setIsGrounded,
+        setVelocityDown,
+        setHeroOriginPoint
+      ),
+    [pressedKeys, isGrounded, heroOriginPoint]
+  );
+  useEffect(
+    () =>
+      handleHeroGravity(
+        velocityDown,
+        heroOriginPoint,
+        setIsGrounded,
+        setVelocityDown,
+        setHeroOriginPoint
+      ),
+    [velocityDown, isGrounded, heroOriginPoint]
+  );
 
   return (
     <div className="flex h-screen w-full items-center justify-center">
@@ -104,7 +59,7 @@ function App() {
         <div
           id="hero"
           style={{ top: heroSpawnPoint.Y, left: heroSpawnPoint.X }}
-          className={`relative h-[${heroSize}px] w-[${heroSize}px] bg-red-500`}
+          className={`absolute h-[${heroSize}px] w-[${heroSize}px] bg-blue-500`}
         />
       </Canvas>
     </div>
