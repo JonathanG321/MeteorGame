@@ -1,57 +1,101 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Canvas from "./components/Canvas";
 import $ from "jquery";
 
+const heroSize = 40;
+const heroSpeed = 6;
+const frameRate = 1000 / 60;
+const screenHeight = 480;
+const screenWidth = 800;
+const jumpHeight = 20;
+const gravity = 2;
+const maxVelocityDown = 10;
+
 function App() {
-  if (!window) return;
-  // const [x, setX] = useState(0);
-  // const [y, setY] = useState(0);
-  const [delaying, setDelaying] = useState(false);
-  document.addEventListener("keyup", (e) => {
-    if (!delaying) {
-      const hero = $("#hero");
-      const top = parseInt(hero.css("top"));
-      const left = parseInt(hero.css("left"));
-      console.log(e.key);
-      switch (e.key) {
-        case "ArrowUp":
-          if (top > 0) hero.css("top", (_, value) => parseInt(value) - 1);
-        case "ArrowDown":
-          if (top < 480) hero.css("top", (_, value) => parseInt(value) + 1);
-        case "ArrowLeft":
-          if (left > 0) hero.css("left", (_, value) => parseInt(value) - 1);
-        case "ArrowRight":
-          if (left < 800) hero.css("left", (_, value) => parseInt(value) + 1);
-      }
-      setDelaying(true);
-      setTimeout(() => {
-        setDelaying(false);
-      }, 1000 / 30);
-    }
+  const [velocityDown, setVelocityDown] = useState(0);
+  const [grounded, setGrounded] = useState(false);
+  const [pressedKeys, setPressedKeys] = useState({
+    ArrowUp: false,
+    ArrowDown: false,
+    ArrowLeft: false,
+    ArrowRight: false,
   });
-  // $("html").on("keydown", (e) => {
-  //   if (!delaying) {
-  //     switch (e.code) {
-  //       case "ArrowUp":
-  //         console.log("test");
-  //         if (y > 0) setY(y - 1);
-  //         break;
-  //       case "ArrowDown":
-  //         if (y < 480) setY(y + 1);
-  //         break;
-  //       case "ArrowLeft":
-  //         if (x > 0) setX(x - 1);
-  //         break;
-  //       case "ArrowRight":
-  //         if (x < 800) setX(x + 1);
-  //         break;
-  //     }
-  //     setDelaying(true);
-  //     setTimeout(() => {
-  //       setDelaying(false);
-  //     }, 1000 / 30);
-  //   }
-  // });
+
+  function handleKeyDown(e: KeyboardEvent) {
+    setPressedKeys((prevKeys) => ({ ...prevKeys, [e.key]: true }));
+  }
+  function handleKeyUp(e: KeyboardEvent) {
+    setPressedKeys((prevKeys) => ({ ...prevKeys, [e.key]: false }));
+  }
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  function heroControls() {
+    const intervalId = setInterval(() => {
+      const hero = $("#hero");
+      let newY = parseInt(hero.css("top"));
+      let newX = parseInt(hero.css("left"));
+
+      // handle controls
+      if (pressedKeys["ArrowUp"] && grounded) {
+        setGrounded(false);
+        setVelocityDown(-jumpHeight);
+      }
+      if (pressedKeys["ArrowLeft"]) newX -= heroSpeed;
+      if (pressedKeys["ArrowRight"]) newX += heroSpeed;
+
+      if (newX < 0) newX = 0;
+      if (newX > screenWidth - heroSize) newX = screenWidth - heroSize;
+
+      hero.css("top", newY);
+      hero.css("left", newX);
+    }, frameRate);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }
+
+  function heroGravity() {
+    const intervalId = setInterval(() => {
+      const hero = $("#hero");
+      let newY = parseInt(hero.css("top"));
+      let newX = parseInt(hero.css("left"));
+
+      newY += velocityDown;
+
+      if (newY < 0) newY = 0;
+      if (newY > screenHeight - heroSize) {
+        newY = screenHeight - heroSize;
+        setGrounded(true);
+        setVelocityDown(0);
+      } else {
+        if (velocityDown < maxVelocityDown) {
+          setVelocityDown(velocityDown + gravity);
+        } else {
+          setVelocityDown(maxVelocityDown);
+        }
+      }
+
+      hero.css("top", newY);
+      hero.css("left", newX);
+    }, frameRate);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }
+
+  useEffect(heroControls, [pressedKeys, grounded]);
+  useEffect(heroGravity, [velocityDown, grounded]);
 
   return (
     <div className="flex h-screen w-full items-center justify-center">
@@ -59,7 +103,7 @@ function App() {
         <div
           id="hero"
           style={{ top: 0, left: 0 }}
-          className={`relative h-10 w-10 bg-red-500`}
+          className={`relative h-[${heroSize}px] w-[${heroSize}px] bg-red-500`}
         />
       </Canvas>
     </div>
