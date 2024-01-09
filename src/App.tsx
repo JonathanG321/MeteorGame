@@ -23,12 +23,12 @@ function App() {
   useEffect(() => addEventListeners(setPressedKeys), []);
   useEffect(
     () => handleMeteorSpawning(meteorOriginPoints, setMeteorOriginPoints),
+    []
+  );
+  useEffect(
+    () => handleMeteorGravity(setMeteorOriginPoints),
     [meteorOriginPoints]
   );
-  // useEffect(
-  //   () => handleMeteorGravity(setMeteorOriginPoints),
-  //   [meteorOriginPoints]
-  // );
   useEffect(
     () =>
       heroControls(
