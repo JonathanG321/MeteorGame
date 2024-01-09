@@ -9,10 +9,10 @@ export function handleMeteorSpawning(
   const intervalId = setInterval(() => {
     const newMeteorPosition = {
       Y: 40,
-      X: Math.round(Math.random() * screenWidth - meteorSize),
+      X: Math.round(Math.random() * (screenWidth - meteorSize)),
     };
     $(
-      `<div id="meteor" style="top: ${newMeteorPosition.Y}px; left: ${newMeteorPosition.X}px;" class="h-[${meteorSize}px] w-[${meteorSize}px] bg-red-500 absolute"></div>`
+      `<div style="top: ${newMeteorPosition.Y}px; left: ${newMeteorPosition.X}px;" class="h-[${meteorSize}px] w-[${meteorSize}px] bg-red-500 absolute meteor"></div>`
     ).appendTo("#canvas");
     setMeteorOriginPoints(meteorOriginPoints.concat([newMeteorPosition]));
   }, 1000);
