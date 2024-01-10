@@ -1,6 +1,11 @@
 import { notEmpty } from "../utils/lib";
 import { Position } from "../utils/types";
-import { frameRate, meteorSize, screenHeight } from "../utils/variables";
+import {
+  frameRate,
+  meteorGravity,
+  meteorSize,
+  screenHeight,
+} from "../utils/variables";
 import $ from "jquery";
 
 export function handleMeteorGravity(
@@ -8,7 +13,6 @@ export function handleMeteorGravity(
 ) {
   const intervalId = setInterval(() => {
     const meteors = $(".meteor").toArray();
-    console.log(meteors);
     const newMeteorPositions = meteors
       .map((meteor) => {
         let newY = parseInt(meteor.style.top.slice(0, -2));
@@ -19,7 +23,7 @@ export function handleMeteorGravity(
           return null;
         }
 
-        newY += 4;
+        newY += meteorGravity;
 
         meteor.style.top = newY + "px";
         return { X, Y: newY };

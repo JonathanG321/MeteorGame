@@ -58,8 +58,13 @@ function App() {
       <Canvas>
         <div
           id="hero"
-          style={{ top: heroSpawnPoint.Y, left: heroSpawnPoint.X }}
-          className={`absolute h-[${heroSize}px] w-[${heroSize}px] bg-blue-500`}
+          style={{
+            top: heroSpawnPoint.Y,
+            left: heroSpawnPoint.X,
+            height: heroSize,
+            width: heroSize,
+          }}
+          className={`absolute bg-blue-500`}
         />
       </Canvas>
     </div>
