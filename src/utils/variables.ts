@@ -14,6 +14,7 @@ export const METEOR_SIZE = 40;
 export const METEORS_PER_SECOND = 10;
 export const METEOR_GRAVITY = 10;
 export const METEOR_STARTING_HEIGHT = -(METEOR_SIZE * 2);
+export const METEOR_COLLISION_THRESHOLD = 5;
 export const MASK_FACTOR = 2.5;
 
 export const BASE_PRESSED_KEYS = {

@@ -1,5 +1,9 @@
 import { Box, Position, PositionWithID } from "../utils/types";
-import { HERO_SIZE, METEOR_SIZE } from "../utils/variables";
+import {
+  HERO_SIZE,
+  METEOR_SIZE,
+  METEOR_COLLISION_THRESHOLD,
+} from "../utils/variables";
 
 export default function useDetectCollision(
   meteorPositions: PositionWithID[],
@@ -12,7 +16,13 @@ export default function useDetectCollision(
 
 function isMeteorCollidingWithHero(meteor: Position, heroPosition: Position) {
   const heroBox = createBoxFromPositionAndSize(heroPosition, HERO_SIZE);
-  const meteorBox = createBoxFromPositionAndSize(meteor, METEOR_SIZE);
+  const meteorBox = createBoxFromPositionAndSize(
+    {
+      X: meteor.X + METEOR_COLLISION_THRESHOLD,
+      Y: meteor.Y + METEOR_COLLISION_THRESHOLD,
+    },
+    METEOR_SIZE - METEOR_COLLISION_THRESHOLD * 2
+  );
 
   return doBoxesOverlap(heroBox, meteorBox);
 }
