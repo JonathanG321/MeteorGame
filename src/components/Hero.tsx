@@ -14,9 +14,10 @@ import { GameStateContext } from "../GameStateContext";
 export default function Hero() {
   const {
     hero: { position },
+    heroVelocityDown,
+    setHeroVelocityDown,
   } = useContext(GameStateContext);
-  const [velocityDown, setVelocityDown] = useState(0);
-  useHeroControls(velocityDown, setVelocityDown);
+  useHeroControls(heroVelocityDown, setHeroVelocityDown);
   const style = {
     top: position.Y,
     left: position.X,
@@ -30,9 +31,10 @@ function useHeroControls(
   velocityDown: number,
   setVelocityDown: (newVelocity: number) => void
 ) {
-  const { pressedKeys, hero, isGameOver } = useContext(GameStateContext);
+  const { pressedKeys, hero, isGameOver, isMainMenu } =
+    useContext(GameStateContext);
   useEffect(() => {
-    if (isGameOver) return;
+    if (isGameOver || isMainMenu) return;
     const intervalId = setInterval(() => {
       let newX = hero.position.X;
       if (pressedKeys.ArrowLeft) newX -= HERO_SPEED;
@@ -52,7 +54,7 @@ function useHeroControls(
   ]);
 
   useEffect(() => {
-    if (isGameOver) return;
+    if (isGameOver || isMainMenu) return;
     const intervalId = setInterval(() => {
       if (
         hero.position.Y === SCREEN_HEIGHT - HERO_SIZE &&
