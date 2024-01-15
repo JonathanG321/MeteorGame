@@ -29,7 +29,7 @@ export default function useMeteorPositions(isGameOver: boolean) {
       setMeteorPositions((oldValue) =>
         oldValue
           .map((meteor) => ({ ...meteor, Y: meteor.Y + 1 }))
-          .filter((meteor) => meteor.Y <= SCREEN_HEIGHT - METEOR_SIZE)
+          .filter((meteor) => meteor.Y <= SCREEN_HEIGHT + METEOR_SIZE)
       );
     }, FRAME_RATE / METEOR_GRAVITY);
 

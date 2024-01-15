@@ -11,9 +11,10 @@ export const HERO_SPAWN_POINT = {
   Y: SCREEN_HEIGHT - HERO_SIZE,
 };
 export const METEOR_SIZE = 40;
-export const METEORS_PER_SECOND = 5;
-export const METEOR_GRAVITY = 4;
-export const METEOR_STARTING_HEIGHT = 40;
+export const METEORS_PER_SECOND = 10;
+export const METEOR_GRAVITY = 10;
+export const METEOR_STARTING_HEIGHT = -(METEOR_SIZE * 2);
+export const MASK_FACTOR = 2.5;
 
 export const BASE_PRESSED_KEYS = {
   ArrowUp: false,
