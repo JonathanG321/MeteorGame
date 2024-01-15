@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
-import { PressedKeys } from "../utils/types";
+import { BASE_PRESSED_KEYS } from "../utils/variables";
 
 export default function usePressedKeys() {
-  const [pressedKeys, setPressedKeys] = useState({
-    ArrowUp: false,
-    ArrowDown: false,
-    ArrowLeft: false,
-    ArrowRight: false,
-  });
+  const [pressedKeys, setPressedKeys] = useState(BASE_PRESSED_KEYS);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -26,5 +21,5 @@ export default function usePressedKeys() {
     };
   }, []);
 
-  return pressedKeys;
+  return { pressedKeys, setPressedKeys };
 }

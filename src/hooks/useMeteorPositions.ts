@@ -39,5 +39,5 @@ export default function useMeteorPositions(isGameOver: boolean) {
     };
   }, [isGameOver]);
 
-  return meteorPositions;
+  return { meteorPositions, setMeteorPositions };
 }
