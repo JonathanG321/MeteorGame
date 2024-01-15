@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
 import classNames from "classnames";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../utils/variables";
 
 export default function Canvas({
   children,
@@ -13,7 +14,8 @@ export default function Canvas({
       <div
         id="canvas"
         {...rest}
-        className={classNames("relative h-[30rem] w-[50rem]", className)}
+        style={{ height: SCREEN_HEIGHT, width: SCREEN_WIDTH }}
+        className={classNames("relative", className)}
       >
         {children}
       </div>
