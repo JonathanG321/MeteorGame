@@ -5,7 +5,12 @@ export type PressedKeys = {
   ArrowRight: boolean;
 };
 
+export type Box = { topLeft: Position; bottomRight: Position };
+
 export type Position = {
   X: number;
   Y: number;
+};
+export type PositionWithID = Position & {
+  id: string;
 };
