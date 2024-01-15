@@ -14,3 +14,10 @@ export const METEOR_SIZE = 40;
 export const METEORS_PER_SECOND = 5;
 export const METEOR_GRAVITY = 4;
 export const METEOR_STARTING_HEIGHT = 40;
+
+export const BASE_PRESSED_KEYS = {
+  ArrowUp: false,
+  ArrowDown: false,
+  ArrowLeft: false,
+  ArrowRight: false,
+};
