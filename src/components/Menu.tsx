@@ -1,38 +1,11 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { GameStateContext } from "../GameStateContext";
-import {
-  BASE_PRESSED_KEYS,
-  SCREEN_HEIGHT,
-  SCREEN_WIDTH,
-} from "../utils/variables";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../utils/variables";
 import GameOverScreen from "./GameOverScreen";
 import MenuScreen from "./MenuScreen";
 
 export default function Menu() {
-  const {
-    setIsGameOver,
-    isGameOver,
-    setMeteorPositions,
-    setPressedKeys,
-    isMainMenu,
-    setIsMainMenu,
-  } = useContext(GameStateContext);
-  useEffect(() => {
-    function handleKeyUp(e: KeyboardEvent) {
-      if (e.code === "Space") {
-        setMeteorPositions([]);
-        setPressedKeys(BASE_PRESSED_KEYS);
-        setIsGameOver(false);
-        setIsMainMenu(false);
-      }
-    }
-
-    document.addEventListener("keyup", handleKeyUp);
-
-    return () => {
-      document.removeEventListener("keyup", handleKeyUp);
-    };
-  }, [isGameOver, isMainMenu]);
+  const { isGameOver, isMainMenu } = useContext(GameStateContext);
 
   return (
     <div className="absolute z-10 flex h-full w-full items-center justify-center">
