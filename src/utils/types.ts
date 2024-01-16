@@ -11,6 +11,10 @@ export type Position = {
   X: number;
   Y: number;
 };
+export type NullablePosition = {
+  X: null | number;
+  Y: null | number;
+};
 export type PositionWithID = Position & {
   id: string;
 };
