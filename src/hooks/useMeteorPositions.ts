@@ -18,8 +18,9 @@ export default function useMeteorPositions(
   const latestMousePressPosition = useRef<NullablePosition>(mousePressPosition);
 
   useEffect(() => {
+    if (isGameOver) return;
     latestMousePressPosition.current = mousePressPosition;
-  }, [mousePressPosition]);
+  }, [mousePressPosition, isGameOver]);
 
   useEffect(() => {
     if (isGameOver) return;
