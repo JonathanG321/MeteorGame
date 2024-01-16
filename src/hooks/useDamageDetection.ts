@@ -12,7 +12,7 @@ export default function useDamageDetection(
   const [invincibleCount, setInvincibleCount] = useState(0);
 
   useEffect(() => {
-    if (isGameOver || lives < 0) return;
+    if (isGameOver) return;
 
     const intervalId = setInterval(() => {
       if (!isInvincible && isHit) {
@@ -31,5 +31,5 @@ export default function useDamageDetection(
     };
   }, [isHit, isGameOver, isInvincible, invincibleCount]);
 
-  return { lives, isInvincible, setLives, setIsInvincible };
+  return { lives, isInvincible, setLives, setIsInvincible, setInvincibleCount };
 }

@@ -8,6 +8,7 @@ import {
 } from "./utils/types";
 
 export const GameStateContext = createContext({
+  setInvincibleCount: (newInvincibleCount: number) => {},
   isInvincible: false,
   setIsInvincible: (isInvincible: boolean) => {},
   lives: 3,

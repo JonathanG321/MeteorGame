@@ -11,6 +11,7 @@ export default function GameOverScreen() {
     setHeroVelocityDown,
     setPoints,
     setLives,
+    setInvincibleCount,
   } = useContext(GameStateContext);
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export default function GameOverScreen() {
         setHeroVelocityDown(0);
         setPoints(0);
         setLives(3);
+        setInvincibleCount(0);
         setPressedKeys(BASE_PRESSED_KEYS);
         setIsGameOver(false);
       }
