@@ -3,7 +3,7 @@ import { BASE_PRESSED_KEYS } from "../utils/variables";
 import { GameStateContext } from "../GameStateContext";
 
 export default function MenuScreen() {
-  const { setIsMainMenu, isMainMenu, setMeteorPositions, setPressedKeys } =
+  const { setIsMainMenu, setMeteorPositions, setPressedKeys } =
     useContext(GameStateContext);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function MenuScreen() {
     return () => {
       document.removeEventListener("keyup", handleKeyUp);
     };
-  }, [isMainMenu]);
+  }, []);
 
   return (
     <div className="flex flex-col items-center">
