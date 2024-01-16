@@ -5,6 +5,7 @@ import {
   MASK_FACTOR,
   METEOR_SIZE,
   SCREEN_HEIGHT,
+  SCREEN_WIDTH,
 } from "./utils/variables";
 import Hero from "./components/Hero";
 import usePressedKeys from "./hooks/usePressedKeys";
@@ -15,9 +16,13 @@ import { GameStateContext } from "./GameStateContext";
 import Menu from "./components/Menu";
 import Mask from "./components/Mask";
 import usePoints from "./hooks/usePoints";
-import Score from "./components/Score";
+import Score from "./components/ScoreDisplay";
+import HeaderBar from "./components/HeaderBar";
 
 function App() {
+  const [highScore, setHighScore] = useState(
+    parseInt(localStorage.getItem("highScore") ?? "0")
+  );
   const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isMainMenu, setIsMainMenu] = useState(true);
@@ -30,12 +35,18 @@ function App() {
   const isHit = useDetectCollision(meteorPositions, heroOriginPoint);
 
   useEffect(() => {
+    if (isHit && points > highScore) {
+      setHighScore(points);
+      localStorage.setItem("highScore", points.toString());
+    }
     setIsGameOver(isHit);
   }, [isHit]);
 
   return (
     <GameStateContext.Provider
       value={{
+        highScore,
+        setHighScore,
         isGameOver,
         setIsGameOver,
         isMainMenu,
@@ -60,19 +71,22 @@ function App() {
       }}
     >
       <div className="flex h-screen w-full items-center justify-center">
-        <Canvas>
-          <Mask
-            top={-(METEOR_SIZE * MASK_FACTOR)}
-            className="border-b-4 border-black"
-          />
-          {(isGameOver || isMainMenu) && <Menu />}
-          <Score />
-          <Hero />
-          {meteorPositions.map((position) => (
-            <Meteor key={position.id} position={position} />
-          ))}
+        <div
+          className="relative"
+          style={{ height: SCREEN_HEIGHT + 8, width: SCREEN_WIDTH + 8 }}
+        >
+          <Mask top={-(METEOR_SIZE * MASK_FACTOR)}>
+            <HeaderBar />
+          </Mask>
+          <Canvas>
+            {(isGameOver || isMainMenu) && <Menu />}
+            <Hero />
+            {meteorPositions.map((position) => (
+              <Meteor key={position.id} position={position} />
+            ))}
+          </Canvas>
           <Mask top={SCREEN_HEIGHT} className="border-t-4 border-black" />
-        </Canvas>
+        </div>
       </div>
     </GameStateContext.Provider>
   );

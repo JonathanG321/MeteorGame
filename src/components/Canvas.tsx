@@ -10,7 +10,7 @@ export default function Canvas({
   React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 >) {
   return (
-    <div className="border-4 border-black">
+    <div className="border-x-4 border-black">
       <div
         id="canvas"
         {...rest}

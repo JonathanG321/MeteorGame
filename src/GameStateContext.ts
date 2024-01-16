@@ -3,6 +3,8 @@ import { BASE_PRESSED_KEYS, HERO_SPAWN_POINT } from "./utils/variables";
 import { Position, PositionWithID, PressedKeys } from "./utils/types";
 
 export const GameStateContext = createContext({
+  highScore: 0,
+  setHighScore: (newHighScore: number) => {},
   hero: {
     position: HERO_SPAWN_POINT,
     updatePosition: (newPosition: Partial<Position>) => {},
