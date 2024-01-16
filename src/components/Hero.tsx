@@ -10,12 +10,14 @@ import {
   SCREEN_WIDTH,
 } from "../utils/variables";
 import { GameStateContext } from "../GameStateContext";
+import classNames from "classnames";
 
 export default function Hero() {
   const {
     hero: { position },
     heroVelocityDown,
     setHeroVelocityDown,
+    isInvincible,
   } = useContext(GameStateContext);
   useHeroControls(heroVelocityDown, setHeroVelocityDown);
   const style = {
@@ -24,7 +26,16 @@ export default function Hero() {
     height: HERO_SIZE,
     width: HERO_SIZE,
   };
-  return <div id="hero" style={style} className={`absolute bg-blue-500`} />;
+  return (
+    <div
+      id="hero"
+      style={style}
+      className={classNames(`absolute`, {
+        "bg-green-500": isInvincible,
+        "bg-blue-500": !isInvincible,
+      })}
+    />
+  );
 }
 
 function useHeroControls(

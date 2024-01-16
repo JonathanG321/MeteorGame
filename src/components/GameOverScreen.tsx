@@ -5,12 +5,12 @@ import { GameStateContext } from "../GameStateContext";
 export default function GameOverScreen() {
   const {
     setIsGameOver,
-    isGameOver,
     setMeteorPositions,
     setPressedKeys,
     setHeroOriginPoint,
     setHeroVelocityDown,
     setPoints,
+    setLives,
   } = useContext(GameStateContext);
 
   useEffect(() => {
@@ -20,6 +20,7 @@ export default function GameOverScreen() {
         setHeroOriginPoint(HERO_SPAWN_POINT);
         setHeroVelocityDown(0);
         setPoints(0);
+        setLives(3);
         setPressedKeys(BASE_PRESSED_KEYS);
         setIsGameOver(false);
       }
@@ -30,7 +31,7 @@ export default function GameOverScreen() {
     return () => {
       document.removeEventListener("keyup", handleKeyUp);
     };
-  }, [isGameOver]);
+  }, []);
 
   return (
     <div className="flex flex-col items-center">

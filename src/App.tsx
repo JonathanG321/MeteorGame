@@ -15,42 +15,37 @@ import useDetectCollision from "./hooks/useDetectCollision";
 import { GameStateContext } from "./GameStateContext";
 import Menu from "./components/Menu";
 import Mask from "./components/Mask";
-import usePoints from "./hooks/usePoints";
-import Score from "./components/ScoreDisplay";
+import useScore from "./hooks/useScore";
 import HeaderBar from "./components/HeaderBar";
 import useClick from "./hooks/useClick";
+import useDamageDetection from "./hooks/useDamageDetection";
 
 function App() {
-  const [highScore, setHighScore] = useState(
-    parseInt(localStorage.getItem("highScore") ?? "0")
-  );
   const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isMainMenu, setIsMainMenu] = useState(true);
   const [heroVelocityDown, setHeroVelocityDown] = useState(0);
-  const { mousePressPosition, setMousePressPosition } = useClick();
-  const { meteorPositions, setMeteorPositions } = useMeteorPositions(
+  const click = useClick();
+  const meteor = useMeteorPositions(
     isGameOver || isMainMenu,
-    mousePressPosition
+    click.mousePressPosition
   );
-  const { points, setPoints } = usePoints(isGameOver || isMainMenu);
-  const { pressedKeys, setPressedKeys } = usePressedKeys();
-  const isHit = useDetectCollision(meteorPositions, heroOriginPoint);
+  const score = useScore(isGameOver || isMainMenu);
+  const pressedKeys = usePressedKeys();
+  const isHit = useDetectCollision(meteor.meteorPositions, heroOriginPoint);
+  const lives = useDamageDetection(isHit, isGameOver);
+
   useEffect(() => {
-    if (isHit && points > highScore) {
-      setHighScore(points);
-      localStorage.setItem("highScore", points.toString());
+    if (isGameOver && score.points > score.highScore) {
+      score.setHighScore(score.points);
+      localStorage.setItem("highScore", score.points.toString());
     }
-    setIsGameOver(isHit);
-  }, [isHit]);
+    setIsGameOver(lives.lives === 0);
+  }, [lives.lives, isGameOver, score.points, score.highScore]);
 
   return (
     <GameStateContext.Provider
       value={{
-        mousePressPosition,
-        setMousePressPosition,
-        highScore,
-        setHighScore,
         isGameOver,
         setIsGameOver,
         isMainMenu,
@@ -58,8 +53,6 @@ function App() {
         setHeroOriginPoint,
         heroVelocityDown,
         setHeroVelocityDown,
-        points,
-        setPoints,
         hero: {
           position: heroOriginPoint,
           updatePosition: (partialPosition) =>
@@ -68,10 +61,11 @@ function App() {
               ...partialPosition,
             })),
         },
-        setMeteorPositions,
-        setPressedKeys,
-        pressedKeys,
-        meteorPositions,
+        ...click,
+        ...score,
+        ...pressedKeys,
+        ...meteor,
+        ...lives,
       }}
     >
       <div className="flex h-screen w-full items-center justify-center">
@@ -85,7 +79,7 @@ function App() {
           <Canvas>
             {(isGameOver || isMainMenu) && <Menu />}
             <Hero />
-            {meteorPositions.map((position) => (
+            {meteor.meteorPositions.map((position) => (
               <Meteor key={position.id} position={position} />
             ))}
           </Canvas>
