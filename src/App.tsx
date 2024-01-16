@@ -18,6 +18,7 @@ import Mask from "./components/Mask";
 import usePoints from "./hooks/usePoints";
 import Score from "./components/ScoreDisplay";
 import HeaderBar from "./components/HeaderBar";
+import useClick from "./hooks/useClick";
 
 function App() {
   const [highScore, setHighScore] = useState(
@@ -32,6 +33,7 @@ function App() {
   );
   const { points, setPoints } = usePoints(isGameOver || isMainMenu);
   const { pressedKeys, setPressedKeys } = usePressedKeys();
+  const { mousePressPosition, setMousePressPosition } = useClick();
   const isHit = useDetectCollision(meteorPositions, heroOriginPoint);
 
   useEffect(() => {
@@ -45,6 +47,8 @@ function App() {
   return (
     <GameStateContext.Provider
       value={{
+        mousePressPosition,
+        setMousePressPosition,
         highScore,
         setHighScore,
         isGameOver,

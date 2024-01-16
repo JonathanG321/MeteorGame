@@ -1,8 +1,10 @@
 import { createContext } from "react";
 import { BASE_PRESSED_KEYS, HERO_SPAWN_POINT } from "./utils/variables";
-import { Position, PositionWithID, PressedKeys } from "./utils/types";
+import { NullablePosition, Position, PositionWithID, PressedKeys } from "./utils/types";
 
 export const GameStateContext = createContext({
+  mousePressPosition: { X: null, Y: null } as NullablePosition,
+  setMousePressPosition: (newMouse: Position) => {},
   highScore: 0,
   setHighScore: (newHighScore: number) => {},
   hero: {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PositionWithID } from "../utils/types";
 import {
   FRAME_RATE,
@@ -9,9 +9,11 @@ import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "../utils/variables";
+import { GameStateContext } from "../GameStateContext";
 
 export default function useMeteorPositions(isGameOver: boolean) {
   const [meteorPositions, setMeteorPositions] = useState<PositionWithID[]>([]);
+  const { mousePressPosition } = useContext(GameStateContext);
 
   useEffect(() => {
     if (isGameOver) return;
@@ -19,7 +21,9 @@ export default function useMeteorPositions(isGameOver: boolean) {
     const spawnIntervalId = setInterval(() => {
       const newMeteorPosition = {
         Y: METEOR_STARTING_HEIGHT,
-        X: Math.round(Math.random() * (SCREEN_WIDTH - METEOR_SIZE)),
+        X:
+          mousePressPosition.X ??
+          Math.round(Math.random() * (SCREEN_WIDTH - METEOR_SIZE)),
         id: crypto.randomUUID(),
       };
       setMeteorPositions((oldValue) => oldValue.concat([newMeteorPosition]));
@@ -37,7 +41,7 @@ export default function useMeteorPositions(isGameOver: boolean) {
       clearInterval(spawnIntervalId);
       clearInterval(gravityIntervalId);
     };
-  }, [isGameOver]);
+  }, [isGameOver, mousePressPosition]);
 
   return { meteorPositions, setMeteorPositions };
 }
