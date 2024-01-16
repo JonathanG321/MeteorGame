@@ -28,14 +28,14 @@ function App() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isMainMenu, setIsMainMenu] = useState(true);
   const [heroVelocityDown, setHeroVelocityDown] = useState(0);
+  const { mousePressPosition, setMousePressPosition } = useClick();
   const { meteorPositions, setMeteorPositions } = useMeteorPositions(
-    isGameOver || isMainMenu
+    isGameOver || isMainMenu,
+    mousePressPosition
   );
   const { points, setPoints } = usePoints(isGameOver || isMainMenu);
   const { pressedKeys, setPressedKeys } = usePressedKeys();
-  const { mousePressPosition, setMousePressPosition } = useClick();
   const isHit = useDetectCollision(meteorPositions, heroOriginPoint);
-
   useEffect(() => {
     if (isHit && points > highScore) {
       setHighScore(points);

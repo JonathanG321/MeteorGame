@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { PositionWithID } from "../utils/types";
+import { useEffect, useRef, useState } from "react";
+import { NullablePosition, PositionWithID } from "../utils/types";
 import {
   FRAME_RATE,
   METEOR_GRAVITY,
@@ -9,21 +9,37 @@ import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "../utils/variables";
-import { GameStateContext } from "../GameStateContext";
 
-export default function useMeteorPositions(isGameOver: boolean) {
+export default function useMeteorPositions(
+  isGameOver: boolean,
+  mousePressPosition: NullablePosition
+) {
   const [meteorPositions, setMeteorPositions] = useState<PositionWithID[]>([]);
-  const { mousePressPosition } = useContext(GameStateContext);
+  const latestMousePressPosition = useRef<NullablePosition>(mousePressPosition);
+
+  useEffect(() => {
+    latestMousePressPosition.current = mousePressPosition;
+  }, [mousePressPosition]);
 
   useEffect(() => {
     if (isGameOver) return;
 
     const spawnIntervalId = setInterval(() => {
+      const mouseX = latestMousePressPosition.current.X;
+
+      let newMeteorX = mouseX
+        ? mouseX - METEOR_SIZE / 2
+        : Math.round(Math.random() * (SCREEN_WIDTH - METEOR_SIZE));
+
+      if (newMeteorX < 0) {
+        newMeteorX = 0;
+      } else if (newMeteorX > SCREEN_WIDTH - METEOR_SIZE) {
+        newMeteorX = SCREEN_WIDTH - METEOR_SIZE;
+      }
+
       const newMeteorPosition = {
         Y: METEOR_STARTING_HEIGHT,
-        X:
-          mousePressPosition.X ??
-          Math.round(Math.random() * (SCREEN_WIDTH - METEOR_SIZE)),
+        X: newMeteorX,
         id: crypto.randomUUID(),
       };
       setMeteorPositions((oldValue) => oldValue.concat([newMeteorPosition]));
@@ -41,7 +57,7 @@ export default function useMeteorPositions(isGameOver: boolean) {
       clearInterval(spawnIntervalId);
       clearInterval(gravityIntervalId);
     };
-  }, [isGameOver, mousePressPosition]);
+  }, [isGameOver]);
 
   return { meteorPositions, setMeteorPositions };
 }
