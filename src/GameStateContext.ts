@@ -1,8 +1,17 @@
 import { createContext } from "react";
 import { BASE_PRESSED_KEYS, HERO_SPAWN_POINT } from "./utils/variables";
-import { NullablePosition, Position, PositionWithID, PressedKeys } from "./utils/types";
+import {
+  NullablePosition,
+  Position,
+  PositionWithID,
+  PressedKeys,
+} from "./utils/types";
 
 export const GameStateContext = createContext({
+  isInvincible: false,
+  setIsInvincible: (isInvincible: boolean) => {},
+  lives: 3,
+  setLives: (newLives: number) => {},
   mousePressPosition: { X: null, Y: null } as NullablePosition,
   setMousePressPosition: (newMouse: Position) => {},
   highScore: 0,
