@@ -35,26 +35,27 @@ function App() {
   );
   const powerUps = usePowerUpPositions(
     isGameOver || isMainMenu,
-    click.mousePressPosition
+    click.mousePressPosition,
+    heroOriginPoint
   );
   const score = useScore(isGameOver || isMainMenu);
   const pressedKeys = usePressedKeys();
   const isHit = !!useDetectCollision(meteors.meteorPositions, heroOriginPoint);
-  const hitPowerUpId = useDetectCollision(
-    powerUps.powerUpPositions,
-    heroOriginPoint
-  );
+  // const hitPowerUpId = useDetectCollision(
+  //   powerUps.powerUpPositions,
+  //   heroOriginPoint
+  // );
   const lives = useDamageCalculation(isHit, isGameOver);
 
   useEffect(() => {
-    useCollectPowerUp(
-      powerUps.powerUpPositions,
-      powerUps.setPowerUpPositions,
-      hitPowerUpId
-    );
-    powerUps.setPowerUpPositions(
-      powerUps.powerUpPositions.filter((powerUp) => powerUp.id !== hitPowerUpId)
-    );
+    // useCollectPowerUp(
+    //   powerUps.powerUpPositions,
+    //   powerUps.setPowerUpPositions,
+    //   hitPowerUpId
+    // );
+    // powerUps.setPowerUpPositions(
+    //   powerUps.powerUpPositions.filter((powerUp) => powerUp.id !== hitPowerUpId)
+    // );
 
     if (isGameOver && score.points > score.highScore) {
       score.setHighScore(score.points);

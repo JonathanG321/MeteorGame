@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { FallingObject } from "../utils/types";
 
 export default function useCollectPowerUp(

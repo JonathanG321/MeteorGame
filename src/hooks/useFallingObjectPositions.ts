@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   FallingObject,
+  FallingObjectOptions,
   FallingObjectType,
   NullablePosition,
 } from "../utils/types";
@@ -11,15 +12,19 @@ export default function useFallingObjectPositions(
   mousePressPosition: NullablePosition,
   spawnRate: number,
   possibleTypes: FallingObjectType[],
-  spawnChance = 100
+  options?: FallingObjectOptions
 ) {
   const [objectPositions, setObjectPositions] = useState<FallingObject[]>([]);
   const latestMousePressPosition = useRef<NullablePosition>(mousePressPosition);
+  const latestOptions = useRef<FallingObjectOptions | undefined>(options);
 
   useEffect(() => {
     if (isGameOver) return;
     latestMousePressPosition.current = mousePressPosition;
-  }, [mousePressPosition, isGameOver]);
+    if (options?.isCollectible) {
+      latestOptions.current = options;
+    }
+  }, [mousePressPosition, isGameOver, options]);
 
   useEffect(() => {
     return objectFallingEffect(
@@ -28,7 +33,7 @@ export default function useFallingObjectPositions(
       setObjectPositions,
       possibleTypes,
       spawnRate,
-      spawnChance
+      latestOptions
     );
   }, [isGameOver]);
 

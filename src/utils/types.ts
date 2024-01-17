@@ -22,3 +22,16 @@ export type FallingObject = Position & {
 };
 
 export type FallingObjectType = "meteor" | "health";
+
+export type FallingObjectOptionsNoCollectable = {
+  spawnChance?: number;
+  isCollectible?: false;
+};
+export type FallingObjectOptionsIsCollectable = {
+  spawnChance?: number;
+  isCollectible: true;
+  heroOriginPoint: Position;
+};
+export type FallingObjectOptions =
+  | FallingObjectOptionsNoCollectable
+  | FallingObjectOptionsIsCollectable;

@@ -1,6 +1,7 @@
 import {
   Box,
   FallingObject,
+  FallingObjectOptions,
   FallingObjectType,
   NullablePosition,
   Position,
@@ -22,12 +23,12 @@ export function objectFallingEffect(
   setObjectPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>,
   possibleTypes: FallingObjectType[],
   spawnRate: number,
-  spawnChance = 100
+  options?: React.MutableRefObject<FallingObjectOptions | undefined>
 ) {
   if (isGameOver) return;
 
   const spawnIntervalId = setInterval(() => {
-    if (!(Math.random() * 100 < spawnChance)) return;
+    if (!(Math.random() * 100 < (options?.current?.spawnChance || 100))) return;
     const mouseX = latestMousePressPosition.current.X;
 
     let newObjectX = mouseX
@@ -54,7 +55,17 @@ export function objectFallingEffect(
     setObjectPositions((oldValue) =>
       oldValue
         .map((object) => ({ ...object, Y: object.Y + 1 }))
-        .filter((object) => object.Y <= SCREEN_HEIGHT + OBJECT_SIZE)
+        .filter((object) => {
+          const isObjectInBounds = object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
+          if (options?.current?.isCollectible) {
+            const isHittingHero = !!isObjectCollidingWithHero(
+              object,
+              options.current?.heroOriginPoint
+            );
+            return isObjectInBounds && !isHittingHero;
+          }
+          return isObjectInBounds;
+        })
     );
   }, FRAME_RATE / OBJECT_GRAVITY);
 
