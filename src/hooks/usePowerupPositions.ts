@@ -9,9 +9,13 @@ export default function usePowerUpPositions(
   const {
     objectPositions: powerUpPositions,
     setObjectPositions: setPowerUpPositions,
-  } = useFallingObjectPositions(isGameOver, mousePressPosition, 0.3, [
-    "health",
-  ]);
+  } = useFallingObjectPositions(
+    isGameOver,
+    mousePressPosition,
+    0.3,
+    ["health"],
+    50
+  );
 
   return { powerUpPositions, setPowerUpPositions };
 }

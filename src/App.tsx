@@ -21,6 +21,7 @@ import useClick from "./hooks/useClick";
 import useDamageCalculation from "./hooks/useDamageCalculation";
 import usePowerUpPositions from "./hooks/usePowerupPositions";
 import PowerUp from "./components/PowerUp";
+import useCollectPowerUp from "./hooks/useCollectPowerup";
 
 function App() {
   const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
@@ -38,10 +39,23 @@ function App() {
   );
   const score = useScore(isGameOver || isMainMenu);
   const pressedKeys = usePressedKeys();
-  const isHit = useDetectCollision(meteors.meteorPositions, heroOriginPoint);
+  const isHit = !!useDetectCollision(meteors.meteorPositions, heroOriginPoint);
+  const hitPowerUpId = useDetectCollision(
+    powerUps.powerUpPositions,
+    heroOriginPoint
+  );
   const lives = useDamageCalculation(isHit, isGameOver);
 
   useEffect(() => {
+    useCollectPowerUp(
+      powerUps.powerUpPositions,
+      powerUps.setPowerUpPositions,
+      hitPowerUpId
+    );
+    powerUps.setPowerUpPositions(
+      powerUps.powerUpPositions.filter((powerUp) => powerUp.id !== hitPowerUpId)
+    );
+
     if (isGameOver && score.points > score.highScore) {
       score.setHighScore(score.points);
       localStorage.setItem("highScore", score.points.toString());

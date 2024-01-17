@@ -1,4 +1,5 @@
 import {
+  Box,
   FallingObject,
   FallingObjectType,
   NullablePosition,
@@ -6,6 +7,8 @@ import {
 } from "./types";
 import {
   FRAME_RATE,
+  HERO_SIZE,
+  OBJECT_COLLISION_THRESHOLD,
   OBJECT_GRAVITY,
   OBJECT_SIZE,
   OBJECT_STARTING_HEIGHT,
@@ -18,11 +21,13 @@ export function objectFallingEffect(
   latestMousePressPosition: React.MutableRefObject<NullablePosition>,
   setObjectPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>,
   possibleTypes: FallingObjectType[],
-  spawnRate: number
+  spawnRate: number,
+  spawnChance = 100
 ) {
   if (isGameOver) return;
 
   const spawnIntervalId = setInterval(() => {
+    if (!(Math.random() * 100 < spawnChance)) return;
     const mouseX = latestMousePressPosition.current.X;
 
     let newObjectX = mouseX
@@ -66,4 +71,47 @@ export function createObjectStyle(position: Position, size: number) {
     height: size + "px",
     width: size + "px",
   };
+}
+
+export function isObjectCollidingWithHero(
+  object: FallingObject,
+  heroPosition: Position
+) {
+  const heroBox = createBoxFromPositionAndSize(heroPosition, HERO_SIZE);
+  const objectBox = createBoxFromPositionAndSize(
+    {
+      X: object.X + OBJECT_COLLISION_THRESHOLD,
+      Y: object.Y + OBJECT_COLLISION_THRESHOLD,
+    },
+    OBJECT_SIZE - OBJECT_COLLISION_THRESHOLD * 2
+  );
+
+  return doBoxesOverlap(heroBox, objectBox) ? object.id : "";
+}
+
+function createBoxFromPositionAndSize(position: Position, size: number) {
+  return {
+    topLeft: position,
+    bottomRight: { X: position.X + size, Y: position.Y + size },
+  };
+}
+
+function doBoxesOverlap(box1: Box, box2: Box) {
+  const topRight = { ...box1.topLeft, X: box1.bottomRight.X };
+  const bottomLeft = { ...box1.topLeft, Y: box1.bottomRight.Y };
+  return (
+    isPointInsideBox(box1.topLeft, box2) ||
+    isPointInsideBox(box1.bottomRight, box2) ||
+    isPointInsideBox(topRight, box2) ||
+    isPointInsideBox(bottomLeft, box2)
+  );
+}
+
+function isPointInsideBox(point: Position, box: Box) {
+  return (
+    point.X >= box.topLeft.X &&
+    point.X <= box.bottomRight.X &&
+    point.Y >= box.topLeft.Y &&
+    point.Y <= box.bottomRight.Y
+  );
 }

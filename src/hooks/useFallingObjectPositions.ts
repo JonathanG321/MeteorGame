@@ -10,7 +10,8 @@ export default function useFallingObjectPositions(
   isGameOver: boolean,
   mousePressPosition: NullablePosition,
   spawnRate: number,
-  possibleTypes: FallingObjectType[]
+  possibleTypes: FallingObjectType[],
+  spawnChance = 100
 ) {
   const [objectPositions, setObjectPositions] = useState<FallingObject[]>([]);
   const latestMousePressPosition = useRef<NullablePosition>(mousePressPosition);
@@ -26,7 +27,8 @@ export default function useFallingObjectPositions(
       latestMousePressPosition,
       setObjectPositions,
       possibleTypes,
-      spawnRate
+      spawnRate,
+      spawnChance
     );
   }, [isGameOver]);
 

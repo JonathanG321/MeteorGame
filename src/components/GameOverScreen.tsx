@@ -12,12 +12,14 @@ export default function GameOverScreen() {
     setPoints,
     setLives,
     setInvincibleCount,
+    setPowerUpPositions,
   } = useContext(GameStateContext);
 
   useEffect(() => {
     function handleKeyUp(e: KeyboardEvent) {
       if (e.code === "Space") {
         setMeteorPositions([]);
+        setPowerUpPositions([]);
         setHeroOriginPoint(HERO_SPAWN_POINT);
         setHeroVelocityDown(0);
         setPoints(0);
