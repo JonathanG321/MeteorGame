@@ -10,11 +10,11 @@ export const HERO_SPAWN_POINT = {
   X: SCREEN_WIDTH / 2 - HERO_SIZE,
   Y: SCREEN_HEIGHT - HERO_SIZE,
 };
-export const METEOR_SIZE = 40;
 export const METEORS_PER_SECOND = 10;
-export const METEOR_GRAVITY = 10;
-export const METEOR_STARTING_HEIGHT = -(METEOR_SIZE * 2);
-export const METEOR_COLLISION_THRESHOLD = 5;
+export const OBJECT_GRAVITY = 10;
+export const OBJECT_SIZE = 40;
+export const OBJECT_COLLISION_THRESHOLD = 5;
+export const OBJECT_STARTING_HEIGHT = -(OBJECT_SIZE * 2);
 export const MASK_FACTOR = 2.5;
 export const INVINCIBILITY_DURATION = 2; // This is in seconds
 

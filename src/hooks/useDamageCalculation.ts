@@ -3,7 +3,7 @@ import { FRAME_RATE, INVINCIBILITY_DURATION } from "../utils/variables";
 
 const newInvincibleCount = Math.floor(INVINCIBILITY_DURATION * FRAME_RATE);
 
-export default function useDamageDetection(
+export default function useDamageCalculation(
   isHit: boolean,
   isGameOver: boolean
 ) {

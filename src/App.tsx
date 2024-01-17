@@ -3,7 +3,7 @@ import Canvas from "./components/Canvas";
 import {
   HERO_SPAWN_POINT,
   MASK_FACTOR,
-  METEOR_SIZE,
+  OBJECT_SIZE,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "./utils/variables";
@@ -18,7 +18,9 @@ import Mask from "./components/Mask";
 import useScore from "./hooks/useScore";
 import HeaderBar from "./components/HeaderBar";
 import useClick from "./hooks/useClick";
-import useDamageDetection from "./hooks/useDamageDetection";
+import useDamageCalculation from "./hooks/useDamageCalculation";
+import usePowerUpPositions from "./hooks/usePowerupPositions";
+import PowerUp from "./components/PowerUp";
 
 function App() {
   const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
@@ -26,14 +28,18 @@ function App() {
   const [isMainMenu, setIsMainMenu] = useState(true);
   const [heroVelocityDown, setHeroVelocityDown] = useState(0);
   const click = useClick();
-  const meteor = useMeteorPositions(
+  const meteors = useMeteorPositions(
+    isGameOver || isMainMenu,
+    click.mousePressPosition
+  );
+  const powerUps = usePowerUpPositions(
     isGameOver || isMainMenu,
     click.mousePressPosition
   );
   const score = useScore(isGameOver || isMainMenu);
   const pressedKeys = usePressedKeys();
-  const isHit = useDetectCollision(meteor.meteorPositions, heroOriginPoint);
-  const lives = useDamageDetection(isHit, isGameOver);
+  const isHit = useDetectCollision(meteors.meteorPositions, heroOriginPoint);
+  const lives = useDamageCalculation(isHit, isGameOver);
 
   useEffect(() => {
     if (isGameOver && score.points > score.highScore) {
@@ -64,7 +70,8 @@ function App() {
         ...click,
         ...score,
         ...pressedKeys,
-        ...meteor,
+        ...powerUps,
+        ...meteors,
         ...lives,
       }}
     >
@@ -73,14 +80,17 @@ function App() {
           className="relative"
           style={{ height: SCREEN_HEIGHT + 8, width: SCREEN_WIDTH + 8 }}
         >
-          <Mask top={-(METEOR_SIZE * MASK_FACTOR)}>
+          <Mask top={-(OBJECT_SIZE * MASK_FACTOR)}>
             <HeaderBar />
           </Mask>
           <Canvas>
             {(isGameOver || isMainMenu) && <Menu />}
             <Hero />
-            {meteor.meteorPositions.map((position) => (
+            {meteors.meteorPositions.map((position) => (
               <Meteor key={position.id} position={position} />
+            ))}
+            {powerUps.powerUpPositions.map((object) => (
+              <PowerUp key={object.id} object={object} />
             ))}
           </Canvas>
           <Mask top={SCREEN_HEIGHT} className="border-t-4 border-black" />

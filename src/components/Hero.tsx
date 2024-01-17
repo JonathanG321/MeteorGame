@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
+import classNames from "classnames";
 import {
   FRAME_RATE,
   HERO_GRAVITY,
@@ -10,7 +11,7 @@ import {
   SCREEN_WIDTH,
 } from "../utils/variables";
 import { GameStateContext } from "../GameStateContext";
-import classNames from "classnames";
+import { createObjectStyle } from "../utils/lib";
 
 export default function Hero() {
   const {
@@ -20,12 +21,7 @@ export default function Hero() {
     isInvincible,
   } = useContext(GameStateContext);
   useHeroControls(heroVelocityDown, setHeroVelocityDown);
-  const style = {
-    top: position.Y,
-    left: position.X,
-    height: HERO_SIZE,
-    width: HERO_SIZE,
-  };
+  const style = createObjectStyle(position, HERO_SIZE);
   return (
     <div
       id="hero"

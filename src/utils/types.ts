@@ -15,6 +15,10 @@ export type NullablePosition = {
   X: null | number;
   Y: null | number;
 };
-export type PositionWithID = Position & {
+
+export type FallingObject = Position & {
   id: string;
+  type: FallingObjectType;
 };
+
+export type FallingObjectType = "meteor" | "health";
