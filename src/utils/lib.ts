@@ -62,6 +62,7 @@ export function objectFallingEffect(
               object,
               options.current?.heroOriginPoint
             );
+            if (isHittingHero) options.current.setHitObjectType(object.type);
             return isObjectInBounds && !isHittingHero;
           }
           return isObjectInBounds;

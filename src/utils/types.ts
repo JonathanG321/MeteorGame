@@ -31,6 +31,7 @@ export type FallingObjectOptionsIsCollectable = {
   spawnChance?: number;
   isCollectible: true;
   heroOriginPoint: Position;
+  setHitObjectType: (hitObjectType: FallingObjectType) => void;
 };
 export type FallingObjectOptions =
   | FallingObjectOptionsNoCollectable

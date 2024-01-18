@@ -1,11 +1,11 @@
-import { NullablePosition, Position } from "../utils/types";
-import useDetectCollision from "./useDetectCollision";
+import { FallingObjectType, NullablePosition, Position } from "../utils/types";
 import useFallingObjectPositions from "./useFallingObjectPositions";
 
 export default function usePowerUpPositions(
   isGameOver: boolean,
   mousePressPosition: NullablePosition,
-  heroOriginPoint: Position
+  heroOriginPoint: Position,
+  setHitObjectType: (hitObjectType: FallingObjectType | null) => void
 ) {
   const {
     objectPositions: powerUpPositions,
@@ -15,7 +15,7 @@ export default function usePowerUpPositions(
     mousePressPosition,
     0.3,
     ["health"],
-    { spawnChance: 100, isCollectible: true, heroOriginPoint }
+    { spawnChance: 100, isCollectible: true, heroOriginPoint, setHitObjectType }
   );
 
   return { powerUpPositions, setPowerUpPositions };

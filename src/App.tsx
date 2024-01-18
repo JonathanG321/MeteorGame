@@ -22,12 +22,17 @@ import useDamageCalculation from "./hooks/useDamageCalculation";
 import usePowerUpPositions from "./hooks/usePowerupPositions";
 import PowerUp from "./components/PowerUp";
 import useCollectPowerUp from "./hooks/useCollectPowerup";
+import usePowerUps from "./hooks/usePowerUp";
+import { FallingObjectType } from "./utils/types";
 
 function App() {
   const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isMainMenu, setIsMainMenu] = useState(true);
   const [heroVelocityDown, setHeroVelocityDown] = useState(0);
+  const [hitObjectType, setHitObjectType] = useState<FallingObjectType | null>(
+    null
+  );
   const click = useClick();
   const meteors = useMeteorPositions(
     isGameOver || isMainMenu,
@@ -36,27 +41,17 @@ function App() {
   const powerUps = usePowerUpPositions(
     isGameOver || isMainMenu,
     click.mousePressPosition,
-    heroOriginPoint
+    heroOriginPoint,
+    setHitObjectType
   );
   const score = useScore(isGameOver || isMainMenu);
   const pressedKeys = usePressedKeys();
   const isHit = !!useDetectCollision(meteors.meteorPositions, heroOriginPoint);
-  // const hitPowerUpId = useDetectCollision(
-  //   powerUps.powerUpPositions,
-  //   heroOriginPoint
-  // );
   const lives = useDamageCalculation(isHit, isGameOver);
 
-  useEffect(() => {
-    // useCollectPowerUp(
-    //   powerUps.powerUpPositions,
-    //   powerUps.setPowerUpPositions,
-    //   hitPowerUpId
-    // );
-    // powerUps.setPowerUpPositions(
-    //   powerUps.powerUpPositions.filter((powerUp) => powerUp.id !== hitPowerUpId)
-    // );
+  usePowerUps(hitObjectType, lives.setLives, setHitObjectType);
 
+  useEffect(() => {
     if (isGameOver && score.points > score.highScore) {
       score.setHighScore(score.points);
       localStorage.setItem("highScore", score.points.toString());
