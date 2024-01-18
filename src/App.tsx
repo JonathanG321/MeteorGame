@@ -1,15 +1,16 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Canvas from "./components/Canvas";
 import {
-  HERO_SPAWN_POINT,
   MASK_FACTOR,
+  METEORS_PER_SECOND,
   OBJECT_SIZE,
+  POWER_UP_SPAWN_CHANCE,
+  POWER_UP_SPAWN_RATE,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "./utils/variables";
 import Hero from "./components/Hero";
 import usePressedKeys from "./hooks/usePressedKeys";
-import useMeteorPositions from "./hooks/useMeteorPositions";
 import Meteor from "./components/Meteor";
 import useDetectCollision from "./hooks/useDetectCollision";
 import { GameStateContext } from "./GameStateContext";
@@ -19,27 +20,17 @@ import useScore from "./hooks/useScore";
 import HeaderBar from "./components/HeaderBar";
 import useClick from "./hooks/useClick";
 import useDamageCalculation from "./hooks/useDamageCalculation";
-import usePowerUpPositions from "./hooks/usePowerupPositions";
 import PowerUp from "./components/PowerUp";
 import usePowerUps from "./hooks/usePowerUp";
-import { FallingObjectType, Position } from "./utils/types";
+import { Position } from "./utils/types";
+import useFallingObjectPositions from "./hooks/useFallingObjectPositions";
+import useBasicState from "./hooks/useBasicState";
 
 function App() {
   const contextValues = getContextValues();
 
-  const {
-    hitObjectType,
-    setLives,
-    setHitObjectType,
-    setHighScore,
-    setIsGameOver,
-    isGameOver,
-    points,
-    highScore,
-    lives,
-  } = contextValues;
-
-  usePowerUps(hitObjectType, setLives, setHitObjectType);
+  const { setHighScore, setIsGameOver, isGameOver, points, highScore, lives } =
+    contextValues;
 
   useEffect(() => {
     if (isGameOver && points > highScore) {
@@ -79,48 +70,59 @@ function App() {
 export default App;
 
 function getContextValues() {
-  const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
-  const [isGameOver, setIsGameOver] = useState(false);
-  const [isMainMenu, setIsMainMenu] = useState(true);
-  const [hitObjectType, setHitObjectType] = useState<FallingObjectType | null>(
-    null
-  );
-  const [heroVelocityDown, setHeroVelocityDown] = useState(0);
-  const shouldStopGame = isGameOver || isMainMenu;
+  const basicState = useBasicState();
+  const { shouldStopGame, heroOriginPoint, hitObjectType, setHitObjectType } =
+    basicState;
   const score = useScore(shouldStopGame);
   const pressedKeys = usePressedKeys();
   const click = useClick();
-  const meteors = useMeteorPositions(shouldStopGame, click.mousePressPosition);
-  const powerUps = usePowerUpPositions(
+
+  const {
+    objectPositions: meteorPositions,
+    setObjectPositions: setMeteorPositions,
+  } = useFallingObjectPositions(
     shouldStopGame,
     click.mousePressPosition,
-    heroOriginPoint,
-    setHitObjectType
+    METEORS_PER_SECOND,
+    ["meteor"]
   );
-  const isHit = !!useDetectCollision(meteors.meteorPositions, heroOriginPoint);
-  const lives = useDamageCalculation(isHit, isGameOver);
+
+  const {
+    objectPositions: powerUpPositions,
+    setObjectPositions: setPowerUpPositions,
+  } = useFallingObjectPositions(
+    shouldStopGame,
+    click.mousePressPosition,
+    POWER_UP_SPAWN_RATE,
+    ["health", "pointsSmall", "pointsMedium", "pointsLarge"],
+    {
+      spawnChance: POWER_UP_SPAWN_CHANCE,
+      isCollectible: true,
+      heroOriginPoint,
+      setHitObjectType,
+    }
+  );
+
+  const isHit = !!useDetectCollision(meteorPositions, heroOriginPoint);
+  const lives = useDamageCalculation(isHit, shouldStopGame);
+
+  usePowerUps(hitObjectType, lives.setLives, score.setPoints, setHitObjectType);
+
   return {
+    ...basicState,
     ...score,
     ...pressedKeys,
-    ...powerUps,
-    ...meteors,
     ...click,
     ...lives,
     isHit,
-    heroVelocityDown,
-    setHeroVelocityDown,
-    heroOriginPoint,
-    setHeroOriginPoint,
-    isGameOver,
-    setIsGameOver,
-    isMainMenu,
-    setIsMainMenu,
-    hitObjectType,
-    setHitObjectType,
+    powerUpPositions,
+    setPowerUpPositions,
+    meteorPositions,
+    setMeteorPositions,
     hero: {
       position: heroOriginPoint,
       updatePosition: (partialPosition: Partial<Position>) =>
-        setHeroOriginPoint((oldValue) => ({
+        basicState.setHeroOriginPoint((oldValue) => ({
           ...oldValue,
           ...partialPosition,
         })),
