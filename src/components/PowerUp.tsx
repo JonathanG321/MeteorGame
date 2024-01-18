@@ -5,7 +5,7 @@ import { OBJECT_SIZE } from "../utils/variables";
 import heart from "../assets/PixelHeart.png";
 import pointsSmall from "../assets/BronzePixelTrophy.png";
 import pointsMedium from "../assets/SilverPixelTrophy.png";
-import pointsLarge from "../assets/GoldPixelTrophy.gif";
+import pointsLarge from "../assets/GoldPixelTrophy.png";
 
 export default function PowerUp({ object }: { object: FallingObject }) {
   const style = createObjectStyle(object, OBJECT_SIZE);
