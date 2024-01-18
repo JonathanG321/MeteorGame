@@ -21,70 +21,36 @@ import useClick from "./hooks/useClick";
 import useDamageCalculation from "./hooks/useDamageCalculation";
 import usePowerUpPositions from "./hooks/usePowerupPositions";
 import PowerUp from "./components/PowerUp";
-import useCollectPowerUp from "./hooks/useCollectPowerup";
 import usePowerUps from "./hooks/usePowerUp";
-import { FallingObjectType } from "./utils/types";
+import { FallingObjectType, Position } from "./utils/types";
 
 function App() {
-  const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
-  const [isGameOver, setIsGameOver] = useState(false);
-  const [isMainMenu, setIsMainMenu] = useState(true);
-  const [heroVelocityDown, setHeroVelocityDown] = useState(0);
-  const [hitObjectType, setHitObjectType] = useState<FallingObjectType | null>(
-    null
-  );
-  const click = useClick();
-  const meteors = useMeteorPositions(
-    isGameOver || isMainMenu,
-    click.mousePressPosition
-  );
-  const powerUps = usePowerUpPositions(
-    isGameOver || isMainMenu,
-    click.mousePressPosition,
-    heroOriginPoint,
-    setHitObjectType
-  );
-  const score = useScore(isGameOver || isMainMenu);
-  const pressedKeys = usePressedKeys();
-  const isHit = !!useDetectCollision(meteors.meteorPositions, heroOriginPoint);
-  const lives = useDamageCalculation(isHit, isGameOver);
+  const contextValues = getContextValues();
 
-  usePowerUps(hitObjectType, lives.setLives, setHitObjectType);
+  const {
+    hitObjectType,
+    setLives,
+    setHitObjectType,
+    setHighScore,
+    setIsGameOver,
+    isGameOver,
+    points,
+    highScore,
+    lives,
+  } = contextValues;
+
+  usePowerUps(hitObjectType, setLives, setHitObjectType);
 
   useEffect(() => {
-    if (isGameOver && score.points > score.highScore) {
-      score.setHighScore(score.points);
-      localStorage.setItem("highScore", score.points.toString());
+    if (isGameOver && points > highScore) {
+      setHighScore(points);
+      localStorage.setItem("highScore", points.toString());
     }
-    setIsGameOver(lives.lives === 0);
-  }, [lives.lives, isGameOver, score.points, score.highScore]);
+    setIsGameOver(lives === 0);
+  }, [lives, isGameOver, points, highScore]);
 
   return (
-    <GameStateContext.Provider
-      value={{
-        isGameOver,
-        setIsGameOver,
-        isMainMenu,
-        setIsMainMenu,
-        setHeroOriginPoint,
-        heroVelocityDown,
-        setHeroVelocityDown,
-        hero: {
-          position: heroOriginPoint,
-          updatePosition: (partialPosition) =>
-            setHeroOriginPoint((oldValue) => ({
-              ...oldValue,
-              ...partialPosition,
-            })),
-        },
-        ...click,
-        ...score,
-        ...pressedKeys,
-        ...powerUps,
-        ...meteors,
-        ...lives,
-      }}
-    >
+    <GameStateContext.Provider value={contextValues}>
       <div className="flex h-screen w-full items-center justify-center">
         <div
           className="relative"
@@ -94,12 +60,12 @@ function App() {
             <HeaderBar />
           </Mask>
           <Canvas>
-            {(isGameOver || isMainMenu) && <Menu />}
+            {(contextValues.isGameOver || contextValues.isMainMenu) && <Menu />}
             <Hero />
-            {meteors.meteorPositions.map((position) => (
+            {contextValues.meteorPositions.map((position) => (
               <Meteor key={position.id} position={position} />
             ))}
-            {powerUps.powerUpPositions.map((object) => (
+            {contextValues.powerUpPositions.map((object) => (
               <PowerUp key={object.id} object={object} />
             ))}
           </Canvas>
@@ -111,3 +77,53 @@ function App() {
 }
 
 export default App;
+
+function getContextValues() {
+  const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [isMainMenu, setIsMainMenu] = useState(true);
+  const [hitObjectType, setHitObjectType] = useState<FallingObjectType | null>(
+    null
+  );
+  const [heroVelocityDown, setHeroVelocityDown] = useState(0);
+  const shouldStopGame = isGameOver || isMainMenu;
+  const score = useScore(shouldStopGame);
+  const pressedKeys = usePressedKeys();
+  const click = useClick();
+  const meteors = useMeteorPositions(shouldStopGame, click.mousePressPosition);
+  const powerUps = usePowerUpPositions(
+    shouldStopGame,
+    click.mousePressPosition,
+    heroOriginPoint,
+    setHitObjectType
+  );
+  const isHit = !!useDetectCollision(meteors.meteorPositions, heroOriginPoint);
+  const lives = useDamageCalculation(isHit, isGameOver);
+  return {
+    ...score,
+    ...pressedKeys,
+    ...powerUps,
+    ...meteors,
+    ...click,
+    ...lives,
+    isHit,
+    heroVelocityDown,
+    setHeroVelocityDown,
+    heroOriginPoint,
+    setHeroOriginPoint,
+    isGameOver,
+    setIsGameOver,
+    isMainMenu,
+    setIsMainMenu,
+    hitObjectType,
+    setHitObjectType,
+    hero: {
+      position: heroOriginPoint,
+      updatePosition: (partialPosition: Partial<Position>) =>
+        setHeroOriginPoint((oldValue) => ({
+          ...oldValue,
+          ...partialPosition,
+        })),
+    },
+  };
+}
