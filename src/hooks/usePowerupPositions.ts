@@ -1,4 +1,5 @@
 import { FallingObjectType, NullablePosition, Position } from "../utils/types";
+import { POWER_UP_SPAWN_CHANCE, POWER_UP_SPAWN_RATE } from "../utils/variables";
 import useFallingObjectPositions from "./useFallingObjectPositions";
 
 export default function usePowerUpPositions(
@@ -13,9 +14,14 @@ export default function usePowerUpPositions(
   } = useFallingObjectPositions(
     isGameOver,
     mousePressPosition,
-    0.3,
+    POWER_UP_SPAWN_RATE,
     ["health"],
-    { spawnChance: 100, isCollectible: true, heroOriginPoint, setHitObjectType }
+    {
+      spawnChance: POWER_UP_SPAWN_CHANCE,
+      isCollectible: true,
+      heroOriginPoint,
+      setHitObjectType,
+    }
   );
 
   return { powerUpPositions, setPowerUpPositions };

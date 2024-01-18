@@ -18,6 +18,9 @@ export const OBJECT_STARTING_HEIGHT = -(OBJECT_SIZE * 2);
 export const MASK_FACTOR = 2.5;
 export const INVINCIBILITY_DURATION = 2; // This is in seconds
 
+export const POWER_UP_SPAWN_RATE = 0.3; // amount of power-ups to spawn per second
+export const POWER_UP_SPAWN_CHANCE = 50;
+
 export const BASE_PRESSED_KEYS = {
   ArrowUp: false,
   ArrowDown: false,
