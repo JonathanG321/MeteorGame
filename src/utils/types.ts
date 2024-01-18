@@ -21,7 +21,12 @@ export type FallingObject = Position & {
   type: FallingObjectType;
 };
 
-export type FallingObjectType = "meteor" | "health";
+export type FallingObjectType =
+  | "meteor"
+  | "health"
+  | "pointsSmall"
+  | "pointsMedium"
+  | "pointsLarge";
 
 export type FallingObjectOptionsNoCollectable = {
   spawnChance?: number;
