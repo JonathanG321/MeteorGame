@@ -26,7 +26,8 @@ export type FallingObjectType =
   | "health"
   | "pointsSmall"
   | "pointsMedium"
-  | "pointsLarge";
+  | "pointsLarge"
+  | "shield";
 
 export type FallingObjectOptionsNoCollectable = {
   spawnChance?: number;

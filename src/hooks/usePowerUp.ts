@@ -1,9 +1,13 @@
 import { FallingObjectType } from "../utils/types";
+import { FRAME_RATE, SHIELD_DURATION } from "../utils/variables";
+
+const newShieldCount = Math.floor(SHIELD_DURATION * FRAME_RATE);
 
 export default function usePowerUps(
   hitObjectType: FallingObjectType | null,
   setLives: React.Dispatch<React.SetStateAction<number>>,
   setPoints: React.Dispatch<React.SetStateAction<number>>,
+  setShieldCount: React.Dispatch<React.SetStateAction<number>>,
   setHitObjectType: React.Dispatch<
     React.SetStateAction<FallingObjectType | null>
   >
@@ -20,6 +24,9 @@ export default function usePowerUps(
       break;
     case "pointsLarge":
       setPoints((previousPoints) => previousPoints + 10000);
+      break;
+    case "shield":
+      setShieldCount(newShieldCount);
       break;
   }
   if (!!hitObjectType) setHitObjectType(null);
