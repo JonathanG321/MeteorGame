@@ -8,7 +8,7 @@ export default function usePowerUps(
   >
 ) {
   if (hitObjectType === "health") {
-    setLives((previousLives) => previousLives + 1);
+    setLives((previousLives) => (previousLives >= 3 ? 3 : previousLives + 1));
     setHitObjectType(null);
   }
 }
