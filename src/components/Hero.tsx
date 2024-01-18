@@ -12,6 +12,7 @@ import {
 } from "../utils/variables";
 import { GameStateContext } from "../GameStateContext";
 import { createObjectStyle } from "../utils/lib";
+import shield from "../assets/PixelShield.png";
 
 export default function Hero() {
   const {
@@ -19,18 +20,40 @@ export default function Hero() {
     heroVelocityDown,
     setHeroVelocityDown,
     invincibleCount,
+    shieldCount,
   } = useContext(GameStateContext);
   useHeroControls(heroVelocityDown, setHeroVelocityDown);
   const style = createObjectStyle(position, HERO_SIZE);
+  const scale = 4;
+  const newHeightNumber = parseInt(style.height.slice(0, -2));
+  const newWidthNumber = parseInt(style.width.slice(0, -2));
+  const newHeight = newHeightNumber + scale * 2 + "px";
+  const newWidth = newWidthNumber + scale * 2 + "px";
   return (
-    <div
-      id="hero"
-      style={style}
-      className={classNames(`absolute`, {
-        "bg-green-500": invincibleCount > 0,
-        "bg-blue-500": invincibleCount <= 0,
-      })}
-    />
+    <div style={style} className="absolute">
+      {!!shieldCount && (
+        <img
+          src={shield}
+          style={{
+            top: -scale,
+            left: -scale,
+            height: newHeight,
+            minWidth: newWidth,
+          }}
+          height={newHeightNumber}
+          width={newWidthNumber}
+          className="absolute z-20 opacity-70"
+        />
+      )}
+      <div
+        id="hero"
+        style={{ height: style.height, width: style.width }}
+        className={classNames("absolute", {
+          "bg-green-500": invincibleCount > 0,
+          "bg-blue-500": invincibleCount <= 0,
+        })}
+      />
+    </div>
   );
 }
 

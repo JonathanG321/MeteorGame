@@ -94,7 +94,10 @@ function getContextValues() {
     shouldStopGame,
     click.mousePressPosition,
     POWER_UP_SPAWN_RATE,
-    ["health", "pointsSmall", "pointsMedium", "pointsLarge"],
+    [
+      // "health", "pointsSmall", "pointsMedium", "pointsLarge",
+      "shield",
+    ],
     {
       spawnChance: POWER_UP_SPAWN_CHANCE,
       isCollectible: true,
@@ -106,7 +109,13 @@ function getContextValues() {
   const isHit = !!useDetectCollision(meteorPositions, heroOriginPoint);
   const lives = useDamageCalculation(isHit, shouldStopGame);
 
-  usePowerUps(hitObjectType, lives.setLives, score.setPoints, setHitObjectType);
+  usePowerUps(
+    hitObjectType,
+    lives.setLives,
+    score.setPoints,
+    lives.setShieldCount,
+    setHitObjectType
+  );
 
   return {
     ...basicState,

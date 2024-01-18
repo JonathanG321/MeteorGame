@@ -6,6 +6,7 @@ import heart from "../assets/PixelHeart.png";
 import pointsSmall from "../assets/BronzePixelTrophy.png";
 import pointsMedium from "../assets/SilverPixelTrophy.png";
 import pointsLarge from "../assets/GoldPixelTrophy.png";
+import shield from "../assets/PixelShield.png";
 
 export default function PowerUp({ object }: { object: FallingObject }) {
   const style = createObjectStyle(object, OBJECT_SIZE);
@@ -22,6 +23,9 @@ export default function PowerUp({ object }: { object: FallingObject }) {
       break;
     case "pointsLarge":
       texture = pointsLarge;
+      break;
+    case "shield":
+      texture = shield;
       break;
   }
   return (
