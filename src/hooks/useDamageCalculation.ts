@@ -8,28 +8,24 @@ export default function useDamageCalculation(
   isGameOver: boolean
 ) {
   const [lives, setLives] = useState(3);
-  const [isInvincible, setIsInvincible] = useState(false);
   const [invincibleCount, setInvincibleCount] = useState(0);
 
   useEffect(() => {
     if (isGameOver) return;
 
     const intervalId = setInterval(() => {
-      if (!isInvincible && isHit) {
+      if (invincibleCount <= 0 && isHit) {
         setLives((prevLives) => prevLives - 1);
-        setIsInvincible(true);
         setInvincibleCount(newInvincibleCount);
       } else if (invincibleCount > 0) {
         setInvincibleCount((prevCount) => (prevCount > 0 ? prevCount - 1 : 0));
-      } else if (isInvincible && invincibleCount === 0) {
-        setIsInvincible(false);
       }
     }, FRAME_RATE);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [isHit, isGameOver, isInvincible, invincibleCount]);
+  }, [isHit, isGameOver, invincibleCount]);
 
-  return { lives, isInvincible, setLives, setIsInvincible, setInvincibleCount };
+  return { lives, setLives, setInvincibleCount, invincibleCount };
 }

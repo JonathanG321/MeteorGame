@@ -18,7 +18,7 @@ export default function Hero() {
     hero: { position },
     heroVelocityDown,
     setHeroVelocityDown,
-    isInvincible,
+    invincibleCount,
   } = useContext(GameStateContext);
   useHeroControls(heroVelocityDown, setHeroVelocityDown);
   const style = createObjectStyle(position, HERO_SIZE);
@@ -27,8 +27,8 @@ export default function Hero() {
       id="hero"
       style={style}
       className={classNames(`absolute`, {
-        "bg-green-500": isInvincible,
-        "bg-blue-500": !isInvincible,
+        "bg-green-500": invincibleCount > 0,
+        "bg-blue-500": invincibleCount <= 0,
       })}
     />
   );

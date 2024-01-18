@@ -9,8 +9,7 @@ import {
 
 export const GameStateContext = createContext({
   setInvincibleCount: (newInvincibleCount: number) => {},
-  isInvincible: false,
-  setIsInvincible: (isInvincible: boolean) => {},
+  invincibleCount: 0,
   lives: 3,
   setLives: (newLives: number) => {},
   mousePressPosition: { X: null, Y: null } as NullablePosition,
