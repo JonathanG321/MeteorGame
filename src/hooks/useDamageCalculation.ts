@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
-import { FRAME_RATE, INVINCIBILITY_DURATION } from "../utils/variables";
+import {
+  FRAME_RATE,
+  INVINCIBILITY_DURATION,
+  SHIELD_WARNING_DURATION,
+} from "../utils/variables";
 
-const newInvincibleCount = Math.floor(INVINCIBILITY_DURATION * FRAME_RATE);
+const newInvincibleCount = INVINCIBILITY_DURATION * FRAME_RATE;
 
 export default function useDamageCalculation(
   isHit: boolean,
@@ -18,9 +22,8 @@ export default function useDamageCalculation(
       if (invincibleCount <= 0 && shieldCount <= 0 && isHit) {
         setLives((prevLives) => prevLives - 1);
         setInvincibleCount(newInvincibleCount);
-      } else if (shieldCount > 0 && invincibleCount === 0 && isHit) {
-        setShieldCount(0);
-        setInvincibleCount(newInvincibleCount);
+      } else if (shieldCount > SHIELD_WARNING_DURATION && isHit) {
+        setShieldCount(SHIELD_WARNING_DURATION);
       }
 
       setInvincibleCount(countDownTo0);

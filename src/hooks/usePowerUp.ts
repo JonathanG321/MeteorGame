@@ -1,7 +1,7 @@
 import { FallingObjectType } from "../utils/types";
 import { FRAME_RATE, SHIELD_DURATION } from "../utils/variables";
 
-const newShieldCount = Math.floor(SHIELD_DURATION * FRAME_RATE);
+const newShieldCount = SHIELD_DURATION * FRAME_RATE;
 
 export default function usePowerUps(
   hitObjectType: FallingObjectType | null,

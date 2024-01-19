@@ -9,6 +9,7 @@ import {
   MAX_HERO_VELOCITY_DOWN,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
+  SHIELD_WARNING_DURATION,
 } from "../utils/variables";
 import { GameStateContext } from "../GameStateContext";
 import { createObjectStyle } from "../utils/lib";
@@ -31,20 +32,23 @@ export default function Hero() {
   const newWidth = newWidthNumber + scale * 2 + "px";
   return (
     <div style={style} className="absolute">
-      {!!shieldCount && (
-        <img
-          src={shield}
-          style={{
-            top: -scale,
-            left: -scale,
-            height: newHeight,
-            minWidth: newWidth,
-          }}
-          height={newHeightNumber}
-          width={newWidthNumber}
-          className="absolute z-20 opacity-70"
-        />
-      )}
+      {!!shieldCount &&
+        (shieldCount > SHIELD_WARNING_DURATION ||
+          (shieldCount * 2) % 4 === 0 ||
+          (shieldCount * 2) % 3 === 0) && (
+          <img
+            src={shield}
+            style={{
+              top: -scale,
+              left: -scale,
+              height: newHeight,
+              minWidth: newWidth,
+            }}
+            height={newHeightNumber}
+            width={newWidthNumber}
+            className="absolute z-20 opacity-70"
+          />
+        )}
       <div
         id="hero"
         style={{ height: style.height, width: style.width }}
