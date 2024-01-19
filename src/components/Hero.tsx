@@ -1,16 +1,6 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext } from "react";
 import classNames from "classnames";
-import {
-  FRAME_RATE,
-  HERO_GRAVITY,
-  HERO_JUMP_SPEED,
-  HERO_SIZE,
-  HERO_SPEED,
-  MAX_HERO_VELOCITY_DOWN,
-  SCREEN_HEIGHT,
-  SCREEN_WIDTH,
-  SHIELD_WARNING_DURATION,
-} from "../utils/variables";
+import { HERO_SIZE, SHIELD_WARNING_DURATION } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
 import { createObjectStyle } from "../utils/lib";
 import shield from "../assets/PixelShield.png";
@@ -18,12 +8,9 @@ import shield from "../assets/PixelShield.png";
 export default function Hero() {
   const {
     hero: { position },
-    heroVelocityDown,
-    setHeroVelocityDown,
     invincibleCount,
     shieldCount,
   } = useContext(GameStateContext);
-  useHeroControls(heroVelocityDown, setHeroVelocityDown);
   const style = createObjectStyle(position, HERO_SIZE);
   const scale = 4;
   const newHeightNumber = parseInt(style.height.slice(0, -2));
@@ -59,92 +46,4 @@ export default function Hero() {
       />
     </div>
   );
-}
-
-function useHeroControls(
-  velocityDown: number,
-  setVelocityDown: (newVelocity: number) => void
-) {
-  const { pressedKeys, hero, isGameOver, isMainMenu, slowCount } =
-    useContext(GameStateContext);
-  const { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } = pressedKeys;
-  const heroPositionXRef = useRef(hero.position.X);
-  const heroPositionYRef = useRef(hero.position.Y);
-  const pressedKeyRightRef = useRef(ArrowRight);
-  const pressedKeyLeftRef = useRef(ArrowLeft);
-  const pressedKeyUpRef = useRef(ArrowUp);
-  const pressedKeyDownRef = useRef(ArrowDown);
-  const velocityDownRef = useRef(velocityDown);
-
-  useEffect(() => {
-    heroPositionXRef.current = hero.position.X;
-    heroPositionYRef.current = hero.position.Y;
-    pressedKeyRightRef.current = ArrowRight;
-    pressedKeyLeftRef.current = ArrowLeft;
-    pressedKeyUpRef.current = ArrowUp;
-    pressedKeyDownRef.current = ArrowDown;
-    velocityDownRef.current = velocityDown;
-  }, [
-    hero.position.X,
-    hero.position.Y,
-    ArrowRight,
-    ArrowLeft,
-    ArrowUp,
-    ArrowDown,
-    velocityDown,
-  ]);
-
-  const movementSpeed = !slowCount ? FRAME_RATE : FRAME_RATE * 2;
-
-  useEffect(() => {
-    if (isGameOver || isMainMenu) return;
-    const intervalId = setInterval(() => {
-      let newX = heroPositionXRef.current;
-      if (pressedKeyLeftRef.current) newX -= HERO_SPEED;
-      if (pressedKeyRightRef.current) newX += HERO_SPEED;
-      if (newX < 0) newX = 0;
-      if (newX > SCREEN_WIDTH - HERO_SIZE) newX = SCREEN_WIDTH - HERO_SIZE;
-      if (newX !== heroPositionXRef.current) hero.updatePosition({ X: newX });
-    }, movementSpeed);
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [isGameOver, isMainMenu, movementSpeed]);
-
-  useEffect(() => {
-    if (isGameOver || isMainMenu) return;
-    const intervalId = setInterval(() => {
-      if (
-        heroPositionYRef.current === SCREEN_HEIGHT - HERO_SIZE &&
-        velocityDownRef.current !== 0 &&
-        !pressedKeyUpRef.current
-      ) {
-        setVelocityDown(0);
-      } else if (
-        pressedKeyUpRef.current &&
-        heroPositionYRef.current === SCREEN_HEIGHT - HERO_SIZE
-      ) {
-        setVelocityDown(-HERO_JUMP_SPEED);
-      } else if (
-        velocityDownRef.current < MAX_HERO_VELOCITY_DOWN &&
-        !pressedKeyDownRef.current
-      ) {
-        setVelocityDown(velocityDownRef.current + HERO_GRAVITY);
-      } else if (pressedKeyDownRef.current) {
-        setVelocityDown(velocityDownRef.current + HERO_GRAVITY * 2);
-      } else {
-        setVelocityDown(MAX_HERO_VELOCITY_DOWN);
-      }
-
-      let newY = heroPositionYRef.current;
-
-      newY += velocityDownRef.current;
-      if (newY < 0) newY = 0;
-      if (newY > SCREEN_HEIGHT - HERO_SIZE) newY = SCREEN_HEIGHT - HERO_SIZE;
-      if (newY !== heroPositionYRef.current) hero.updatePosition({ Y: newY });
-    }, movementSpeed);
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [isGameOver, isMainMenu, movementSpeed]);
 }

@@ -8,6 +8,7 @@ import {
 import {
   HERO_SIZE,
   OBJECT_COLLISION_THRESHOLD,
+  OBJECT_GRAVITY,
   OBJECT_SIZE,
   OBJECT_STARTING_HEIGHT,
   SCREEN_HEIGHT,
@@ -109,7 +110,7 @@ export function objectGravityInterval(
 ) {
   setObjectPositions((oldValue) =>
     oldValue
-      .map((object) => ({ ...object, Y: object.Y + 1 }))
+      .map((object) => ({ ...object, Y: object.Y + OBJECT_GRAVITY }))
       .filter((object) => {
         const isObjectInBounds = object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
         if (isCollectible) {

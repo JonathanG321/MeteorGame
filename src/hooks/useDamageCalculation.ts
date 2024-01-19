@@ -7,15 +7,14 @@ import {
 export function useDamageCalculation(
   invincibleCount: number,
   shieldCount: number,
-  isHit: boolean,
   setLives: React.Dispatch<React.SetStateAction<number>>,
   setInvincibleCount: React.Dispatch<React.SetStateAction<number>>,
   setShieldCount: React.Dispatch<React.SetStateAction<number>>
 ) {
-  if (invincibleCount <= 0 && shieldCount <= 0 && isHit) {
+  if (invincibleCount <= 0 && shieldCount <= 0) {
     setLives(countDownTo0);
     setInvincibleCount(NEW_INVINCIBLE_COUNT);
-  } else if (shieldCount > SHIELD_WARNING_DURATION && isHit) {
+  } else if (shieldCount > SHIELD_WARNING_DURATION) {
     setShieldCount(SHIELD_WARNING_DURATION);
   }
 }

@@ -5,7 +5,7 @@ const newShieldCount = SHIELD_DURATION * FRAME_RATE;
 const newSlowCount = SLOW_DURATION * FRAME_RATE;
 
 export default function usePowerUps(
-  hitObjectType: FallingObjectType | null,
+  hitObjectType: FallingObjectType,
   setLives: React.Dispatch<React.SetStateAction<number>>,
   setPoints: React.Dispatch<React.SetStateAction<number>>,
   setShieldCount: React.Dispatch<React.SetStateAction<number>>,

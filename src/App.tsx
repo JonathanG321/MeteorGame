@@ -9,7 +9,6 @@ import {
   OBJECT_SIZE,
   POWER_UP_LIST,
   POWER_UP_SPAWN_CHANCE,
-  POWER_UP_SPAWN_RATE,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   SHIELD_WARNING_DURATION,
@@ -33,6 +32,10 @@ import {
   objectGravityInterval,
   spawnFallingObjectInterval,
 } from "./utils/lib";
+import { useHeroMovementLogicX } from "./hooks/useHeroMovementLogicX";
+import { useHeroMovementLogicY } from "./hooks/useHeroMovementLogicY";
+import { useGameOver } from "./hooks/useGameOver";
+import { useDamageCalculation } from "./hooks/useDamageCalculation";
 
 function App() {
   const contextValues = getContextValues();
@@ -50,6 +53,7 @@ function App() {
     setInvincibleCount,
     setPowerUpPositions,
     setMeteorPositions,
+    setHeroVelocityDown,
   } = contextValues;
 
   const contextRefs = useUpdatingRefsForObject(
@@ -59,34 +63,72 @@ function App() {
 
   useEffect(() => {
     const isDead = lives === 0;
-    const currentPoints = contextRefs.points.current;
-    if (isDead && currentPoints > contextRefs.highScore.current) {
-      setHighScore(currentPoints);
-      localStorage.setItem("highScore", currentPoints.toString());
-    } else if (isDead) {
-      setIsGameOver(true);
-    }
+    useGameOver(
+      isDead,
+      contextRefs.points.current,
+      contextRefs.highScore.current,
+      setHighScore,
+      setIsGameOver
+    );
     if (isDead || isMainMenu) return;
 
-    const spawnSpeed = 1000 / METEORS_PER_SECOND;
-    const gravity = FRAME_RATE / OBJECT_GRAVITY;
+    const frameIntervalId = setInterval(() => {
+      setSlowCount((prevValue) => (prevValue > 0 ? prevValue - 1 : 0));
+      setPoints((prevValue) => prevValue + 10);
 
-    const spawningIntervalId = setInterval(() => {
+      if (contextRefs.isHit.current) {
+        useDamageCalculation(
+          contextRefs.invincibleCount.current,
+          contextRefs.shieldCount.current,
+          setLives,
+          setInvincibleCount,
+          setShieldCount
+        );
+      }
+
+      if (contextRefs.invincibleCount.current > 0)
+        setInvincibleCount((prev) => prev - 1);
+      if (contextRefs.shieldCount.current > 0)
+        setShieldCount((prev) => prev - 1);
+
+      if (!!contextRefs.hitObjectType.current)
+        usePowerUps(
+          contextRefs.hitObjectType.current,
+          setLives,
+          setPoints,
+          setShieldCount,
+          setSlowCount,
+          setHitObjectType
+        );
+
+      useHeroMovementLogicX(
+        contextRefs.heroOriginPoint.current.X,
+        contextRefs.pressedKeys.current.ArrowLeft,
+        contextRefs.pressedKeys.current.ArrowRight,
+        contextRefs.hero.current.updatePosition
+      );
+      useHeroMovementLogicY(
+        contextRefs.heroOriginPoint.current.Y,
+        contextRefs.pressedKeys.current.ArrowUp,
+        contextRefs.pressedKeys.current.ArrowDown,
+        contextRefs.heroVelocityDown.current,
+        setHeroVelocityDown,
+        contextRefs.hero.current.updatePosition
+      );
+
       spawnFallingObjectInterval(
         setMeteorPositions,
         ["meteor"],
         contextRefs.mousePressPosition.current,
-        100
+        30
       );
       spawnFallingObjectInterval(
         setPowerUpPositions,
         POWER_UP_LIST,
         { X: null, Y: null },
-        1
+        POWER_UP_SPAWN_CHANCE
       );
-    }, spawnSpeed);
 
-    const gravityIntervalId = setInterval(() => {
       objectGravityInterval(
         setPowerUpPositions,
         setHitObjectType,
@@ -98,41 +140,9 @@ function App() {
         setHitObjectType,
         contextRefs.heroOriginPoint.current
       );
-    }, gravity);
-
-    const incrementingIntervalId = setInterval(() => {
-      setSlowCount((prevValue) => (prevValue > 0 ? prevValue - 1 : 0));
-      setPoints((prevValue) => prevValue + 10);
-      if (
-        contextRefs.invincibleCount.current <= 0 &&
-        contextRefs.shieldCount.current <= 0 &&
-        contextRefs.isHit.current
-      ) {
-        setLives(countDownTo0);
-        setInvincibleCount(NEW_INVINCIBLE_COUNT);
-      } else if (
-        contextRefs.shieldCount.current > SHIELD_WARNING_DURATION &&
-        contextRefs.isHit.current
-      ) {
-        setShieldCount(SHIELD_WARNING_DURATION);
-      }
-
-      setInvincibleCount(countDownTo0);
-      setShieldCount(countDownTo0);
-
-      usePowerUps(
-        contextRefs.hitObjectType.current,
-        setLives,
-        setPoints,
-        setShieldCount,
-        setSlowCount,
-        setHitObjectType
-      );
     }, FRAME_RATE);
     return () => {
-      clearInterval(incrementingIntervalId);
-      clearInterval(spawningIntervalId);
-      clearInterval(gravityIntervalId);
+      clearInterval(frameIntervalId);
     };
   }, [lives, isMainMenu]);
 
