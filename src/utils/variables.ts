@@ -30,7 +30,7 @@ export const POWER_UP_LIST: FallingObjectType[] = [
   "slow",
 ];
 export const POWER_UP_SPAWN_RATE = 0.3; // amount of power-ups to spawn per second
-export const POWER_UP_SPAWN_CHANCE = 50;
+export const POWER_UP_SPAWN_CHANCE = 2;
 export const SHIELD_DURATION = 25; // This is in seconds
 export const SHIELD_WARNING_DURATION = 3 * FRAME_RATE;
 export const SLOW_DURATION = 20 * FRAME_RATE;
