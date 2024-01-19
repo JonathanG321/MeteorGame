@@ -1,86 +1,18 @@
 import {
   Box,
   FallingObject,
-  FallingObjectOptions,
   FallingObjectType,
   NullablePosition,
   Position,
 } from "./types";
 import {
-  FRAME_RATE,
   HERO_SIZE,
   OBJECT_COLLISION_THRESHOLD,
-  OBJECT_GRAVITY,
   OBJECT_SIZE,
   OBJECT_STARTING_HEIGHT,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "./variables";
-
-export function objectFallingEffect(
-  isGameOver: boolean,
-  slowCount: number,
-  latestMousePressPosition: React.MutableRefObject<NullablePosition>,
-  setObjectPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>,
-  possibleTypes: FallingObjectType[],
-  spawnRate: number,
-  options?: React.MutableRefObject<FallingObjectOptions | undefined>
-) {
-  if (isGameOver) return;
-
-  const spawnSpeed = !slowCount ? 1000 / spawnRate : (1000 / spawnRate) * 2;
-  const gravity = !slowCount
-    ? FRAME_RATE / OBJECT_GRAVITY
-    : FRAME_RATE / (OBJECT_GRAVITY / 2);
-
-  const spawnIntervalId = setInterval(() => {
-    if (!(Math.random() * 100 < (options?.current?.spawnChance || 100))) return;
-    const mouseX = latestMousePressPosition.current.X;
-
-    let newObjectX = mouseX
-      ? mouseX - OBJECT_SIZE / 2
-      : Math.round(Math.random() * (SCREEN_WIDTH - OBJECT_SIZE));
-
-    if (newObjectX < 0) {
-      newObjectX = 0;
-    } else if (newObjectX > SCREEN_WIDTH - OBJECT_SIZE) {
-      newObjectX = SCREEN_WIDTH - OBJECT_SIZE;
-    }
-
-    const newObjectPosition = {
-      Y: OBJECT_STARTING_HEIGHT,
-      X: newObjectX,
-      id: crypto.randomUUID(),
-      type: possibleTypes[Math.floor(Math.random() * possibleTypes.length)],
-    };
-
-    setObjectPositions((oldValue) => oldValue.concat([newObjectPosition]));
-  }, spawnSpeed);
-
-  const gravityIntervalId = setInterval(() => {
-    setObjectPositions((oldValue) =>
-      oldValue
-        .map((object) => ({ ...object, Y: object.Y + 1 }))
-        .filter((object) => {
-          const isObjectInBounds = object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
-          if (options?.current?.isCollectible) {
-            const isHittingHero = !!isObjectCollidingWithHero(
-              object,
-              options.current?.heroOriginPoint
-            );
-            if (isHittingHero) options.current.setHitObjectType(object.type);
-            return isObjectInBounds && !isHittingHero;
-          }
-          return isObjectInBounds;
-        })
-    );
-  }, gravity);
-
-  return () => {
-    clearInterval(spawnIntervalId);
-    clearInterval(gravityIntervalId);
-  };
-}
 
 export function createObjectStyle(position: Position, size: number) {
   return {
@@ -131,5 +63,64 @@ function isPointInsideBox(point: Position, box: Box) {
     point.X <= box.bottomRight.X &&
     point.Y >= box.topLeft.Y &&
     point.Y <= box.bottomRight.Y
+  );
+}
+
+export function countDownTo0(prevCount: number) {
+  return prevCount > 0 ? prevCount - 1 : 0;
+}
+
+export function spawnFallingObjectInterval(
+  setObjectPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>,
+  possibleTypes: FallingObjectType[],
+  mousePressPosition: NullablePosition,
+  spawnChance: number
+) {
+  if (!(Math.random() * 100 < (spawnChance || 100))) return;
+  const mouseX = mousePressPosition.X;
+
+  let newObjectX = mouseX
+    ? mouseX - OBJECT_SIZE / 2
+    : Math.round(Math.random() * (SCREEN_WIDTH - OBJECT_SIZE));
+
+  if (newObjectX < 0) {
+    newObjectX = 0;
+  } else if (newObjectX > SCREEN_WIDTH - OBJECT_SIZE) {
+    newObjectX = SCREEN_WIDTH - OBJECT_SIZE;
+  }
+
+  const newObjectPosition = {
+    Y: OBJECT_STARTING_HEIGHT,
+    X: newObjectX,
+    id: crypto.randomUUID(),
+    type: possibleTypes[Math.floor(Math.random() * possibleTypes.length)],
+  };
+
+  setObjectPositions((oldValue) => oldValue.concat([newObjectPosition]));
+}
+
+export function objectGravityInterval(
+  setObjectPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>,
+  setHitObjectType: React.Dispatch<
+    React.SetStateAction<FallingObjectType | null>
+  >,
+  heroOriginPoint: Position,
+  isCollectible = false
+) {
+  setObjectPositions((oldValue) =>
+    oldValue
+      .map((object) => ({ ...object, Y: object.Y + 1 }))
+      .filter((object) => {
+        const isObjectInBounds = object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
+        if (isCollectible) {
+          const isHittingHero = !!isObjectCollidingWithHero(
+            object,
+            heroOriginPoint
+          );
+          if (isHittingHero) setHitObjectType(object.type);
+          return isObjectInBounds && !isHittingHero;
+        }
+        return isObjectInBounds;
+      })
   );
 }

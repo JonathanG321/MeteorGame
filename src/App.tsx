@@ -1,14 +1,18 @@
-import { MutableRefObject, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import Canvas from "./components/Canvas";
 import {
   FRAME_RATE,
   MASK_FACTOR,
   METEORS_PER_SECOND,
+  NEW_INVINCIBLE_COUNT,
+  OBJECT_GRAVITY,
   OBJECT_SIZE,
+  POWER_UP_LIST,
   POWER_UP_SPAWN_CHANCE,
   POWER_UP_SPAWN_RATE,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
+  SHIELD_WARNING_DURATION,
 } from "./utils/variables";
 import Hero from "./components/Hero";
 import usePressedKeys from "./hooks/usePressedKeys";
@@ -17,22 +21,36 @@ import useDetectCollision from "./hooks/useDetectCollision";
 import { GameStateContext } from "./context/GameStateContext";
 import Menu from "./components/Menu";
 import Mask from "./components/Mask";
-import useScore from "./hooks/useScore";
 import HeaderBar from "./components/HeaderBar";
 import useClick from "./hooks/useClick";
-import useDamageCalculation from "./hooks/useDamageCalculation";
 import PowerUp from "./components/PowerUp";
 import usePowerUps from "./hooks/usePowerUps";
 import { ContextValues, Position } from "./utils/types";
-import useFallingObjectPositions from "./hooks/useFallingObjectPositions";
 import useBasicState from "./hooks/useBasicState";
-import useContextRefsUpdates from "./hooks/useContextRefsUpdates";
 import { useUpdatingRefsForObject } from "./hooks/useUpdatingRefsForObject";
+import {
+  countDownTo0,
+  objectGravityInterval,
+  spawnFallingObjectInterval,
+} from "./utils/lib";
 
 function App() {
   const contextValues = getContextValues();
 
-  const { setHighScore, setIsGameOver, isGameOver, lives } = contextValues;
+  const {
+    isMainMenu,
+    lives,
+    setHighScore,
+    setIsGameOver,
+    setLives,
+    setPoints,
+    setShieldCount,
+    setSlowCount,
+    setHitObjectType,
+    setInvincibleCount,
+    setPowerUpPositions,
+    setMeteorPositions,
+  } = contextValues;
 
   const contextRefs = useUpdatingRefsForObject(
     contextValues,
@@ -48,15 +66,75 @@ function App() {
     } else if (isDead) {
       setIsGameOver(true);
     }
-    const slowIntervalId = setInterval(() => {
-      contextValues.setSlowCount((prevValue) =>
-        prevValue > 0 ? prevValue - 1 : 0
+    if (isDead || isMainMenu) return;
+
+    const spawnSpeed = 1000 / METEORS_PER_SECOND;
+    const gravity = FRAME_RATE / OBJECT_GRAVITY;
+
+    const spawningIntervalId = setInterval(() => {
+      spawnFallingObjectInterval(
+        setMeteorPositions,
+        ["meteor"],
+        contextRefs.mousePressPosition.current,
+        100
+      );
+      spawnFallingObjectInterval(
+        setPowerUpPositions,
+        POWER_UP_LIST,
+        { X: null, Y: null },
+        1
+      );
+    }, spawnSpeed);
+
+    const gravityIntervalId = setInterval(() => {
+      objectGravityInterval(
+        setPowerUpPositions,
+        setHitObjectType,
+        contextRefs.heroOriginPoint.current,
+        true
+      );
+      objectGravityInterval(
+        setMeteorPositions,
+        setHitObjectType,
+        contextRefs.heroOriginPoint.current
+      );
+    }, gravity);
+
+    const incrementingIntervalId = setInterval(() => {
+      setSlowCount((prevValue) => (prevValue > 0 ? prevValue - 1 : 0));
+      setPoints((prevValue) => prevValue + 10);
+      if (
+        contextRefs.invincibleCount.current <= 0 &&
+        contextRefs.shieldCount.current <= 0 &&
+        contextRefs.isHit.current
+      ) {
+        setLives(countDownTo0);
+        setInvincibleCount(NEW_INVINCIBLE_COUNT);
+      } else if (
+        contextRefs.shieldCount.current > SHIELD_WARNING_DURATION &&
+        contextRefs.isHit.current
+      ) {
+        setShieldCount(SHIELD_WARNING_DURATION);
+      }
+
+      setInvincibleCount(countDownTo0);
+      setShieldCount(countDownTo0);
+
+      usePowerUps(
+        contextRefs.hitObjectType.current,
+        setLives,
+        setPoints,
+        setShieldCount,
+        setSlowCount,
+        setHitObjectType
       );
     }, FRAME_RATE);
     return () => {
-      clearInterval(slowIntervalId);
+      clearInterval(incrementingIntervalId);
+      clearInterval(spawningIntervalId);
+      clearInterval(gravityIntervalId);
     };
-  }, [lives]);
+  }, [lives, isMainMenu]);
 
   return (
     <GameStateContext.Provider value={contextValues}>
@@ -89,66 +167,20 @@ export default App;
 
 function getContextValues(): ContextValues {
   const basicState = useBasicState();
-  const { shouldStopGame, heroOriginPoint, hitObjectType, setHitObjectType } =
-    basicState;
-  const score = useScore(shouldStopGame);
+  const { heroOriginPoint } = basicState;
   const pressedKeys = usePressedKeys();
   const click = useClick();
 
-  const {
-    objectPositions: meteorPositions,
-    setObjectPositions: setMeteorPositions,
-  } = useFallingObjectPositions(
-    shouldStopGame,
-    basicState.slowCount,
-    click.mousePressPosition,
-    METEORS_PER_SECOND,
-    ["meteor"]
-  );
-
-  const {
-    objectPositions: powerUpPositions,
-    setObjectPositions: setPowerUpPositions,
-  } = useFallingObjectPositions(
-    shouldStopGame,
-    basicState.slowCount,
-    { X: null, Y: null },
-    POWER_UP_SPAWN_RATE,
-    [
-      // "health", "pointsSmall", "pointsMedium", "pointsLarge", "shield",
-      "slow",
-    ],
-    {
-      spawnChance: POWER_UP_SPAWN_CHANCE,
-      isCollectible: true,
-      heroOriginPoint,
-      setHitObjectType,
-    }
-  );
-
-  const isHit = !!useDetectCollision(meteorPositions, heroOriginPoint);
-  const lives = useDamageCalculation(isHit, shouldStopGame);
-
-  usePowerUps(
-    hitObjectType,
-    lives.setLives,
-    score.setPoints,
-    lives.setShieldCount,
-    basicState.setSlowCount,
-    setHitObjectType
+  const isHit = !!useDetectCollision(
+    basicState.meteorPositions,
+    heroOriginPoint
   );
 
   return {
     ...basicState,
-    ...score,
     ...pressedKeys,
     ...click,
-    ...lives,
     isHit,
-    powerUpPositions,
-    setPowerUpPositions,
-    meteorPositions,
-    setMeteorPositions,
     hero: {
       position: heroOriginPoint,
       updatePosition: (partialPosition: Partial<Position>) =>
