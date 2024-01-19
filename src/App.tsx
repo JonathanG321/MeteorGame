@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 import Canvas from "./components/Canvas";
 import {
+  FRAME_RATE,
   MASK_FACTOR,
   METEORS_PER_SECOND,
   OBJECT_SIZE,
@@ -22,23 +23,40 @@ import useClick from "./hooks/useClick";
 import useDamageCalculation from "./hooks/useDamageCalculation";
 import PowerUp from "./components/PowerUp";
 import usePowerUps from "./hooks/usePowerUps";
-import { Position } from "./utils/types";
+import { ContextValues, Position } from "./utils/types";
 import useFallingObjectPositions from "./hooks/useFallingObjectPositions";
 import useBasicState from "./hooks/useBasicState";
+import useContextRefsUpdates from "./hooks/useContextRefsUpdates";
+import { useUpdatingRefsForObject } from "./hooks/useUpdatingRefsForObject";
 
 function App() {
   const contextValues = getContextValues();
 
-  const { setHighScore, setIsGameOver, isGameOver, points, highScore, lives } =
-    contextValues;
+  const { setHighScore, setIsGameOver, isGameOver, lives } = contextValues;
+
+  const contextRefs = useUpdatingRefsForObject(
+    contextValues,
+    contextValues.isGameOver
+  );
 
   useEffect(() => {
-    if (isGameOver && points > highScore) {
-      setHighScore(points);
-      localStorage.setItem("highScore", points.toString());
+    const isDead = lives === 0;
+    const currentPoints = contextRefs.points.current;
+    if (isDead && currentPoints > contextRefs.highScore.current) {
+      setHighScore(currentPoints);
+      localStorage.setItem("highScore", currentPoints.toString());
+    } else if (isDead) {
+      setIsGameOver(true);
     }
-    setIsGameOver(lives === 0);
-  }, [points, lives, isGameOver, highScore]);
+    const slowIntervalId = setInterval(() => {
+      contextValues.setSlowCount((prevValue) =>
+        prevValue > 0 ? prevValue - 1 : 0
+      );
+    }, FRAME_RATE);
+    return () => {
+      clearInterval(slowIntervalId);
+    };
+  }, [lives]);
 
   return (
     <GameStateContext.Provider value={contextValues}>
@@ -69,7 +87,7 @@ function App() {
 
 export default App;
 
-function getContextValues() {
+function getContextValues(): ContextValues {
   const basicState = useBasicState();
   const { shouldStopGame, heroOriginPoint, hitObjectType, setHitObjectType } =
     basicState;
@@ -119,8 +137,6 @@ function getContextValues() {
     basicState.setSlowCount,
     setHitObjectType
   );
-
-  console.log(basicState.slowCount);
 
   return {
     ...basicState,
