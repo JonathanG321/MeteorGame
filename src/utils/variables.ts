@@ -1,3 +1,5 @@
+import { FallingObjectType } from "./types";
+
 export const FRAME_RATE = Math.floor(1000 / 60);
 export const SCREEN_HEIGHT = 480;
 export const SCREEN_WIDTH = 800;
@@ -17,7 +19,16 @@ export const OBJECT_COLLISION_THRESHOLD = 5;
 export const OBJECT_STARTING_HEIGHT = -(OBJECT_SIZE * 2);
 export const MASK_FACTOR = 2.5;
 export const INVINCIBILITY_DURATION = 2; // This is in seconds
+export const NEW_INVINCIBLE_COUNT = INVINCIBILITY_DURATION * FRAME_RATE;
 
+export const POWER_UP_LIST: FallingObjectType[] = [
+  "health",
+  "pointsSmall",
+  "pointsMedium",
+  "pointsLarge",
+  "shield",
+  "slow",
+];
 export const POWER_UP_SPAWN_RATE = 0.3; // amount of power-ups to spawn per second
 export const POWER_UP_SPAWN_CHANCE = 50;
 export const SHIELD_DURATION = 25; // This is in seconds
