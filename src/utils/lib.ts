@@ -19,6 +19,7 @@ import {
 
 export function objectFallingEffect(
   isGameOver: boolean,
+  slowCount: number,
   latestMousePressPosition: React.MutableRefObject<NullablePosition>,
   setObjectPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>,
   possibleTypes: FallingObjectType[],
@@ -26,6 +27,11 @@ export function objectFallingEffect(
   options?: React.MutableRefObject<FallingObjectOptions | undefined>
 ) {
   if (isGameOver) return;
+
+  const spawnSpeed = !slowCount ? 1000 / spawnRate : (1000 / spawnRate) * 2;
+  const gravity = !slowCount
+    ? FRAME_RATE / OBJECT_GRAVITY
+    : FRAME_RATE / (OBJECT_GRAVITY / 2);
 
   const spawnIntervalId = setInterval(() => {
     if (!(Math.random() * 100 < (options?.current?.spawnChance || 100))) return;
@@ -49,7 +55,7 @@ export function objectFallingEffect(
     };
 
     setObjectPositions((oldValue) => oldValue.concat([newObjectPosition]));
-  }, 1000 / spawnRate);
+  }, spawnSpeed);
 
   const gravityIntervalId = setInterval(() => {
     setObjectPositions((oldValue) =>
@@ -68,7 +74,7 @@ export function objectFallingEffect(
           return isObjectInBounds;
         })
     );
-  }, FRAME_RATE / OBJECT_GRAVITY);
+  }, gravity);
 
   return () => {
     clearInterval(spawnIntervalId);

@@ -21,7 +21,7 @@ import HeaderBar from "./components/HeaderBar";
 import useClick from "./hooks/useClick";
 import useDamageCalculation from "./hooks/useDamageCalculation";
 import PowerUp from "./components/PowerUp";
-import usePowerUps from "./hooks/usePowerUp";
+import usePowerUps from "./hooks/usePowerUps";
 import { Position } from "./utils/types";
 import useFallingObjectPositions from "./hooks/useFallingObjectPositions";
 import useBasicState from "./hooks/useBasicState";
@@ -82,6 +82,7 @@ function getContextValues() {
     setObjectPositions: setMeteorPositions,
   } = useFallingObjectPositions(
     shouldStopGame,
+    basicState.slowCount,
     click.mousePressPosition,
     METEORS_PER_SECOND,
     ["meteor"]
@@ -92,9 +93,13 @@ function getContextValues() {
     setObjectPositions: setPowerUpPositions,
   } = useFallingObjectPositions(
     shouldStopGame,
+    basicState.slowCount,
     { X: null, Y: null },
     POWER_UP_SPAWN_RATE,
-    ["health", "pointsSmall", "pointsMedium", "pointsLarge", "shield"],
+    [
+      // "health", "pointsSmall", "pointsMedium", "pointsLarge", "shield",
+      "slow",
+    ],
     {
       spawnChance: POWER_UP_SPAWN_CHANCE,
       isCollectible: true,
@@ -111,8 +116,11 @@ function getContextValues() {
     lives.setLives,
     score.setPoints,
     lives.setShieldCount,
+    basicState.setSlowCount,
     setHitObjectType
   );
+
+  console.log(basicState.slowCount);
 
   return {
     ...basicState,

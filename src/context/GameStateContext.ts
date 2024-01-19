@@ -8,6 +8,8 @@ import {
 } from "../utils/types";
 
 export const GameStateContext = createContext({
+  setSlowCount: (newSlowCount: number) => {},
+  slowCount: 0,
   setShieldCount: (newShieldCount: number) => {},
   shieldCount: 0,
   setInvincibleCount: (newInvincibleCount: number) => {},

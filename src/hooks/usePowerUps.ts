@@ -1,13 +1,15 @@
 import { FallingObjectType } from "../utils/types";
-import { FRAME_RATE, SHIELD_DURATION } from "../utils/variables";
+import { FRAME_RATE, SHIELD_DURATION, SLOW_DURATION } from "../utils/variables";
 
 const newShieldCount = SHIELD_DURATION * FRAME_RATE;
+const newSlowCount = SLOW_DURATION * FRAME_RATE;
 
 export default function usePowerUps(
   hitObjectType: FallingObjectType | null,
   setLives: React.Dispatch<React.SetStateAction<number>>,
   setPoints: React.Dispatch<React.SetStateAction<number>>,
   setShieldCount: React.Dispatch<React.SetStateAction<number>>,
+  setSlowCount: React.Dispatch<React.SetStateAction<number>>,
   setHitObjectType: React.Dispatch<
     React.SetStateAction<FallingObjectType | null>
   >
@@ -27,6 +29,9 @@ export default function usePowerUps(
       break;
     case "shield":
       setShieldCount(newShieldCount);
+      break;
+    case "slow":
+      setSlowCount(newSlowCount);
       break;
   }
   if (!!hitObjectType) setHitObjectType(null);

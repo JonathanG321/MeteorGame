@@ -9,6 +9,7 @@ import { objectFallingEffect } from "../utils/lib";
 
 export default function useFallingObjectPositions(
   isGameOver: boolean,
+  slowCount: number,
   mousePressPosition: NullablePosition,
   spawnRate: number,
   possibleTypes: FallingObjectType[],
@@ -16,26 +17,27 @@ export default function useFallingObjectPositions(
 ) {
   const [objectPositions, setObjectPositions] = useState<FallingObject[]>([]);
   const latestMousePressPosition = useRef<NullablePosition>(mousePressPosition);
-  const latestOptions = useRef<FallingObjectOptions | undefined>(options);
+  const latestOptionsRef = useRef<FallingObjectOptions | undefined>(options);
 
   useEffect(() => {
     if (isGameOver) return;
     latestMousePressPosition.current = mousePressPosition;
     if (options?.isCollectible) {
-      latestOptions.current = options;
+      latestOptionsRef.current = options;
     }
-  }, [mousePressPosition, isGameOver, options]);
+  }, [mousePressPosition, isGameOver, options, slowCount]);
 
   useEffect(() => {
     return objectFallingEffect(
       isGameOver,
+      slowCount,
       latestMousePressPosition,
       setObjectPositions,
       possibleTypes,
       spawnRate,
-      latestOptions
+      latestOptionsRef
     );
-  }, [isGameOver]);
+  }, [isGameOver, slowCount]);
 
   return { objectPositions, setObjectPositions };
 }

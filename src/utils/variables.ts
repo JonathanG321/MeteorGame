@@ -22,6 +22,7 @@ export const POWER_UP_SPAWN_RATE = 0.3; // amount of power-ups to spawn per seco
 export const POWER_UP_SPAWN_CHANCE = 50;
 export const SHIELD_DURATION = 25; // This is in seconds
 export const SHIELD_WARNING_DURATION = 3 * FRAME_RATE;
+export const SLOW_DURATION = 20 * FRAME_RATE;
 
 export const BASE_PRESSED_KEYS = {
   ArrowUp: false,

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import classNames from "classnames";
 import {
   FRAME_RATE,
@@ -65,68 +65,86 @@ function useHeroControls(
   velocityDown: number,
   setVelocityDown: (newVelocity: number) => void
 ) {
-  const { pressedKeys, hero, isGameOver, isMainMenu } =
+  const { pressedKeys, hero, isGameOver, isMainMenu, slowCount } =
     useContext(GameStateContext);
+  const { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } = pressedKeys;
+  const heroPositionXRef = useRef(hero.position.X);
+  const heroPositionYRef = useRef(hero.position.Y);
+  const pressedKeyRightRef = useRef(ArrowRight);
+  const pressedKeyLeftRef = useRef(ArrowLeft);
+  const pressedKeyUpRef = useRef(ArrowUp);
+  const pressedKeyDownRef = useRef(ArrowDown);
+  const velocityDownRef = useRef(velocityDown);
+
+  useEffect(() => {
+    heroPositionXRef.current = hero.position.X;
+    heroPositionYRef.current = hero.position.Y;
+    pressedKeyRightRef.current = ArrowRight;
+    pressedKeyLeftRef.current = ArrowLeft;
+    pressedKeyUpRef.current = ArrowUp;
+    pressedKeyDownRef.current = ArrowDown;
+    velocityDownRef.current = velocityDown;
+  }, [
+    hero.position.X,
+    hero.position.Y,
+    ArrowRight,
+    ArrowLeft,
+    ArrowUp,
+    ArrowDown,
+    velocityDown,
+  ]);
+
+  const movementSpeed = !slowCount ? FRAME_RATE : FRAME_RATE * 2;
+
   useEffect(() => {
     if (isGameOver || isMainMenu) return;
     const intervalId = setInterval(() => {
-      let newX = hero.position.X;
-      if (pressedKeys.ArrowLeft) newX -= HERO_SPEED;
-      if (pressedKeys.ArrowRight) newX += HERO_SPEED;
+      let newX = heroPositionXRef.current;
+      if (pressedKeyLeftRef.current) newX -= HERO_SPEED;
+      if (pressedKeyRightRef.current) newX += HERO_SPEED;
       if (newX < 0) newX = 0;
       if (newX > SCREEN_WIDTH - HERO_SIZE) newX = SCREEN_WIDTH - HERO_SIZE;
-      if (newX !== hero.position.X) hero.updatePosition({ X: newX });
-    }, FRAME_RATE);
+      if (newX !== heroPositionXRef.current) hero.updatePosition({ X: newX });
+    }, movementSpeed);
     return () => {
       clearInterval(intervalId);
     };
-  }, [
-    hero.position.X,
-    pressedKeys.ArrowLeft,
-    pressedKeys.ArrowRight,
-    isGameOver,
-  ]);
+  }, [isGameOver, isMainMenu, movementSpeed]);
 
   useEffect(() => {
     if (isGameOver || isMainMenu) return;
     const intervalId = setInterval(() => {
       if (
-        hero.position.Y === SCREEN_HEIGHT - HERO_SIZE &&
-        velocityDown !== 0 &&
-        !pressedKeys.ArrowUp
+        heroPositionYRef.current === SCREEN_HEIGHT - HERO_SIZE &&
+        velocityDownRef.current !== 0 &&
+        !pressedKeyUpRef.current
       ) {
         setVelocityDown(0);
       } else if (
-        pressedKeys.ArrowUp &&
-        hero.position.Y === SCREEN_HEIGHT - HERO_SIZE
+        pressedKeyUpRef.current &&
+        heroPositionYRef.current === SCREEN_HEIGHT - HERO_SIZE
       ) {
         setVelocityDown(-HERO_JUMP_SPEED);
       } else if (
-        velocityDown < MAX_HERO_VELOCITY_DOWN &&
-        !pressedKeys.ArrowDown
+        velocityDownRef.current < MAX_HERO_VELOCITY_DOWN &&
+        !pressedKeyDownRef.current
       ) {
-        setVelocityDown(velocityDown + HERO_GRAVITY);
-      } else if (pressedKeys.ArrowDown) {
-        setVelocityDown(velocityDown + HERO_GRAVITY * 2);
+        setVelocityDown(velocityDownRef.current + HERO_GRAVITY);
+      } else if (pressedKeyDownRef.current) {
+        setVelocityDown(velocityDownRef.current + HERO_GRAVITY * 2);
       } else {
         setVelocityDown(MAX_HERO_VELOCITY_DOWN);
       }
 
-      let newY = hero.position.Y;
+      let newY = heroPositionYRef.current;
 
-      newY += velocityDown;
+      newY += velocityDownRef.current;
       if (newY < 0) newY = 0;
       if (newY > SCREEN_HEIGHT - HERO_SIZE) newY = SCREEN_HEIGHT - HERO_SIZE;
-      if (newY !== hero.position.Y) hero.updatePosition({ Y: newY });
-    }, FRAME_RATE);
+      if (newY !== heroPositionYRef.current) hero.updatePosition({ Y: newY });
+    }, movementSpeed);
     return () => {
       clearInterval(intervalId);
     };
-  }, [
-    hero.position.Y,
-    pressedKeys.ArrowUp,
-    pressedKeys.ArrowDown,
-    velocityDown,
-    isGameOver,
-  ]);
+  }, [isGameOver, isMainMenu, movementSpeed]);
 }

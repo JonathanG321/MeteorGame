@@ -10,6 +10,7 @@ export default function useBasicState() {
     null
   );
   const [heroVelocityDown, setHeroVelocityDown] = useState(0);
+  const [slowCount, setSlowCount] = useState(0);
   const shouldStopGame = isGameOver || isMainMenu;
 
   return {
@@ -23,6 +24,8 @@ export default function useBasicState() {
     setHitObjectType,
     heroVelocityDown,
     setHeroVelocityDown,
+    slowCount,
+    setSlowCount,
     shouldStopGame,
   };
 }
