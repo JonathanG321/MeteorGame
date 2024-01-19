@@ -11,7 +11,7 @@ import {
   SCREEN_WIDTH,
   SHIELD_WARNING_DURATION,
 } from "../utils/variables";
-import { GameStateContext } from "../GameStateContext";
+import { GameStateContext } from "../context/GameStateContext";
 import { createObjectStyle } from "../utils/lib";
 import shield from "../assets/PixelShield.png";
 

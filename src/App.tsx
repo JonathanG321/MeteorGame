@@ -13,7 +13,7 @@ import Hero from "./components/Hero";
 import usePressedKeys from "./hooks/usePressedKeys";
 import Meteor from "./components/Meteor";
 import useDetectCollision from "./hooks/useDetectCollision";
-import { GameStateContext } from "./GameStateContext";
+import { GameStateContext } from "./context/GameStateContext";
 import Menu from "./components/Menu";
 import Mask from "./components/Mask";
 import useScore from "./hooks/useScore";

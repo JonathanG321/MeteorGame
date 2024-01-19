@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { GameStateContext } from "../GameStateContext";
+import { GameStateContext } from "../context/GameStateContext";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../utils/variables";
 import GameOverScreen from "./GameOverScreen";
 import MenuScreen from "./MenuScreen";

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { GameStateContext } from "../GameStateContext";
+import { GameStateContext } from "../context/GameStateContext";
 import ScoreDisplay from "./ScoreDisplay";
 import heart from "../assets/PixelHeart.png";
 

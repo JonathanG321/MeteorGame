@@ -1,11 +1,11 @@
 import { createContext } from "react";
-import { BASE_PRESSED_KEYS, HERO_SPAWN_POINT } from "./utils/variables";
+import { BASE_PRESSED_KEYS, HERO_SPAWN_POINT } from "../utils/variables";
 import {
   FallingObject,
   NullablePosition,
   Position,
   PressedKeys,
-} from "./utils/types";
+} from "../utils/types";
 
 export const GameStateContext = createContext({
   setShieldCount: (newShieldCount: number) => {},

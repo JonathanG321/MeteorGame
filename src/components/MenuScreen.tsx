@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { BASE_PRESSED_KEYS } from "../utils/variables";
-import { GameStateContext } from "../GameStateContext";
+import { GameStateContext } from "../context/GameStateContext";
 
 export default function MenuScreen() {
   const { setIsMainMenu, setMeteorPositions, setPressedKeys } =
