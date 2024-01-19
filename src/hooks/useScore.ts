@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FRAME_RATE } from "../utils/variables";
 
 export default function useScore(isGameOver: boolean) {
@@ -7,17 +7,24 @@ export default function useScore(isGameOver: boolean) {
     parseInt(localStorage.getItem("highScore") ?? "0")
   );
 
+  const pointsRef = useRef(points);
+
+  useEffect(() => {
+    if (isGameOver) return;
+    pointsRef.current = points;
+  }, [points, isGameOver]);
+
   useEffect(() => {
     if (isGameOver) return;
 
     const intervalId = setInterval(() => {
-      setPoints(points + 10);
+      setPoints(pointsRef.current + 10);
     }, FRAME_RATE);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [isGameOver, points]);
+  }, [isGameOver]);
 
   return { points, setPoints, highScore, setHighScore };
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FRAME_RATE,
   INVINCIBILITY_DURATION,
@@ -15,14 +15,32 @@ export default function useDamageCalculation(
   const [invincibleCount, setInvincibleCount] = useState(0);
   const [shieldCount, setShieldCount] = useState(0);
 
+  const isHitRef = useRef(isHit);
+  const invincibleCountRef = useRef(invincibleCount);
+  const shieldCountRef = useRef(shieldCount);
+
+  useEffect(() => {
+    if (isGameOver) return;
+    isHitRef.current = isHit;
+    invincibleCountRef.current = invincibleCount;
+    shieldCountRef.current = shieldCount;
+  }, [isHit, isGameOver, invincibleCount, shieldCount]);
+
   useEffect(() => {
     if (isGameOver) return;
 
     const intervalId = setInterval(() => {
-      if (invincibleCount <= 0 && shieldCount <= 0 && isHit) {
+      if (
+        invincibleCountRef.current <= 0 &&
+        shieldCountRef.current <= 0 &&
+        isHitRef.current
+      ) {
         setLives((prevLives) => prevLives - 1);
         setInvincibleCount(newInvincibleCount);
-      } else if (shieldCount > SHIELD_WARNING_DURATION && isHit) {
+      } else if (
+        shieldCountRef.current > SHIELD_WARNING_DURATION &&
+        isHitRef.current
+      ) {
         setShieldCount(SHIELD_WARNING_DURATION);
       }
 
@@ -33,7 +51,7 @@ export default function useDamageCalculation(
     return () => {
       clearInterval(intervalId);
     };
-  }, [isHit, isGameOver, invincibleCount, shieldCount]);
+  }, [isGameOver]);
 
   return {
     lives,

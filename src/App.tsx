@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Canvas from "./components/Canvas";
 import {
   MASK_FACTOR,
@@ -38,7 +38,7 @@ function App() {
       localStorage.setItem("highScore", points.toString());
     }
     setIsGameOver(lives === 0);
-  }, [lives, isGameOver, points, highScore]);
+  }, [points, lives, isGameOver, highScore]);
 
   return (
     <GameStateContext.Provider value={contextValues}>
@@ -92,12 +92,9 @@ function getContextValues() {
     setObjectPositions: setPowerUpPositions,
   } = useFallingObjectPositions(
     shouldStopGame,
-    click.mousePressPosition,
+    { X: null, Y: null },
     POWER_UP_SPAWN_RATE,
-    [
-      // "health", "pointsSmall", "pointsMedium", "pointsLarge",
-      "shield",
-    ],
+    ["health", "pointsSmall", "pointsMedium", "pointsLarge", "shield"],
     {
       spawnChance: POWER_UP_SPAWN_CHANCE,
       isCollectible: true,
