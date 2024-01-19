@@ -7,6 +7,7 @@ import pointsSmall from "../assets/BronzePixelTrophy.png";
 import pointsMedium from "../assets/SilverPixelTrophy.png";
 import pointsLarge from "../assets/GoldPixelTrophy.png";
 import shield from "../assets/PixelShield.png";
+import clock from "../assets/PixelClock.png";
 
 export default function PowerUp({ object }: { object: FallingObject }) {
   const style = createObjectStyle(object, OBJECT_SIZE);
@@ -26,6 +27,9 @@ export default function PowerUp({ object }: { object: FallingObject }) {
       break;
     case "shield":
       texture = shield;
+      break;
+    case "slow":
+      texture = clock;
       break;
   }
   return (
