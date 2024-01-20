@@ -5,11 +5,12 @@ export function useHeroMovementLogicX(
   heroPositionX: Position["X"],
   pressedKeyLeft: boolean,
   pressedKeyRight: boolean,
+  isSlow: boolean,
   updatePosition: (newPosition: Partial<Position>) => void
 ) {
   let newX = heroPositionX;
-  if (pressedKeyLeft) newX -= HERO_SPEED;
-  if (pressedKeyRight) newX += HERO_SPEED;
+  if (pressedKeyLeft) newX -= isSlow ? HERO_SPEED / 2 : HERO_SPEED;
+  if (pressedKeyRight) newX += isSlow ? HERO_SPEED / 2 : HERO_SPEED;
   if (newX < 0) newX = 0;
   if (newX > SCREEN_WIDTH - HERO_SIZE) newX = SCREEN_WIDTH - HERO_SIZE;
   if (newX !== heroPositionX) updatePosition({ X: newX });

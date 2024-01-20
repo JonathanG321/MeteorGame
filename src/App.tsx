@@ -1,44 +1,37 @@
 import { useEffect } from "react";
+import { GameStateContext } from "./context/GameStateContext";
 import Canvas from "./components/Canvas";
+import Hero from "./components/Hero";
+import Meteor from "./components/Meteor";
+import Menu from "./components/Menu";
+import Mask from "./components/Mask";
+import HeaderBar from "./components/HeaderBar";
+import PowerUp from "./components/PowerUp";
+import usePowerUps from "./hooks/usePowerUps";
+import { useUpdatingRefsForObject } from "./hooks/useUpdatingRefsForObject";
+import { useHeroMovementLogicX } from "./hooks/useHeroMovementLogicX";
+import { useHeroMovementLogicY } from "./hooks/useHeroMovementLogicY";
+import { useGameOver } from "./hooks/useGameOver";
+import { useDamageCalculation } from "./hooks/useDamageCalculation";
+import { useContextValues } from "./hooks/useContextValues";
 import {
   FRAME_RATE,
   MASK_FACTOR,
-  METEORS_PER_SECOND,
-  NEW_INVINCIBLE_COUNT,
-  OBJECT_GRAVITY,
+  METEOR_SPAWN_CHANCE,
   OBJECT_SIZE,
   POWER_UP_LIST,
   POWER_UP_SPAWN_CHANCE,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
-  SHIELD_WARNING_DURATION,
 } from "./utils/variables";
-import Hero from "./components/Hero";
-import usePressedKeys from "./hooks/usePressedKeys";
-import Meteor from "./components/Meteor";
-import useDetectCollision from "./hooks/useDetectCollision";
-import { GameStateContext } from "./context/GameStateContext";
-import Menu from "./components/Menu";
-import Mask from "./components/Mask";
-import HeaderBar from "./components/HeaderBar";
-import useClick from "./hooks/useClick";
-import PowerUp from "./components/PowerUp";
-import usePowerUps from "./hooks/usePowerUps";
-import { ContextValues, Position } from "./utils/types";
-import useBasicState from "./hooks/useBasicState";
-import { useUpdatingRefsForObject } from "./hooks/useUpdatingRefsForObject";
 import {
   countDownTo0,
   objectGravityInterval,
   spawnFallingObjectInterval,
 } from "./utils/lib";
-import { useHeroMovementLogicX } from "./hooks/useHeroMovementLogicX";
-import { useHeroMovementLogicY } from "./hooks/useHeroMovementLogicY";
-import { useGameOver } from "./hooks/useGameOver";
-import { useDamageCalculation } from "./hooks/useDamageCalculation";
 
 function App() {
-  const contextValues = getContextValues();
+  const contextValues = useContextValues();
 
   const {
     isMainMenu,
@@ -73,13 +66,15 @@ function App() {
     if (isDead || isMainMenu) return;
 
     const frameIntervalId = setInterval(() => {
-      setSlowCount((prevValue) => (prevValue > 0 ? prevValue - 1 : 0));
-      setPoints((prevValue) => prevValue + 10);
+      const currentSlowCount = contextRefs.slowCount.current;
+      setSlowCount((prevValue) => countDownTo0(prevValue, !!currentSlowCount));
+      setPoints((prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10));
 
       if (contextRefs.isHit.current) {
         useDamageCalculation(
           contextRefs.invincibleCount.current,
           contextRefs.shieldCount.current,
+          currentSlowCount,
           setLives,
           setInvincibleCount,
           setShieldCount
@@ -87,9 +82,9 @@ function App() {
       }
 
       if (contextRefs.invincibleCount.current > 0)
-        setInvincibleCount((prev) => prev - 1);
+        setInvincibleCount((prev) => countDownTo0(prev, !!currentSlowCount));
       if (contextRefs.shieldCount.current > 0)
-        setShieldCount((prev) => prev - 1);
+        setShieldCount((prev) => countDownTo0(prev, !!currentSlowCount));
 
       if (!!contextRefs.hitObjectType.current)
         usePowerUps(
@@ -105,6 +100,7 @@ function App() {
         contextRefs.heroOriginPoint.current.X,
         contextRefs.pressedKeys.current.ArrowLeft,
         contextRefs.pressedKeys.current.ArrowRight,
+        !!currentSlowCount,
         contextRefs.hero.current.updatePosition
       );
       useHeroMovementLogicY(
@@ -112,6 +108,7 @@ function App() {
         contextRefs.pressedKeys.current.ArrowUp,
         contextRefs.pressedKeys.current.ArrowDown,
         contextRefs.heroVelocityDown.current,
+        currentSlowCount,
         setHeroVelocityDown,
         contextRefs.hero.current.updatePosition
       );
@@ -120,25 +117,29 @@ function App() {
         setMeteorPositions,
         ["meteor"],
         contextRefs.mousePressPosition.current,
-        30
+        METEOR_SPAWN_CHANCE,
+        !!currentSlowCount
       );
       spawnFallingObjectInterval(
         setPowerUpPositions,
         POWER_UP_LIST,
         { X: null, Y: null },
-        POWER_UP_SPAWN_CHANCE
+        POWER_UP_SPAWN_CHANCE,
+        !!currentSlowCount
       );
 
       objectGravityInterval(
         setPowerUpPositions,
         setHitObjectType,
         contextRefs.heroOriginPoint.current,
+        !!currentSlowCount,
         true
       );
       objectGravityInterval(
         setMeteorPositions,
         setHitObjectType,
-        contextRefs.heroOriginPoint.current
+        contextRefs.heroOriginPoint.current,
+        !!currentSlowCount
       );
     }, FRAME_RATE);
     return () => {
@@ -174,30 +175,3 @@ function App() {
 }
 
 export default App;
-
-function getContextValues(): ContextValues {
-  const basicState = useBasicState();
-  const { heroOriginPoint } = basicState;
-  const pressedKeys = usePressedKeys();
-  const click = useClick();
-
-  const isHit = !!useDetectCollision(
-    basicState.meteorPositions,
-    heroOriginPoint
-  );
-
-  return {
-    ...basicState,
-    ...pressedKeys,
-    ...click,
-    isHit,
-    hero: {
-      position: heroOriginPoint,
-      updatePosition: (partialPosition: Partial<Position>) =>
-        basicState.setHeroOriginPoint((oldValue) => ({
-          ...oldValue,
-          ...partialPosition,
-        })),
-    },
-  };
-}

@@ -12,9 +12,11 @@ export function useHeroMovementLogicY(
   pressedKeyUp: boolean,
   pressedKeyDown: boolean,
   velocityDown: number,
+  slowCount: number,
   setVelocityDown: React.Dispatch<React.SetStateAction<number>>,
   updatePosition: (newPosition: Partial<Position>) => void
 ) {
+  if (slowCount % 2 !== 0) return;
   if (
     heroPositionY === SCREEN_HEIGHT - HERO_SIZE &&
     velocityDown !== 0 &&

@@ -67,17 +67,20 @@ function isPointInsideBox(point: Position, box: Box) {
   );
 }
 
-export function countDownTo0(prevCount: number) {
-  return prevCount > 0 ? prevCount - 1 : 0;
+export function countDownTo0(prevCount: number, isSlow: boolean) {
+  const dropAmount = isSlow ? 1 : 2;
+  return prevCount > 0 ? prevCount - dropAmount : 0;
 }
 
 export function spawnFallingObjectInterval(
   setObjectPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>,
   possibleTypes: FallingObjectType[],
   mousePressPosition: NullablePosition,
-  spawnChance: number
+  spawnChance: number,
+  isSlow: boolean
 ) {
-  if (!(Math.random() * 100 < (spawnChance || 100))) return;
+  const calcSpawnChance = isSlow ? spawnChance / 2 : spawnChance;
+  if (!(Math.random() * 100 < (calcSpawnChance || 100))) return;
   const mouseX = mousePressPosition.X;
 
   let newObjectX = mouseX
@@ -106,11 +109,15 @@ export function objectGravityInterval(
     React.SetStateAction<FallingObjectType | null>
   >,
   heroOriginPoint: Position,
+  isSlow: boolean,
   isCollectible = false
 ) {
   setObjectPositions((oldValue) =>
     oldValue
-      .map((object) => ({ ...object, Y: object.Y + OBJECT_GRAVITY }))
+      .map((object) => ({
+        ...object,
+        Y: object.Y + (isSlow ? OBJECT_GRAVITY / 2 : OBJECT_GRAVITY),
+      }))
       .filter((object) => {
         const isObjectInBounds = object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
         if (isCollectible) {

@@ -1,5 +1,11 @@
 import { FallingObjectType } from "../utils/types";
-import { FRAME_RATE, SHIELD_DURATION, SLOW_DURATION } from "../utils/variables";
+import {
+  FRAME_RATE,
+  SHIELD_DURATION,
+  SLOW_DURATION,
+  NEW_SHIELD_COUNT,
+  NEW_SLOW_COUNT,
+} from "../utils/variables";
 
 const newShieldCount = SHIELD_DURATION * FRAME_RATE;
 const newSlowCount = SLOW_DURATION * FRAME_RATE;
@@ -28,10 +34,10 @@ export default function usePowerUps(
       setPoints((previousPoints) => previousPoints + 10000);
       break;
     case "shield":
-      setShieldCount(newShieldCount);
+      setShieldCount(NEW_SHIELD_COUNT);
       break;
     case "slow":
-      setSlowCount(newSlowCount);
+      setSlowCount(NEW_SLOW_COUNT);
       break;
   }
   if (!!hitObjectType) setHitObjectType(null);
