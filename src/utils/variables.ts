@@ -13,14 +13,14 @@ export const HERO_SPAWN_POINT = {
   X: SCREEN_WIDTH / 2 - HERO_SIZE,
   Y: SCREEN_HEIGHT - HERO_SIZE,
 };
-export const METEOR_SPAWN_CHANCE = 30;
+export const METEOR_SPAWN_CHANCE = 30; // chance of a meteor actually spawn on attempt
 export const OBJECT_GRAVITY = 4;
 export const OBJECT_SIZE = 40;
 export const OBJECT_COLLISION_THRESHOLD = 5;
 export const OBJECT_STARTING_HEIGHT = -(OBJECT_SIZE * 2);
 export const MASK_FACTOR = 2.5;
 
-export const INVINCIBILITY_DURATION = 2; // This is in seconds
+export const INVINCIBILITY_DURATION = 1; // This is in seconds
 export const SHIELD_DURATION = 20; // This is in seconds
 export const SLOW_DURATION = 10; // This is in seconds
 
@@ -37,8 +37,8 @@ export const POWER_UP_LIST: FallingObjectType[] = [
   "shield",
   "slow",
 ];
-export const POWER_UP_SPAWN_RATE = 0.3; // amount of power-ups to spawn per second
-export const POWER_UP_SPAWN_CHANCE = 2;
+export const POWER_UP_SPAWN_RATE = 0.3; // amount of attempts to spawn power-ups per second
+export const POWER_UP_SPAWN_CHANCE = 2; // chance of a powerUp actually spawn on attempt
 
 export const BASE_PRESSED_KEYS = {
   ArrowUp: false,
