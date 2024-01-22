@@ -4,7 +4,7 @@ import useClick from "./useClick";
 import useDetectCollision from "./useDetectCollision";
 import usePressedKeys from "./usePressedKeys";
 
-export function useContextValues(): ContextValues {
+export default function useContextValues(): ContextValues {
   const basicState = useBasicState();
   const { heroOriginPoint } = basicState;
   const pressedKeys = usePressedKeys();

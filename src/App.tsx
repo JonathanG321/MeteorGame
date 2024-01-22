@@ -7,13 +7,7 @@ import Menu from "./components/Menu";
 import Mask from "./components/Mask";
 import HeaderBar from "./components/HeaderBar";
 import PowerUp from "./components/PowerUp";
-import usePowerUps from "./hooks/usePowerUps";
-import { useUpdatingRefsForObject } from "./hooks/useUpdatingRefsForObject";
-import { useHeroMovementLogicX } from "./hooks/useHeroMovementLogicX";
-import { useHeroMovementLogicY } from "./hooks/useHeroMovementLogicY";
-import { useGameOver } from "./hooks/useGameOver";
-import { useDamageCalculation } from "./hooks/useDamageCalculation";
-import { useContextValues } from "./hooks/useContextValues";
+import hooks from "./hooks";
 import {
   FRAME_RATE,
   MASK_FACTOR,
@@ -24,18 +18,15 @@ import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "./utils/variables";
-import {
-  countDownTo0,
-  objectGravityInterval,
-  spawnFallingObjectInterval,
-} from "./utils/lib";
+import { countDownTo0 } from "./utils/lib";
 
 function App() {
-  const contextValues = useContextValues();
+  const contextValues = hooks.useContextValues();
 
   const {
     isMainMenu,
     lives,
+    isGameOver,
     setHighScore,
     setIsGameOver,
     setLives,
@@ -49,61 +40,55 @@ function App() {
     setHeroVelocityDown,
   } = contextValues;
 
-  const contextRefs = useUpdatingRefsForObject(
+  const contextRefs = hooks.useUpdatingRefsForObject(
     contextValues,
     contextValues.isGameOver
   );
 
   useEffect(() => {
     const isDead = lives === 0;
-    useGameOver(
+    const gameStopped = isDead || isMainMenu;
+    hooks.useGameOver(
       isDead,
       contextRefs.points.current,
       contextRefs.highScore.current,
       setHighScore,
       setIsGameOver
     );
-    if (isDead || isMainMenu) return;
+    if (gameStopped) return;
 
     const frameIntervalId = setInterval(() => {
       const currentSlowCount = contextRefs.slowCount.current;
       setSlowCount((prevValue) => countDownTo0(prevValue, !!currentSlowCount));
       setPoints((prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10));
 
-      if (contextRefs.isHit.current) {
-        useDamageCalculation(
-          contextRefs.invincibleCount.current,
-          contextRefs.shieldCount.current,
-          currentSlowCount,
-          setLives,
-          setInvincibleCount,
-          setShieldCount
-        );
-      }
+      hooks.useDamageCalculation(
+        contextRefs.invincibleCount.current,
+        contextRefs.shieldCount.current,
+        contextRefs.isHit.current,
+        !!currentSlowCount,
+        setLives,
+        setInvincibleCount,
+        setShieldCount
+      );
 
-      if (contextRefs.invincibleCount.current > 0)
-        setInvincibleCount((prev) => countDownTo0(prev, !!currentSlowCount));
-      if (contextRefs.shieldCount.current > 0)
-        setShieldCount((prev) => countDownTo0(prev, !!currentSlowCount));
+      hooks.usePowerUps(
+        contextRefs.hitObjectType.current,
+        setLives,
+        setPoints,
+        setShieldCount,
+        setSlowCount,
+        setHitObjectType
+      );
 
-      if (!!contextRefs.hitObjectType.current)
-        usePowerUps(
-          contextRefs.hitObjectType.current,
-          setLives,
-          setPoints,
-          setShieldCount,
-          setSlowCount,
-          setHitObjectType
-        );
-
-      useHeroMovementLogicX(
+      hooks.useHeroMovementLogicX(
         contextRefs.heroOriginPoint.current.X,
         contextRefs.pressedKeys.current.ArrowLeft,
         contextRefs.pressedKeys.current.ArrowRight,
         !!currentSlowCount,
         contextRefs.hero.current.updatePosition
       );
-      useHeroMovementLogicY(
+      hooks.useHeroMovementLogicY(
         contextRefs.heroOriginPoint.current.Y,
         contextRefs.pressedKeys.current.ArrowUp,
         contextRefs.pressedKeys.current.ArrowDown,
@@ -113,14 +98,14 @@ function App() {
         contextRefs.hero.current.updatePosition
       );
 
-      spawnFallingObjectInterval(
+      hooks.useSpawnFallingObject(
         setMeteorPositions,
         ["meteor"],
         contextRefs.mousePressPosition.current,
         METEOR_SPAWN_CHANCE,
         !!currentSlowCount
       );
-      spawnFallingObjectInterval(
+      hooks.useSpawnFallingObject(
         setPowerUpPositions,
         POWER_UP_LIST,
         { X: null, Y: null },
@@ -128,14 +113,14 @@ function App() {
         !!currentSlowCount
       );
 
-      objectGravityInterval(
+      hooks.useObjectGravity(
         setPowerUpPositions,
         setHitObjectType,
         contextRefs.heroOriginPoint.current,
         !!currentSlowCount,
         true
       );
-      objectGravityInterval(
+      hooks.useObjectGravity(
         setMeteorPositions,
         setHitObjectType,
         contextRefs.heroOriginPoint.current,
@@ -145,7 +130,7 @@ function App() {
     return () => {
       clearInterval(frameIntervalId);
     };
-  }, [lives, isMainMenu]);
+  }, [lives, isMainMenu, isGameOver]);
 
   return (
     <GameStateContext.Provider value={contextValues}>

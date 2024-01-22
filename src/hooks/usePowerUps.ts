@@ -11,7 +11,7 @@ const newShieldCount = SHIELD_DURATION * FRAME_RATE;
 const newSlowCount = SLOW_DURATION * FRAME_RATE;
 
 export default function usePowerUps(
-  hitObjectType: FallingObjectType,
+  hitObjectType: FallingObjectType | null,
   setLives: React.Dispatch<React.SetStateAction<number>>,
   setPoints: React.Dispatch<React.SetStateAction<number>>,
   setShieldCount: React.Dispatch<React.SetStateAction<number>>,
@@ -20,6 +20,7 @@ export default function usePowerUps(
     React.SetStateAction<FallingObjectType | null>
   >
 ) {
+  if (!hitObjectType) return;
   switch (hitObjectType) {
     case "health":
       setLives((previousLives) => (previousLives >= 3 ? 3 : previousLives + 1));

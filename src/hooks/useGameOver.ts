@@ -1,4 +1,4 @@
-export function useGameOver(
+export default function useGameOver(
   isDead: boolean,
   points: number,
   highScore: number,

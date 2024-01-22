@@ -7,7 +7,7 @@ import {
   SCREEN_HEIGHT,
 } from "../utils/variables";
 
-export function useHeroMovementLogicY(
+export default function useHeroMovementLogicY(
   heroPositionY: Position["Y"],
   pressedKeyUp: boolean,
   pressedKeyDown: boolean,
@@ -16,7 +16,13 @@ export function useHeroMovementLogicY(
   setVelocityDown: React.Dispatch<React.SetStateAction<number>>,
   updatePosition: (newPosition: Partial<Position>) => void
 ) {
-  if (slowCount % 2 !== 0) return;
+  if (
+    slowCount % 2 !== 0 ||
+    (!pressedKeyUp &&
+      !pressedKeyDown &&
+      heroPositionY === SCREEN_HEIGHT - HERO_SIZE)
+  )
+    return;
   if (
     heroPositionY === SCREEN_HEIGHT - HERO_SIZE &&
     velocityDown !== 0 &&

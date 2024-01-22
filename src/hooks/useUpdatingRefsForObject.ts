@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { ObjectWithRefs } from "../utils/types";
 
-export function useUpdatingRefsForObject<T extends Record<string, any>>(
+export default function useUpdatingRefsForObject<T extends Record<string, any>>(
   obj: T,
   isGameOver: boolean
 ): ObjectWithRefs<T> {
