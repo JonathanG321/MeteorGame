@@ -137,7 +137,7 @@ function App() {
 
   return (
     <GameStateContext.Provider value={contextValues}>
-      <div className="flex h-screen w-full items-center justify-center">
+      <div className="flex h-screen w-full items-center justify-center overflow-hidden">
         <div
           className="relative"
           style={{ height: SCREEN_HEIGHT + 8, width: SCREEN_WIDTH + 8 }}
