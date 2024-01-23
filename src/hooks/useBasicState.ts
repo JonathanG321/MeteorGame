@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { FallingObject, FallingObjectType } from "../utils/types";
+import { Direction, FallingObject, FallingObjectType } from "../utils/types";
 import { HERO_SPAWN_POINT } from "../utils/variables";
 
 export default function useBasicState() {
   const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
+  const [lastDirection, setLastDirection] = useState<Direction>("right");
   const [isGameOver, setIsGameOver] = useState(false);
   const [isMainMenu, setIsMainMenu] = useState(true);
   const [hitObjectType, setHitObjectType] = useState<FallingObjectType | null>(
@@ -50,5 +51,7 @@ export default function useBasicState() {
     slowCount,
     setSlowCount,
     shouldStopGame,
+    lastDirection,
+    setLastDirection,
   };
 }

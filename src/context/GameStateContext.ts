@@ -5,6 +5,7 @@ import {
   NullablePosition,
   Position,
   PressedKeys,
+  Direction,
 } from "../utils/types";
 
 export const GameStateContext = createContext({
@@ -39,4 +40,6 @@ export const GameStateContext = createContext({
   setIsGameOver: (newIsGameOver: boolean) => {},
   isMainMenu: true,
   setIsMainMenu: (isMainMenu: boolean) => {},
+  lastDirection: "right" as Direction,
+  setLastDirection: (newDirection: Direction) => {},
 });

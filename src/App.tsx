@@ -38,6 +38,7 @@ function App() {
     setPowerUpPositions,
     setMeteorPositions,
     setHeroVelocityDown,
+    setLastDirection,
   } = contextValues;
 
   const contextRefs = hooks.useUpdatingRefsForObject(
@@ -86,7 +87,9 @@ function App() {
         contextRefs.pressedKeys.current.ArrowLeft,
         contextRefs.pressedKeys.current.ArrowRight,
         !!currentSlowCount,
-        contextRefs.hero.current.updatePosition
+        contextRefs.lastDirection.current,
+        contextRefs.hero.current.updatePosition,
+        setLastDirection
       );
       hooks.useHeroMovementLogicY(
         contextRefs.heroOriginPoint.current.Y,

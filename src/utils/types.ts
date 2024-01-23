@@ -1,5 +1,7 @@
 import { MutableRefObject } from "react";
 
+export type Direction = "right" | "left";
+
 export type PressedKeys = {
   ArrowUp: boolean;
   ArrowDown: boolean;
@@ -89,4 +91,6 @@ export type ContextValues = {
     position: Position;
     updatePosition: (partialPosition: Partial<Position>) => void;
   };
+  lastDirection: Direction;
+  setLastDirection: React.Dispatch<React.SetStateAction<Direction>>;
 };
