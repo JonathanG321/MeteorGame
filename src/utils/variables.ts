@@ -4,7 +4,7 @@ export const FPS = 60;
 export const FRAME_RATE = Math.floor(1000 / FPS);
 export const SCREEN_HEIGHT = 480;
 export const SCREEN_WIDTH = 800;
-export const HERO_SIZE = 20;
+export const HERO_SIZE = 30;
 export const HERO_SPEED = 6;
 export const HERO_JUMP_SPEED = 20;
 export const HERO_GRAVITY = 1;
@@ -13,7 +13,7 @@ export const HERO_SPAWN_POINT = {
   X: SCREEN_WIDTH / 2 - HERO_SIZE,
   Y: SCREEN_HEIGHT - HERO_SIZE,
 };
-export const METEOR_SPAWN_CHANCE = 30; // chance of a meteor actually spawn on attempt
+export const METEOR_SPAWN_CHANCE = 25; // chance of a meteor actually spawn on attempt
 export const OBJECT_GRAVITY = 4;
 export const OBJECT_SIZE = 40;
 export const OBJECT_COLLISION_THRESHOLD = 5;
@@ -24,7 +24,7 @@ export const INVINCIBILITY_DURATION = 1; // This is in seconds
 export const SHIELD_DURATION = 20; // This is in seconds
 export const SLOW_DURATION = 10; // This is in seconds
 
-export const SHIELD_WARNING_DURATION = 3 * FPS * 2;
+export const SHIELD_WARNING_DURATION = 3 * FPS;
 export const NEW_INVINCIBLE_COUNT = INVINCIBILITY_DURATION * FPS * 2;
 export const NEW_SHIELD_COUNT = SHIELD_DURATION * FPS * 2;
 export const NEW_SLOW_COUNT = SLOW_DURATION * FPS;
