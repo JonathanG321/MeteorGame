@@ -4,12 +4,15 @@ import { HERO_SIZE, SHIELD_WARNING_DURATION } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
 import { createObjectStyle } from "../utils/lib";
 import shield from "../assets/PixelShield.png";
+import knightRight from "../assets/PixelKnightRight.png";
+import knightLeft from "../assets/PixelKnightLeft.png";
 
 export default function Hero() {
   const {
     hero: { position },
     invincibleCount,
     shieldCount,
+    lastDirection,
   } = useContext(GameStateContext);
   const style = createObjectStyle(position, HERO_SIZE);
   const scale = 4;
@@ -21,8 +24,8 @@ export default function Hero() {
     <div style={style} className="absolute">
       {!!shieldCount &&
         (shieldCount > SHIELD_WARNING_DURATION ||
-          (shieldCount * 2) % 4 === 0 ||
-          (shieldCount * 2) % 3 === 0) && (
+          (shieldCount / 2) % 4 === 1 ||
+          (shieldCount / 2) % 4 === 2) && (
           <img
             src={shield}
             style={{
@@ -36,14 +39,24 @@ export default function Hero() {
             className="absolute z-20 opacity-70"
           />
         )}
-      <div
-        id="hero"
-        style={{ height: style.height, width: style.width }}
-        className={classNames("absolute", {
-          "bg-green-500": invincibleCount > 0,
-          "bg-blue-500": invincibleCount <= 0,
-        })}
-      />
+      {!(
+        (invincibleCount / 2) % 4 === 1 || (invincibleCount / 2) % 4 === 2
+      ) && (
+        <div
+          id="hero"
+          style={{
+            height: style.height,
+            width: style.width,
+            backgroundImage: `url(${
+              lastDirection === "right" ? knightRight : knightLeft
+            })`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+          }}
+          className="absolute"
+        />
+      )}
     </div>
   );
 }
