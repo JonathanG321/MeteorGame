@@ -2,7 +2,7 @@ import { useContext } from "react";
 import classNames from "classnames";
 import { HERO_SIZE, SHIELD_WARNING_DURATION } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
-import { createObjectStyle } from "../utils/lib";
+import { createObjectStyle, shouldShowFlash } from "../utils/lib";
 import shield from "../assets/PixelShield.png";
 import knightRight from "../assets/PixelKnightRight.png";
 import knightLeft from "../assets/PixelKnightLeft.png";
@@ -13,6 +13,7 @@ export default function Hero() {
     invincibleCount,
     shieldCount,
     lastDirection,
+    slowCount,
   } = useContext(GameStateContext);
   const style = createObjectStyle(position, HERO_SIZE);
   const scale = 4;
@@ -24,8 +25,7 @@ export default function Hero() {
     <div style={style} className="absolute">
       {!!shieldCount &&
         (shieldCount > SHIELD_WARNING_DURATION ||
-          (shieldCount / 2) % 4 === 1 ||
-          (shieldCount / 2) % 4 === 2) && (
+          shouldShowFlash(shieldCount, !!slowCount)) && (
           <img
             src={shield}
             style={{
@@ -39,9 +39,7 @@ export default function Hero() {
             className="absolute z-20 opacity-70"
           />
         )}
-      {!(
-        (invincibleCount / 2) % 4 === 1 || (invincibleCount / 2) % 4 === 2
-      ) && (
+      {shouldShowFlash(invincibleCount, !!slowCount) && (
         <div
           id="hero"
           style={{
