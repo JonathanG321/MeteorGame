@@ -10,13 +10,14 @@ export default function useDamageCalculation(
   shieldCount: number,
   isHit: boolean,
   isSlow: boolean,
+  lives: number,
   setLives: StateSetter<number>,
   setInvincibleCount: StateSetter<number>,
   setShieldCount: StateSetter<number>
 ) {
   if (invincibleCount <= 0 && shieldCount <= 0 && isHit) {
     setLives((prev) => countDownTo0(prev, true));
-    setInvincibleCount(NEW_INVINCIBLE_COUNT);
+    if (lives > 1) setInvincibleCount(NEW_INVINCIBLE_COUNT);
   } else if (shieldCount > SHIELD_WARNING_DURATION && isHit) {
     setShieldCount(SHIELD_WARNING_DURATION);
   }

@@ -69,6 +69,7 @@ function App() {
         contextRefs.shieldCount.current,
         contextRefs.isHit.current,
         !!currentSlowCount,
+        contextRefs.lives.current,
         setLives,
         setInvincibleCount,
         setShieldCount
