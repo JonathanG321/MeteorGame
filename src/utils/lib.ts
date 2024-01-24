@@ -37,6 +37,15 @@ export function shouldShowFlash(count: number, isSlow: boolean) {
   );
 }
 
+export function resetAudio(audio: HTMLAudioElement) {
+  audio.pause();
+  audio.currentTime = 0;
+}
+export function playAudio(audio: HTMLAudioElement) {
+  resetAudio(audio);
+  audio.play();
+}
+
 export function isObjectCollidingWithHero(
   object: FallingObject,
   heroPosition: Position
