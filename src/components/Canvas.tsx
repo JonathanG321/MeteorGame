@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import classNames from "classnames";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../utils/variables";
-import castle from "../assets/PixelCastle.png";
+import castle from "../assets/images/PixelCastle.png";
 
 export default function Canvas({
   children,
