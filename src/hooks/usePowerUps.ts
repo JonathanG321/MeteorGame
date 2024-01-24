@@ -24,6 +24,7 @@ export default function usePowerUps(
   switch (hitObjectType) {
     case "health":
       setLives((previousLives) => (previousLives >= 3 ? 3 : previousLives + 1));
+      setPoints((previousPoints) => previousPoints + 1000);
       break;
     case "pointsSmall":
       setPoints((previousPoints) => previousPoints + 3000);
@@ -36,9 +37,11 @@ export default function usePowerUps(
       break;
     case "shield":
       setShieldCount(NEW_SHIELD_COUNT);
+      setPoints((previousPoints) => previousPoints + 1000);
       break;
     case "slow":
       setSlowCount(NEW_SLOW_COUNT);
+      setPoints((previousPoints) => previousPoints + 1000);
       break;
   }
   if (!!hitObjectType) setHitObjectType(null);
