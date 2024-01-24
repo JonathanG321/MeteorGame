@@ -37,8 +37,8 @@ export const POWER_UP_LIST: FallingObjectType[] = [
   "shield",
   "slow",
 ];
-export const POWER_UP_SPAWN_RATE = 0.3; // amount of attempts to spawn power-ups per second
-export const POWER_UP_SPAWN_CHANCE = 2; // chance of a powerUp actually spawn on attempt
+export const POWER_UP_SPAWN_RATE = 0.1; // amount of attempts to spawn power-ups per second
+export const POWER_UP_SPAWN_CHANCE = 1; // chance of a powerUp actually spawn on attempt
 
 export const BASE_PRESSED_KEYS = {
   ArrowUp: false,
