@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { GameStateContext } from "../context/GameStateContext";
 import ScoreDisplay from "./ScoreDisplay";
-import heart from "../assets/PixelHeart.png";
+import heart from "../assets/powerUps/PixelHeart.png";
 
 export default function HeaderBar() {
   const { highScore, lives } = useContext(GameStateContext);

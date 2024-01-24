@@ -2,12 +2,12 @@ import classNames from "classnames";
 import { createObjectStyle } from "../utils/lib";
 import { FallingObject } from "../utils/types";
 import { OBJECT_SIZE } from "../utils/variables";
-import heart from "../assets/PixelHeart.png";
-import pointsSmall from "../assets/BronzePixelTrophy.png";
-import pointsMedium from "../assets/SilverPixelTrophy.png";
-import pointsLarge from "../assets/GoldPixelTrophy.png";
-import shield from "../assets/PixelShield.png";
-import clock from "../assets/PixelClock.png";
+import heart from "../assets/powerUps/PixelHeart.png";
+import pointsSmall from "../assets/powerUps/BronzePixelTrophy.png";
+import pointsMedium from "../assets/powerUps/SilverPixelTrophy.png";
+import pointsLarge from "../assets/powerUps/GoldPixelTrophy.png";
+import shield from "../assets/powerUps/PixelShield.png";
+import clock from "../assets/powerUps/PixelClock.png";
 
 export default function PowerUp({ object }: { object: FallingObject }) {
   const style = createObjectStyle(object, OBJECT_SIZE);

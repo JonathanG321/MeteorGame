@@ -1,9 +1,8 @@
 import { useContext } from "react";
-import classNames from "classnames";
 import { HERO_SIZE, SHIELD_WARNING_DURATION } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
 import { createObjectStyle, shouldShowFlash } from "../utils/lib";
-import shield from "../assets/PixelShield.png";
+import shield from "../assets/powerUps/PixelShield.png";
 import knightRight from "../assets/PixelKnightRight.png";
 import knightLeft from "../assets/PixelKnightLeft.png";
 
