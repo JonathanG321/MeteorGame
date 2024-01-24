@@ -5,10 +5,11 @@ export default function useGameOver(
   setHighScore: React.Dispatch<React.SetStateAction<number>>,
   setIsGameOver: React.Dispatch<React.SetStateAction<boolean>>
 ) {
-  if (isDead && points > highScore) {
-    setHighScore(points);
-    localStorage.setItem("highScore", points.toString());
-  } else if (isDead) {
+  if (isDead) {
+    if (points > highScore) {
+      setHighScore(points);
+      localStorage.setItem("highScore", points.toString());
+    }
     setIsGameOver(true);
   }
 }
