@@ -1,3 +1,5 @@
+import { playAudio } from "../utils/lib";
+import { jumpSound } from "../utils/sounds";
 import { Position, StateSetter } from "../utils/types";
 import {
   HERO_GRAVITY,
@@ -31,6 +33,7 @@ export default function useHeroMovementLogicY(
     setVelocityDown(0);
   } else if (pressedKeyUp && heroPositionY === SCREEN_HEIGHT - HERO_SIZE) {
     setVelocityDown(-HERO_JUMP_SPEED);
+    playAudio(jumpSound);
   } else if (velocityDown < MAX_HERO_VELOCITY_DOWN && !pressedKeyDown) {
     setVelocityDown(velocityDown + HERO_GRAVITY);
   } else if (pressedKeyDown) {

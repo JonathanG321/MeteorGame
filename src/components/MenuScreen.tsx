@@ -1,6 +1,8 @@
 import { useContext, useEffect } from "react";
 import { BASE_PRESSED_KEYS } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
+import { themeSound } from "../utils/sounds";
+import { playAudio } from "../utils/lib";
 
 export default function MenuScreen() {
   const { setIsMainMenu, setMeteorPositions, setPressedKeys } =
@@ -12,6 +14,7 @@ export default function MenuScreen() {
         setMeteorPositions([]);
         setPressedKeys(BASE_PRESSED_KEYS);
         setIsMainMenu(false);
+        playAudio(themeSound);
       }
     }
 

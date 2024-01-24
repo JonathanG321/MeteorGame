@@ -1,6 +1,8 @@
 import { useContext, useEffect } from "react";
 import { BASE_PRESSED_KEYS, HERO_SPAWN_POINT } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
+import { gameOverSound, themeSound } from "../utils/sounds";
+import { playAudio } from "../utils/lib";
 
 export default function GameOverScreen() {
   const {
@@ -17,6 +19,7 @@ export default function GameOverScreen() {
   } = useContext(GameStateContext);
 
   useEffect(() => {
+    playAudio(gameOverSound);
     function handleKeyUp(e: KeyboardEvent) {
       if (e.code === "Space") {
         setMeteorPositions([]);
@@ -29,6 +32,7 @@ export default function GameOverScreen() {
         setSlowCount(0);
         setPressedKeys(BASE_PRESSED_KEYS);
         setIsGameOver(false);
+        playAudio(themeSound);
       }
     }
 

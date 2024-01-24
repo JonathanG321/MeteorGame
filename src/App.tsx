@@ -18,7 +18,8 @@ import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "./utils/variables";
-import { countDownTo0 } from "./utils/lib";
+import { countDownTo0, playAudio, resetAudio } from "./utils/lib";
+import { clockTickingSound, timeResumeSound } from "./utils/sounds";
 
 function App() {
   const contextValues = hooks.useContextValues();
@@ -74,6 +75,9 @@ function App() {
         setInvincibleCount,
         setShieldCount
       );
+
+      if (contextRefs.slowCount.current === 90) playAudio(timeResumeSound);
+      if (contextRefs.slowCount.current === 60) resetAudio(clockTickingSound);
 
       hooks.usePowerUps(
         contextRefs.hitObjectType.current,
