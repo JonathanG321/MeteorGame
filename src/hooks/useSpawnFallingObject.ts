@@ -2,6 +2,7 @@ import {
   FallingObject,
   FallingObjectType,
   NullablePosition,
+  StateSetter,
 } from "../utils/types";
 import {
   OBJECT_SIZE,
@@ -10,7 +11,7 @@ import {
 } from "../utils/variables";
 
 export default function useSpawnFallingObject(
-  setObjectPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>,
+  setObjectPositions: StateSetter<FallingObject[]>,
   possibleTypes: FallingObjectType[],
   mousePressPosition: NullablePosition,
   spawnChance: number,

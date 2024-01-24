@@ -1,4 +1,4 @@
-import { Direction, Position } from "../utils/types";
+import { Direction, Position, StateSetter } from "../utils/types";
 import { HERO_SIZE, HERO_SPEED, SCREEN_WIDTH } from "../utils/variables";
 
 export default function useHeroMovementLogicX(
@@ -7,8 +7,8 @@ export default function useHeroMovementLogicX(
   pressedKeyRight: boolean,
   isSlow: boolean,
   lastDirection: Direction,
-  updatePosition: (newPosition: Partial<Position>) => void,
-  setLastDirection: React.Dispatch<React.SetStateAction<Direction>>
+  updatePosition: StateSetter<Position>,
+  setLastDirection: StateSetter<Direction>
 ) {
   if (!pressedKeyLeft && !pressedKeyRight) return;
   let newX = heroPositionX;
@@ -21,5 +21,5 @@ export default function useHeroMovementLogicX(
   }
   if (newX < 0) newX = 0;
   if (newX > SCREEN_WIDTH - HERO_SIZE) newX = SCREEN_WIDTH - HERO_SIZE;
-  if (newX !== heroPositionX) updatePosition({ X: newX });
+  if (newX !== heroPositionX) updatePosition((prev) => ({ ...prev, X: newX }));
 }

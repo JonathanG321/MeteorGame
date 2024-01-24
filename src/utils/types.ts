@@ -52,45 +52,43 @@ export type ObjectWithRefs<T> = {
   [K in keyof T]: MutableRefObject<T[K]>;
 };
 
+export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
+
 export type ContextValues = {
   isHit: boolean;
   powerUpPositions: FallingObject[];
-  setPowerUpPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>;
+  setPowerUpPositions: StateSetter<FallingObject[]>;
   meteorPositions: FallingObject[];
-  setMeteorPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>;
+  setMeteorPositions: StateSetter<FallingObject[]>;
   lives: number;
-  setLives: React.Dispatch<React.SetStateAction<number>>;
-  setInvincibleCount: React.Dispatch<React.SetStateAction<number>>;
+  setLives: StateSetter<number>;
+  setInvincibleCount: StateSetter<number>;
   invincibleCount: number;
-  setShieldCount: React.Dispatch<React.SetStateAction<number>>;
+  setShieldCount: StateSetter<number>;
   shieldCount: number;
   mousePressPosition: NullablePosition;
-  setMousePressPosition: React.Dispatch<React.SetStateAction<NullablePosition>>;
+  setMousePressPosition: StateSetter<NullablePosition>;
   pressedKeys: PressedKeys;
-  setPressedKeys: React.Dispatch<React.SetStateAction<PressedKeys>>;
+  setPressedKeys: StateSetter<PressedKeys>;
   points: number;
-  setPoints: React.Dispatch<React.SetStateAction<number>>;
+  setPoints: StateSetter<number>;
   highScore: number;
-  setHighScore: React.Dispatch<React.SetStateAction<number>>;
+  setHighScore: StateSetter<number>;
   heroOriginPoint: Position;
-  setHeroOriginPoint: React.Dispatch<React.SetStateAction<Position>>;
+  setHeroOriginPoint: StateSetter<Position>;
   isGameOver: boolean;
-  setIsGameOver: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsGameOver: StateSetter<boolean>;
   shouldStopGame: boolean;
   isMainMenu: boolean;
-  setIsMainMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsMainMenu: StateSetter<boolean>;
   hitObjectType: FallingObjectType | null;
-  setHitObjectType: React.Dispatch<
-    React.SetStateAction<FallingObjectType | null>
-  >;
+  setHitObjectType: StateSetter<FallingObjectType | null>;
   heroVelocityDown: number;
-  setHeroVelocityDown: React.Dispatch<React.SetStateAction<number>>;
+  setHeroVelocityDown: StateSetter<number>;
   slowCount: number;
-  setSlowCount: React.Dispatch<React.SetStateAction<number>>;
-  hero: {
-    position: Position;
-    updatePosition: (partialPosition: Partial<Position>) => void;
-  };
+  setSlowCount: StateSetter<number>;
   lastDirection: Direction;
-  setLastDirection: React.Dispatch<React.SetStateAction<Direction>>;
+  setLastDirection: StateSetter<Direction>;
+  gameCounter: number;
+  setGameCounter: StateSetter<number>;
 };

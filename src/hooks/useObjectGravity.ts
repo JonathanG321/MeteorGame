@@ -1,12 +1,15 @@
 import { isObjectCollidingWithHero } from "../utils/lib";
-import { FallingObject, FallingObjectType, Position } from "../utils/types";
+import {
+  FallingObject,
+  FallingObjectType,
+  Position,
+  StateSetter,
+} from "../utils/types";
 import { OBJECT_GRAVITY, OBJECT_SIZE, SCREEN_HEIGHT } from "../utils/variables";
 
 export default function useObjectGravity(
-  setObjectPositions: React.Dispatch<React.SetStateAction<FallingObject[]>>,
-  setHitObjectType: React.Dispatch<
-    React.SetStateAction<FallingObjectType | null>
-  >,
+  setObjectPositions: StateSetter<FallingObject[]>,
+  setHitObjectType: StateSetter<FallingObjectType | null>,
   heroOriginPoint: Position,
   isSlow: boolean,
   isCollectible = false

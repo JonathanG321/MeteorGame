@@ -1,9 +1,11 @@
+import { StateSetter } from "../utils/types";
+
 export default function useGameOver(
   isDead: boolean,
   points: number,
   highScore: number,
-  setHighScore: React.Dispatch<React.SetStateAction<number>>,
-  setIsGameOver: React.Dispatch<React.SetStateAction<boolean>>
+  setHighScore: StateSetter<number>,
+  setIsGameOver: StateSetter<boolean>
 ) {
   if (isDead) {
     if (points > highScore) {

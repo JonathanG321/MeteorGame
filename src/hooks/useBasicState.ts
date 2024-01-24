@@ -3,6 +3,7 @@ import { Direction, FallingObject, FallingObjectType } from "../utils/types";
 import { HERO_SPAWN_POINT } from "../utils/variables";
 
 export default function useBasicState() {
+  const [gameCounter, setGameCounter] = useState(0);
   const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
   const [lastDirection, setLastDirection] = useState<Direction>("right");
   const [isGameOver, setIsGameOver] = useState(false);
@@ -53,5 +54,7 @@ export default function useBasicState() {
     shouldStopGame,
     lastDirection,
     setLastDirection,
+    gameCounter,
+    setGameCounter,
   };
 }

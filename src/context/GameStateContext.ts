@@ -6,40 +6,57 @@ import {
   Position,
   PressedKeys,
   Direction,
+  ContextValues,
+  FallingObjectType,
 } from "../utils/types";
 
+function stateSetterNumber(_: React.SetStateAction<number>): void {}
+function stateSetterBoolean(_: React.SetStateAction<boolean>): void {}
+function stateSetterPosition(_: React.SetStateAction<Position>): void {}
+function stateSetterDirection(_: React.SetStateAction<Direction>): void {}
+function stateSetterPressedKeys(_: React.SetStateAction<PressedKeys>): void {}
+function stateSetterFallingObject(
+  _: React.SetStateAction<FallingObject[]>
+): void {}
+function stateSetterHitObjectType(
+  _: React.SetStateAction<FallingObjectType | null>
+): void {}
+
 export const GameStateContext = createContext({
-  setSlowCount: (newSlowCount: number) => {},
+  setSlowCount: stateSetterNumber,
   slowCount: 0,
-  setShieldCount: (newShieldCount: number) => {},
+  setShieldCount: stateSetterNumber,
   shieldCount: 0,
-  setInvincibleCount: (newInvincibleCount: number) => {},
+  setInvincibleCount: stateSetterNumber,
   invincibleCount: 0,
   lives: 3,
-  setLives: (newLives: number) => {},
+  setLives: stateSetterNumber,
   mousePressPosition: { X: null, Y: null } as NullablePosition,
-  setMousePressPosition: (newMouse: Position) => {},
+  setMousePressPosition: stateSetterPosition,
   highScore: 0,
-  setHighScore: (newHighScore: number) => {},
-  hero: {
-    position: HERO_SPAWN_POINT,
-    updatePosition: (newPosition: Partial<Position>) => {},
-  },
-  setHeroOriginPoint: (newHeroPoint: Position) => {},
+  setHighScore: stateSetterNumber,
+  setHeroOriginPoint: stateSetterPosition,
   heroVelocityDown: 0,
-  setHeroVelocityDown: (newVelocity: number) => {},
+  setHeroVelocityDown: stateSetterNumber,
   points: 0,
-  setPoints: (newPoints: number) => {},
+  setPoints: stateSetterNumber,
   pressedKeys: BASE_PRESSED_KEYS,
-  setPressedKeys: (pressedKeys: PressedKeys) => {},
+  setPressedKeys: stateSetterPressedKeys,
   meteorPositions: [] as FallingObject[],
-  setMeteorPositions: (meteorPositions: FallingObject[]) => {},
+  setMeteorPositions: stateSetterFallingObject,
   powerUpPositions: [] as FallingObject[],
-  setPowerUpPositions: (powerUpPositions: FallingObject[]) => {},
+  setPowerUpPositions: stateSetterFallingObject,
   isGameOver: false,
-  setIsGameOver: (newIsGameOver: boolean) => {},
+  setIsGameOver: stateSetterBoolean,
   isMainMenu: true,
-  setIsMainMenu: (isMainMenu: boolean) => {},
+  setIsMainMenu: stateSetterBoolean,
   lastDirection: "right" as Direction,
-  setLastDirection: (newDirection: Direction) => {},
-});
+  setLastDirection: stateSetterDirection,
+  gameCounter: 0,
+  setGameCounter: stateSetterNumber,
+  isHit: false,
+  heroOriginPoint: HERO_SPAWN_POINT,
+  shouldStopGame: false,
+  hitObjectType: null,
+  setHitObjectType: stateSetterHitObjectType,
+} as ContextValues);

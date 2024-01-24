@@ -9,13 +9,13 @@ import knightLeft from "../assets/PixelKnightLeft.png";
 
 export default function Hero() {
   const {
-    hero: { position },
+    heroOriginPoint,
     invincibleCount,
     shieldCount,
     lastDirection,
     slowCount,
   } = useContext(GameStateContext);
-  const style = createObjectStyle(position, HERO_SIZE);
+  const style = createObjectStyle(heroOriginPoint, HERO_SIZE);
   const scale = 4;
   const newHeightNumber = parseInt(style.height.slice(0, -2));
   const newWidthNumber = parseInt(style.width.slice(0, -2));

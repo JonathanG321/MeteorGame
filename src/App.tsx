@@ -39,6 +39,7 @@ function App() {
     setMeteorPositions,
     setHeroVelocityDown,
     setLastDirection,
+    setHeroOriginPoint,
   } = contextValues;
 
   const contextRefs = hooks.useUpdatingRefsForObject(
@@ -88,7 +89,7 @@ function App() {
         contextRefs.pressedKeys.current.ArrowRight,
         !!currentSlowCount,
         contextRefs.lastDirection.current,
-        contextRefs.hero.current.updatePosition,
+        setHeroOriginPoint,
         setLastDirection
       );
       hooks.useHeroMovementLogicY(
@@ -98,7 +99,7 @@ function App() {
         contextRefs.heroVelocityDown.current,
         currentSlowCount,
         setHeroVelocityDown,
-        contextRefs.hero.current.updatePosition
+        setHeroOriginPoint
       );
 
       hooks.useSpawnFallingObject(

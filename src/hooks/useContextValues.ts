@@ -20,13 +20,5 @@ export default function useContextValues(): ContextValues {
     ...pressedKeys,
     ...click,
     isHit,
-    hero: {
-      position: heroOriginPoint,
-      updatePosition: (partialPosition: Partial<Position>) =>
-        basicState.setHeroOriginPoint((oldValue) => ({
-          ...oldValue,
-          ...partialPosition,
-        })),
-    },
   };
 }

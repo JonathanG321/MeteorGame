@@ -1,4 +1,4 @@
-import { Position } from "../utils/types";
+import { Position, StateSetter } from "../utils/types";
 import {
   HERO_GRAVITY,
   HERO_JUMP_SPEED,
@@ -13,8 +13,8 @@ export default function useHeroMovementLogicY(
   pressedKeyDown: boolean,
   velocityDown: number,
   slowCount: number,
-  setVelocityDown: React.Dispatch<React.SetStateAction<number>>,
-  updatePosition: (newPosition: Partial<Position>) => void
+  setVelocityDown: StateSetter<number>,
+  updatePosition: StateSetter<Position>
 ) {
   if (
     slowCount % 2 !== 0 ||
@@ -44,5 +44,5 @@ export default function useHeroMovementLogicY(
   newY += velocityDown;
   if (newY < 0) newY = 0;
   if (newY > SCREEN_HEIGHT - HERO_SIZE) newY = SCREEN_HEIGHT - HERO_SIZE;
-  if (newY !== heroPositionY) updatePosition({ Y: newY });
+  if (newY !== heroPositionY) updatePosition((prev) => ({ ...prev, Y: newY }));
 }

@@ -1,4 +1,4 @@
-import { FallingObjectType } from "../utils/types";
+import { FallingObjectType, StateSetter } from "../utils/types";
 import {
   FRAME_RATE,
   SHIELD_DURATION,
@@ -12,13 +12,11 @@ const newSlowCount = SLOW_DURATION * FRAME_RATE;
 
 export default function usePowerUps(
   hitObjectType: FallingObjectType | null,
-  setLives: React.Dispatch<React.SetStateAction<number>>,
-  setPoints: React.Dispatch<React.SetStateAction<number>>,
-  setShieldCount: React.Dispatch<React.SetStateAction<number>>,
-  setSlowCount: React.Dispatch<React.SetStateAction<number>>,
-  setHitObjectType: React.Dispatch<
-    React.SetStateAction<FallingObjectType | null>
-  >
+  setLives: StateSetter<number>,
+  setPoints: StateSetter<number>,
+  setShieldCount: StateSetter<number>,
+  setSlowCount: StateSetter<number>,
+  setHitObjectType: StateSetter<FallingObjectType | null>
 ) {
   if (!hitObjectType) return;
   switch (hitObjectType) {

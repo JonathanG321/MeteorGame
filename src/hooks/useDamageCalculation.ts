@@ -1,4 +1,5 @@
 import { countDownTo0 } from "../utils/lib";
+import { StateSetter } from "../utils/types";
 import {
   NEW_INVINCIBLE_COUNT,
   SHIELD_WARNING_DURATION,
@@ -9,9 +10,9 @@ export default function useDamageCalculation(
   shieldCount: number,
   isHit: boolean,
   isSlow: boolean,
-  setLives: React.Dispatch<React.SetStateAction<number>>,
-  setInvincibleCount: React.Dispatch<React.SetStateAction<number>>,
-  setShieldCount: React.Dispatch<React.SetStateAction<number>>
+  setLives: StateSetter<number>,
+  setInvincibleCount: StateSetter<number>,
+  setShieldCount: StateSetter<number>
 ) {
   if (invincibleCount <= 0 && shieldCount <= 0 && isHit) {
     setLives((prev) => countDownTo0(prev, true));
