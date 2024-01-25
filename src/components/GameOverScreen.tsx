@@ -19,7 +19,6 @@ export default function GameOverScreen() {
   } = useContext(GameStateContext);
 
   useEffect(() => {
-    playAudio(gameOverSound);
     function handleKeyUp(e: KeyboardEvent) {
       if (e.code === "Space") {
         setMeteorPositions([]);
@@ -32,6 +31,7 @@ export default function GameOverScreen() {
         setSlowCount(0);
         setPressedKeys(BASE_PRESSED_KEYS);
         setIsGameOver(false);
+        themeSound.playbackRate = 1;
         playAudio(themeSound);
       }
     }

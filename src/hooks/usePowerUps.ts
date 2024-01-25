@@ -7,6 +7,7 @@ import {
   timeSlowSound,
   shieldSound,
   lifeSound,
+  themeSound,
 } from "../utils/sounds";
 import { FallingObjectType, StateSetter } from "../utils/types";
 import { NEW_SHIELD_COUNT, NEW_SLOW_COUNT } from "../utils/variables";
@@ -46,9 +47,10 @@ export default function usePowerUps(
     case "slow":
       setSlowCount(NEW_SLOW_COUNT);
       setPoints((previousPoints) => previousPoints + 1000);
-      playAudio(timeSlowSound);
+      playAudio(timeSlowSound, 1);
+      themeSound.playbackRate = 0.5;
       setTimeout(() => {
-        playAudio(clockTickingSound);
+        playAudio(clockTickingSound, 1);
       }, 1000);
       break;
   }

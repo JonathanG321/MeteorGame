@@ -19,7 +19,7 @@ import {
   SCREEN_WIDTH,
 } from "./utils/variables";
 import { countDownTo0, playAudio, resetAudio } from "./utils/lib";
-import { clockTickingSound, timeResumeSound } from "./utils/sounds";
+import { clockTickingSound, themeSound, timeResumeSound } from "./utils/sounds";
 
 function App() {
   const contextValues = hooks.useContextValues();
@@ -76,8 +76,9 @@ function App() {
         setShieldCount
       );
 
-      if (contextRefs.slowCount.current === 90) playAudio(timeResumeSound);
+      if (contextRefs.slowCount.current === 75) playAudio(timeResumeSound);
       if (contextRefs.slowCount.current === 60) resetAudio(clockTickingSound);
+      if (contextRefs.slowCount.current === 1) themeSound.playbackRate = 1;
 
       hooks.usePowerUps(
         contextRefs.hitObjectType.current,

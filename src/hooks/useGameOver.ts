@@ -1,11 +1,12 @@
 import { StateSetter } from "../utils/types";
 import {
   clockTickingSound,
+  gameOverSound,
   themeSound,
   timeResumeSound,
   timeSlowSound,
 } from "../utils/sounds";
-import { resetAudio } from "../utils/lib";
+import { playAudio, resetAudio } from "../utils/lib";
 
 export default function useGameOver(
   isDead: boolean,
@@ -23,6 +24,7 @@ export default function useGameOver(
     resetAudio(timeResumeSound);
     resetAudio(timeSlowSound);
     resetAudio(themeSound);
+    playAudio(gameOverSound);
     setIsGameOver(true);
   }
 }
