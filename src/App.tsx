@@ -76,7 +76,7 @@ function App() {
         setShieldCount
       );
 
-      if (contextRefs.slowCount.current === 75) playAudio(timeResumeSound);
+      if (contextRefs.slowCount.current === 75) playAudio(timeResumeSound, 1);
       if (contextRefs.slowCount.current === 60) resetAudio(clockTickingSound);
       if (contextRefs.slowCount.current === 1) themeSound.playbackRate = 1;
 

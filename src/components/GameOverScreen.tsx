@@ -32,7 +32,7 @@ export default function GameOverScreen() {
         setPressedKeys(BASE_PRESSED_KEYS);
         setIsGameOver(false);
         themeSound.playbackRate = 1;
-        playAudio(themeSound);
+        playAudio(themeSound, 0.5);
       }
     }
 
