@@ -41,8 +41,9 @@ export function resetAudio(audio: HTMLAudioElement) {
   audio.pause();
   audio.currentTime = 0;
 }
-export function playAudio(audio: HTMLAudioElement) {
+export function playAudio(audio: HTMLAudioElement, volume = 0.7) {
   resetAudio(audio);
+  audio.volume = volume;
   audio.play();
 }
 

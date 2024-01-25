@@ -14,7 +14,7 @@ export default function MenuScreen() {
         setMeteorPositions([]);
         setPressedKeys(BASE_PRESSED_KEYS);
         setIsMainMenu(false);
-        playAudio(themeSound);
+        playAudio(themeSound, 0.5);
       }
     }
 
