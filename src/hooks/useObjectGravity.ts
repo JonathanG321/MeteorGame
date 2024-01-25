@@ -9,15 +9,17 @@ import { OBJECT_GRAVITY, OBJECT_SIZE, SCREEN_HEIGHT } from "../utils/variables";
 
 export default function useObjectGravity(
   setObjectPositions: StateSetter<FallingObject[]>,
-  setHitObjectType: StateSetter<FallingObjectType | null>,
   heroOriginPoint: Position,
   isSlow: boolean,
+  gameStageMultiplier: number,
   isCollectible = false
-) {
+): FallingObjectType | null {
+  let hitObjectType: FallingObjectType | null = null;
   setObjectPositions((oldValue) => {
+    const objectGravity = OBJECT_GRAVITY * gameStageMultiplier;
     const updatedObjects = oldValue.map((object) => ({
       ...object,
-      Y: object.Y + (isSlow ? OBJECT_GRAVITY / 2 : OBJECT_GRAVITY),
+      Y: object.Y + (isSlow ? objectGravity / 2 : objectGravity),
     }));
 
     if (!isCollectible) {
@@ -35,10 +37,11 @@ export default function useObjectGravity(
         object,
         heroOriginPoint
       );
-      if (isHittingHero) setHitObjectType(object.type);
+      if (isHittingHero) hitObjectType = object.type;
       return !isHittingHero;
     });
 
     return filteredObjects;
   });
+  return hitObjectType;
 }

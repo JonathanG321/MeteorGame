@@ -15,9 +15,11 @@ export default function useSpawnFallingObject(
   possibleTypes: FallingObjectType[],
   mousePressPosition: NullablePosition,
   spawnChance: number,
-  isSlow: boolean
+  isSlow: boolean,
+  gameStageMultiplier: number
 ) {
-  const calcSpawnChance = isSlow ? spawnChance / 2 : spawnChance;
+  const stageSpawnChance = spawnChance * gameStageMultiplier;
+  const calcSpawnChance = isSlow ? stageSpawnChance / 2 : stageSpawnChance;
   if (!(Math.random() * 100 < (calcSpawnChance || 100))) return;
   const mouseX = mousePressPosition.X;
 

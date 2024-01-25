@@ -17,8 +17,7 @@ export default function usePowerUps(
   setLives: StateSetter<number>,
   setPoints: StateSetter<number>,
   setShieldCount: StateSetter<number>,
-  setSlowCount: StateSetter<number>,
-  setHitObjectType: StateSetter<FallingObjectType | null>
+  setSlowCount: StateSetter<number>
 ) {
   if (!hitObjectType) return;
   switch (hitObjectType) {
@@ -54,5 +53,4 @@ export default function usePowerUps(
       }, 1000);
       break;
   }
-  if (!!hitObjectType) setHitObjectType(null);
 }

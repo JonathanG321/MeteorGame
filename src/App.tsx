@@ -17,6 +17,7 @@ import {
   POWER_UP_SPAWN_CHANCE,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
+  STAGE_LENGTH,
 } from "./utils/variables";
 import { countDownTo0, playAudio, resetAudio } from "./utils/lib";
 import { clockTickingSound, themeSound, timeResumeSound } from "./utils/sounds";
@@ -34,13 +35,13 @@ function App() {
     setPoints,
     setShieldCount,
     setSlowCount,
-    setHitObjectType,
     setInvincibleCount,
     setPowerUpPositions,
     setMeteorPositions,
     setHeroVelocityDown,
     setLastDirection,
     setHeroOriginPoint,
+    setGameCounter,
   } = contextValues;
 
   const contextRefs = hooks.useUpdatingRefsForObject(
@@ -64,6 +65,11 @@ function App() {
       const currentSlowCount = contextRefs.slowCount.current;
       setSlowCount((prevValue) => countDownTo0(prevValue, !!currentSlowCount));
       setPoints((prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10));
+      setGameCounter((prevValue) => prevValue + (currentSlowCount > 0 ? 1 : 2));
+      const gameStage = Math.ceil(
+        contextRefs.gameCounter.current / STAGE_LENGTH
+      );
+      const gameStageMultiplier = 1.15 ** gameStage;
 
       hooks.useDamageCalculation(
         contextRefs.invincibleCount.current,
@@ -79,15 +85,6 @@ function App() {
       if (contextRefs.slowCount.current === 75) playAudio(timeResumeSound, 1);
       if (contextRefs.slowCount.current === 60) resetAudio(clockTickingSound);
       if (contextRefs.slowCount.current === 1) themeSound.playbackRate = 1;
-
-      hooks.usePowerUps(
-        contextRefs.hitObjectType.current,
-        setLives,
-        setPoints,
-        setShieldCount,
-        setSlowCount,
-        setHitObjectType
-      );
 
       hooks.useHeroMovementLogicX(
         contextRefs.heroOriginPoint.current.X,
@@ -113,28 +110,38 @@ function App() {
         ["meteor"],
         contextRefs.mousePressPosition.current,
         METEOR_SPAWN_CHANCE,
-        !!currentSlowCount
+        !!currentSlowCount,
+        gameStageMultiplier
       );
       hooks.useSpawnFallingObject(
         setPowerUpPositions,
         POWER_UP_LIST,
         { X: null, Y: null },
         POWER_UP_SPAWN_CHANCE,
-        !!currentSlowCount
+        !!currentSlowCount,
+        gameStageMultiplier
       );
 
-      hooks.useObjectGravity(
+      const hisObjectType = hooks.useObjectGravity(
         setPowerUpPositions,
-        setHitObjectType,
         contextRefs.heroOriginPoint.current,
         !!currentSlowCount,
+        gameStageMultiplier,
         true
       );
       hooks.useObjectGravity(
         setMeteorPositions,
-        setHitObjectType,
         contextRefs.heroOriginPoint.current,
-        !!currentSlowCount
+        !!currentSlowCount,
+        gameStageMultiplier
+      );
+
+      hooks.usePowerUps(
+        hisObjectType,
+        setLives,
+        setPoints,
+        setShieldCount,
+        setSlowCount
       );
     }, FRAME_RATE);
     return () => {

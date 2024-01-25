@@ -57,6 +57,4 @@ export const GameStateContext = createContext({
   isHit: false,
   heroOriginPoint: HERO_SPAWN_POINT,
   shouldStopGame: false,
-  hitObjectType: null,
-  setHitObjectType: stateSetterHitObjectType,
 } as ContextValues);

@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { Direction, FallingObject, FallingObjectType } from "../utils/types";
-import { HERO_SPAWN_POINT } from "../utils/variables";
+import { HERO_SPAWN_POINT, STAGE_LENGTH } from "../utils/variables";
 
 export default function useBasicState() {
-  const [gameCounter, setGameCounter] = useState(0);
+  const [gameCounter, setGameCounter] = useState(1);
   const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
   const [lastDirection, setLastDirection] = useState<Direction>("right");
   const [isGameOver, setIsGameOver] = useState(false);
   const [isMainMenu, setIsMainMenu] = useState(true);
-  const [hitObjectType, setHitObjectType] = useState<FallingObjectType | null>(
-    null
-  );
   const [heroVelocityDown, setHeroVelocityDown] = useState(0);
   const [slowCount, setSlowCount] = useState(0);
   const [points, setPoints] = useState(0);
@@ -23,6 +20,7 @@ export default function useBasicState() {
   const [powerUpPositions, setPowerUpPositions] = useState<FallingObject[]>([]);
   const [meteorPositions, setMeteorPositions] = useState<FallingObject[]>([]);
   const shouldStopGame = isGameOver || isMainMenu;
+  const gameStage = Math.ceil(gameCounter / STAGE_LENGTH);
 
   return {
     powerUpPositions,
@@ -45,8 +43,6 @@ export default function useBasicState() {
     setIsGameOver,
     isMainMenu,
     setIsMainMenu,
-    hitObjectType,
-    setHitObjectType,
     heroVelocityDown,
     setHeroVelocityDown,
     slowCount,
@@ -56,5 +52,6 @@ export default function useBasicState() {
     setLastDirection,
     gameCounter,
     setGameCounter,
+    gameStage,
   };
 }

@@ -42,7 +42,6 @@ export type FallingObjectOptionsIsCollectable = {
   spawnChance?: number;
   isCollectible: true;
   heroOriginPoint: Position;
-  setHitObjectType: (hitObjectType: FallingObjectType) => void;
 };
 export type FallingObjectOptions =
   | FallingObjectOptionsNoCollectable
@@ -81,8 +80,6 @@ export type ContextValues = {
   shouldStopGame: boolean;
   isMainMenu: boolean;
   setIsMainMenu: StateSetter<boolean>;
-  hitObjectType: FallingObjectType | null;
-  setHitObjectType: StateSetter<FallingObjectType | null>;
   heroVelocityDown: number;
   setHeroVelocityDown: StateSetter<number>;
   slowCount: number;
@@ -91,4 +88,5 @@ export type ContextValues = {
   setLastDirection: StateSetter<Direction>;
   gameCounter: number;
   setGameCounter: StateSetter<number>;
+  gameStage: number;
 };
