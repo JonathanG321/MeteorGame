@@ -7,13 +7,7 @@ export default function Meteor({ position }: { position: Position }) {
   const style = createObjectStyle(position, OBJECT_SIZE);
   return (
     <div
-      style={{
-        ...style,
-        // backgroundImage: `url(${meteor})`,
-        // backgroundRepeat: "no-repeat",
-        // backgroundPosition: "bottom",
-        // backgroundSize: "cover",
-      }}
+      style={style}
       className="meteor absolute"
     >
       <img src={meteor} className="absolute bottom-0" />
