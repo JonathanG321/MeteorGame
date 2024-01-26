@@ -70,7 +70,8 @@ function App() {
       const gameStage = Math.ceil(
         contextRefs.gameCounter.current / STAGE_LENGTH
       );
-      const gameStageMultiplier = STAGE_DIFFICULTY_SCALE ** gameStage;
+      const gameStageMultiplier =
+        STAGE_DIFFICULTY_SCALE ** (gameStage <= 5 ? gameStage : 5);
       const powerUpList = getPowerUpList(gameStage);
 
       hooks.useDamageCalculation(
@@ -141,6 +142,7 @@ function App() {
 
       hooks.usePowerUps(
         hisObjectType,
+        gameStage,
         setLives,
         setPoints,
         setShieldCount,
