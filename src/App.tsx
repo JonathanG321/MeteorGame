@@ -13,14 +13,15 @@ import {
   MASK_FACTOR,
   METEOR_SPAWN_CHANCE,
   OBJECT_SIZE,
-  POWER_UP_LIST,
   POWER_UP_SPAWN_CHANCE,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
+  STAGE_DIFFICULTY_SCALE,
   STAGE_LENGTH,
 } from "./utils/variables";
 import { countDownTo0, playAudio, resetAudio } from "./utils/lib";
 import { clockTickingSound, themeSound, timeResumeSound } from "./utils/sounds";
+import { FallingObjectType } from "./utils/types";
 
 function App() {
   const contextValues = hooks.useContextValues();
@@ -69,7 +70,8 @@ function App() {
       const gameStage = Math.ceil(
         contextRefs.gameCounter.current / STAGE_LENGTH
       );
-      const gameStageMultiplier = 1.15 ** gameStage;
+      const gameStageMultiplier = STAGE_DIFFICULTY_SCALE ** gameStage;
+      const powerUpList = getPowerUpList(gameStage);
 
       hooks.useDamageCalculation(
         contextRefs.invincibleCount.current,
@@ -111,15 +113,15 @@ function App() {
         contextRefs.mousePressPosition.current,
         METEOR_SPAWN_CHANCE,
         !!currentSlowCount,
-        gameStageMultiplier
+        gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2
       );
       hooks.useSpawnFallingObject(
         setPowerUpPositions,
-        POWER_UP_LIST,
+        powerUpList,
         { X: null, Y: null },
         POWER_UP_SPAWN_CHANCE,
         !!currentSlowCount,
-        gameStageMultiplier
+        gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2
       );
 
       const hisObjectType = hooks.useObjectGravity(
@@ -177,3 +179,14 @@ function App() {
 }
 
 export default App;
+
+function getPowerUpList(gameStage: number) {
+  let powerUpList: FallingObjectType[] = ["pointsSmall", "health"];
+  if (gameStage >= 2) powerUpList = powerUpList.concat(["pointsMedium"]);
+  if (gameStage >= 3) powerUpList = powerUpList.concat(["shield"]);
+  if (gameStage >= 4)
+    powerUpList = powerUpList.concat(["pointsLarge", "pointsSmall"]);
+  if (gameStage >= 5)
+    powerUpList = powerUpList.concat(["slow", "pointsMedium", "pointsSmall"]);
+  return powerUpList;
+}
