@@ -5,6 +5,7 @@ import {
   StateSetter,
 } from "../utils/types";
 import {
+  OBJECT_GRAVITY,
   OBJECT_SIZE,
   OBJECT_STARTING_HEIGHT,
   SCREEN_WIDTH,
@@ -26,9 +27,9 @@ export default function useSpawnFallingObject(
 
   let newObjectSize = OBJECT_SIZE;
   if (sizeStageMultiplier) {
-    const min = OBJECT_SIZE * 0.95;
-    const max = OBJECT_SIZE * 1.05 * sizeStageMultiplier;
-    newObjectSize = Math.round(Math.random() * (max - min + 1) + min);
+    const min = -8;
+    const max = 15 * sizeStageMultiplier;
+    newObjectSize = OBJECT_SIZE + randomInRange(min, max);
   }
 
   let newObjectX = mouseX
@@ -41,13 +42,22 @@ export default function useSpawnFallingObject(
     newObjectX = SCREEN_WIDTH - newObjectSize;
   }
 
+  const multiplier = sizeStageMultiplier || 1;
+  const newGravity =
+    OBJECT_GRAVITY + randomInRange(-0.25 * multiplier, 0.25 * multiplier);
+
   const newObjectPosition: FallingObject = {
     Y: OBJECT_STARTING_HEIGHT,
     X: newObjectX,
     id: crypto.randomUUID(),
     type: possibleTypes[Math.floor(Math.random() * possibleTypes.length)],
     size: newObjectSize,
+    speed: newGravity < 0.5 ? 0.5 : newGravity,
   };
 
   setObjectPositions((oldValue) => oldValue.concat([newObjectPosition]));
+}
+
+function randomInRange(min: number, max: number) {
+  return Math.random() * (max - min) + min;
 }

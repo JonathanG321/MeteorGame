@@ -18,7 +18,6 @@ export default function Hero() {
     ...heroOriginPoint,
     size: HERO_SIZE,
     id: "",
-    type: "health",
   });
   const scale = 4;
   const newHeightNumber = parseInt(style.height.slice(0, -2));

@@ -1,7 +1,7 @@
-import { FallingObject, Position } from "./types";
+import { Object, Position } from "./types";
 import { HERO_SIZE, OBJECT_COLLISION_THRESHOLD } from "./variables";
 
-export function createObjectStyle(object: FallingObject) {
+export function createObjectStyle(object: Object) {
   return {
     top: object.Y + "px",
     left: object.X + "px",
@@ -44,7 +44,7 @@ export function playAudio(audio: HTMLAudioElement, volume = 0.7) {
 }
 
 export function isObjectCollidingWithHero(
-  object: FallingObject,
+  object: Object,
   heroPosition: Position
 ) {
   const heroLeft = heroPosition.X;

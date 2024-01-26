@@ -20,10 +20,14 @@ export type NullablePosition = {
   Y: null | number;
 };
 
-export type FallingObject = Position & {
-  id: string;
-  type: FallingObjectType;
+export type Object = Position & {
   size: number;
+  id: string;
+};
+
+export type FallingObject = Object & {
+  type: FallingObjectType;
+  speed: number;
 };
 
 export type FallingObjectType =
