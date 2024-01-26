@@ -47,7 +47,7 @@ export default function usePowerUps(
       setSlowCount(NEW_SLOW_COUNT);
       setPoints((previousPoints) => previousPoints + 1000);
       playAudio(timeSlowSound, 1);
-      themeSound.playbackRate = 0.5;
+      themeSound.playbackRate = 0.7;
       setTimeout(() => {
         playAudio(clockTickingSound, 1);
       }, 1000);
