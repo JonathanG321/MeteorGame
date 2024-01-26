@@ -3,11 +3,11 @@ import { createObjectStyle } from "../utils/lib";
 import { FallingObject } from "../utils/types";
 import { OBJECT_SIZE } from "../utils/variables";
 import heart from "../assets/images/powerUps/PixelHeart.png";
-import pointsSmall from "../assets/images/powerUps/BronzePixelTrophy.png";
-import pointsMedium from "../assets/images/powerUps/SilverPixelTrophy.png";
-import pointsLarge from "../assets/images/powerUps/GoldPixelTrophy.png";
+import pointsSmall from "../assets/images/powerUps/PixelCoin.gif";
+import pointsMedium from "../assets/images/powerUps/PixelCrown.png";
+import pointsLarge from "../assets/images/powerUps/PixelGemstone.gif";
 import shield from "../assets/images/powerUps/PixelShield.png";
-import clock from "../assets/images/powerUps/PixelClock.png";
+import hourglass from "../assets/images/powerUps/PixelHourglass.png";
 
 export default function PowerUp({ object }: { object: FallingObject }) {
   const style = createObjectStyle(object, OBJECT_SIZE);
@@ -29,17 +29,18 @@ export default function PowerUp({ object }: { object: FallingObject }) {
       texture = shield;
       break;
     case "slow":
-      texture = clock;
+      texture = hourglass;
       break;
   }
   return (
-    <img
-      src={texture}
+    <div
       style={style}
       {...style}
       className={classNames("absolute", object.type, {
         "bg-purple-500": object.type === "meteor",
       })}
-    />
+    >
+      <img src={texture} className={classNames("absolute", "left-0")} />
+    </div>
   );
 }
