@@ -1,15 +1,15 @@
 import { createObjectStyle } from "../utils/lib";
-import { Position } from "../utils/types";
-import { OBJECT_SIZE } from "../utils/variables";
+import { FallingObject } from "../utils/types";
 import meteor from "../assets/images/PixelMeteor.gif";
 
-export default function Meteor({ position }: { position: Position }) {
-  const style = createObjectStyle(position, OBJECT_SIZE);
+type Props = {
+  meteorObject: FallingObject;
+};
+
+export default function Meteor({ meteorObject }: Props) {
+  const style = createObjectStyle(meteorObject);
   return (
-    <div
-      style={style}
-      className="meteor absolute"
-    >
+    <div style={style} className="meteor absolute">
       <img src={meteor} className="absolute bottom-0" />
     </div>
   );

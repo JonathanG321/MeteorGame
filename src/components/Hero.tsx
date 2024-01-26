@@ -14,7 +14,12 @@ export default function Hero() {
     lastDirection,
     slowCount,
   } = useContext(GameStateContext);
-  const style = createObjectStyle(heroOriginPoint, HERO_SIZE);
+  const style = createObjectStyle({
+    ...heroOriginPoint,
+    size: HERO_SIZE,
+    id: "",
+    type: "health",
+  });
   const scale = 4;
   const newHeightNumber = parseInt(style.height.slice(0, -2));
   const newWidthNumber = parseInt(style.width.slice(0, -2));

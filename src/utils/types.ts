@@ -23,6 +23,7 @@ export type NullablePosition = {
 export type FallingObject = Position & {
   id: string;
   type: FallingObjectType;
+  size: number;
 };
 
 export type FallingObjectType =

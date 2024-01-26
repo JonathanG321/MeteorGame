@@ -113,7 +113,8 @@ function App() {
         contextRefs.mousePressPosition.current,
         METEOR_SPAWN_CHANCE,
         !!currentSlowCount,
-        gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2
+        gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2,
+        gameStageMultiplier
       );
       hooks.useSpawnFallingObject(
         setPowerUpPositions,
@@ -164,8 +165,8 @@ function App() {
           <Canvas>
             {(contextValues.isGameOver || contextValues.isMainMenu) && <Menu />}
             <Hero />
-            {contextValues.meteorPositions.map((position) => (
-              <Meteor key={position.id} position={position} />
+            {contextValues.meteorPositions.map((meteorObject) => (
+              <Meteor key={meteorObject.id} meteorObject={meteorObject} />
             ))}
             {contextValues.powerUpPositions.map((object) => (
               <PowerUp key={object.id} object={object} />

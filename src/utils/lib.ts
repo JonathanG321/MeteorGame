@@ -1,16 +1,12 @@
-import { Box, FallingObject, Position } from "./types";
-import {
-  HERO_SIZE,
-  OBJECT_COLLISION_THRESHOLD,
-  OBJECT_SIZE,
-} from "./variables";
+import { FallingObject, Position } from "./types";
+import { HERO_SIZE, OBJECT_COLLISION_THRESHOLD } from "./variables";
 
-export function createObjectStyle(position: Position, size: number) {
+export function createObjectStyle(object: FallingObject) {
   return {
-    top: position.Y + "px",
-    left: position.X + "px",
-    height: size + "px",
-    width: size + "px",
+    top: object.Y + "px",
+    left: object.X + "px",
+    height: object.size + "px",
+    width: object.size + "px",
   };
 }
 
@@ -58,8 +54,8 @@ export function isObjectCollidingWithHero(
 
   const objectLeft = object.X + OBJECT_COLLISION_THRESHOLD;
   const objectTop = object.Y + OBJECT_COLLISION_THRESHOLD;
-  const objectRight = objectLeft + OBJECT_SIZE - OBJECT_COLLISION_THRESHOLD * 2;
-  const objectBottom = objectTop + OBJECT_SIZE - OBJECT_COLLISION_THRESHOLD * 2;
+  const objectRight = objectLeft + object.size - OBJECT_COLLISION_THRESHOLD * 2;
+  const objectBottom = objectTop + object.size - OBJECT_COLLISION_THRESHOLD * 2;
 
   const isHeroColliding =
     heroLeft < objectRight &&
