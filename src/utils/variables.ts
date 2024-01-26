@@ -1,4 +1,4 @@
-import { FallingObjectType } from "./types";
+import { PressedKeys } from "./types";
 
 export const BASE_FPS = 60;
 export const FRAME_RATE = Math.floor(1000 / BASE_FPS);
@@ -38,7 +38,7 @@ export const NEW_SLOW_COUNT = SLOW_DURATION * BASE_FPS;
 
 export const POWER_UP_SPAWN_CHANCE = 0.35; // chance of a powerUp actually spawn on attempt
 
-export const BASE_PRESSED_KEYS = {
+export const BASE_PRESSED_KEYS: PressedKeys = {
   ArrowUp: false,
   ArrowDown: false,
   ArrowLeft: false,
