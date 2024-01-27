@@ -17,11 +17,11 @@ import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   STAGE_DIFFICULTY_SCALE,
-  STAGE_LENGTH,
 } from "./utils/variables";
 import { countDownTo0, playAudio, resetAudio } from "./utils/lib";
 import { clockTickingSound, themeSound, timeResumeSound } from "./utils/sounds";
 import { FallingObjectType } from "./utils/types";
+import UI from "./components/UI";
 
 function App() {
   const contextValues = hooks.useContextValues();
@@ -67,9 +67,7 @@ function App() {
       setSlowCount((prevValue) => countDownTo0(prevValue, !!currentSlowCount));
       setPoints((prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10));
       setGameCounter((prevValue) => prevValue + (currentSlowCount > 0 ? 1 : 2));
-      const gameStage = Math.ceil(
-        contextRefs.gameCounter.current / STAGE_LENGTH
-      );
+      const gameStage = contextRefs.gameStage.current;
       const gameStageMultiplier =
         STAGE_DIFFICULTY_SCALE ** (gameStage <= 5 ? gameStage : 5);
       const powerUpList = getPowerUpList(gameStage);
@@ -156,7 +154,7 @@ function App() {
 
   return (
     <GameStateContext.Provider value={contextValues}>
-      <div className="flex h-screen w-full items-center justify-center overflow-hidden">
+      <div className="flex h-screen w-full items-center justify-center overflow-hidden font-pix-con">
         <div
           className="relative"
           style={{ height: SCREEN_HEIGHT + 8, width: SCREEN_WIDTH + 8 }}
@@ -165,6 +163,7 @@ function App() {
             <HeaderBar />
           </Mask>
           <Canvas>
+            <UI />
             {(contextValues.isGameOver || contextValues.isMainMenu) && <Menu />}
             <Hero />
             {contextValues.meteorPositions.map((meteorObject) => (
