@@ -27,7 +27,8 @@ export default function MenuScreen() {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="text-5xl font-extrabold">Meteor Hero</div>
+      <div className="mb-1 text-5xl font-extrabold">Meteor</div>
+      <div className="mb-4 text-5xl font-extrabold">Hero</div>
       <div className="text-xl font-semibold">Press Space to Start</div>
     </div>
   );

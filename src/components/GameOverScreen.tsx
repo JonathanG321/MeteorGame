@@ -35,8 +35,8 @@ export default function GameOverScreen() {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="text-5xl font-extrabold">Game Over!</div>
-      <div className="text-xl font-semibold">Press Space to Restart</div>
+      <div className="mb-4 text-4xl font-extrabold">Game Over!</div>
+      <div className="text-lg font-semibold">Press Space to Restart</div>
     </div>
   );
 }
