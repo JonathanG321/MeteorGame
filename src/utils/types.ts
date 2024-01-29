@@ -78,8 +78,8 @@ export type ContextValues = {
   setPoints: StateSetter<number>;
   highScore: number;
   setHighScore: StateSetter<number>;
-  heroOriginPoint: Position;
-  setHeroOriginPoint: StateSetter<Position>;
+  heroOriginPoint: NullablePosition;
+  setHeroOriginPoint: StateSetter<NullablePosition>;
   isGameOver: boolean;
   setIsGameOver: StateSetter<boolean>;
   shouldStopGame: boolean;

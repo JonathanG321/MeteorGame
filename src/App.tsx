@@ -12,13 +12,19 @@ import {
   FRAME_RATE,
   MASK_FACTOR,
   METEOR_SPAWN_CHANCE,
+  NULL_POSITION,
   OBJECT_SIZE,
   POWER_UP_SPAWN_CHANCE,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   STAGE_DIFFICULTY_SCALE,
 } from "./utils/variables";
-import { countDownTo0, playAudio, resetAudio } from "./utils/lib";
+import {
+  countDownTo0,
+  isValidPosition,
+  playAudio,
+  resetAudio,
+} from "./utils/lib";
 import { clockTickingSound, themeSound, timeResumeSound } from "./utils/sounds";
 import { FallingObjectType } from "./utils/types";
 import UI from "./components/UI";
@@ -87,24 +93,26 @@ function App() {
       if (contextRefs.slowCount.current === 60) resetAudio(clockTickingSound);
       if (contextRefs.slowCount.current === 1) themeSound.playbackRate = 1;
 
-      hooks.useHeroMovementLogicX(
-        contextRefs.heroOriginPoint.current.X,
-        contextRefs.pressedKeys.current.ArrowLeft,
-        contextRefs.pressedKeys.current.ArrowRight,
-        !!currentSlowCount,
-        contextRefs.lastDirection.current,
-        setHeroOriginPoint,
-        setLastDirection
-      );
-      hooks.useHeroMovementLogicY(
-        contextRefs.heroOriginPoint.current.Y,
-        contextRefs.pressedKeys.current.ArrowUp,
-        contextRefs.pressedKeys.current.ArrowDown,
-        contextRefs.heroVelocityDown.current,
-        currentSlowCount,
-        setHeroVelocityDown,
-        setHeroOriginPoint
-      );
+      if (isValidPosition(contextRefs.heroOriginPoint.current)) {
+        hooks.useHeroMovementLogicX(
+          contextRefs.heroOriginPoint.current.X,
+          contextRefs.pressedKeys.current.ArrowLeft,
+          contextRefs.pressedKeys.current.ArrowRight,
+          !!currentSlowCount,
+          contextRefs.lastDirection.current,
+          setHeroOriginPoint,
+          setLastDirection
+        );
+        hooks.useHeroMovementLogicY(
+          contextRefs.heroOriginPoint.current.Y,
+          contextRefs.pressedKeys.current.ArrowUp,
+          contextRefs.pressedKeys.current.ArrowDown,
+          contextRefs.heroVelocityDown.current,
+          currentSlowCount,
+          setHeroVelocityDown,
+          setHeroOriginPoint
+        );
+      }
 
       hooks.useSpawnFallingObject(
         setMeteorPositions,
@@ -118,7 +126,7 @@ function App() {
       hooks.useSpawnFallingObject(
         setPowerUpPositions,
         powerUpList,
-        { X: null, Y: null },
+        NULL_POSITION,
         POWER_UP_SPAWN_CHANCE,
         !!currentSlowCount,
         gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2

@@ -1,6 +1,6 @@
 import { playAudio } from "../utils/lib";
 import { jumpSound } from "../utils/sounds";
-import { Position, StateSetter } from "../utils/types";
+import { NullablePosition, Position, StateSetter } from "../utils/types";
 import {
   HERO_GRAVITY,
   HERO_JUMP_SPEED,
@@ -16,7 +16,7 @@ export default function useHeroMovementLogicY(
   velocityDown: number,
   slowCount: number,
   setVelocityDown: StateSetter<number>,
-  updatePosition: StateSetter<Position>
+  updatePosition: StateSetter<NullablePosition>
 ) {
   if (
     slowCount % 2 !== 0 ||

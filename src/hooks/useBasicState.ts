@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Direction, FallingObject } from "../utils/types";
-import { HERO_SPAWN_POINT, STAGE_LENGTH } from "../utils/variables";
+import { Direction, FallingObject, NullablePosition } from "../utils/types";
+import { NULL_POSITION, STAGE_LENGTH } from "../utils/variables";
 
 export default function useBasicState() {
   const [gameCounter, setGameCounter] = useState(1);
-  const [heroOriginPoint, setHeroOriginPoint] = useState(HERO_SPAWN_POINT);
+  const [heroOriginPoint, setHeroOriginPoint] =
+    useState<NullablePosition>(NULL_POSITION);
   const [lastDirection, setLastDirection] = useState<Direction>("right");
   const [isGameOver, setIsGameOver] = useState(false);
   const [isMainMenu, setIsMainMenu] = useState(true);

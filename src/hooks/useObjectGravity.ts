@@ -1,15 +1,15 @@
-import { isObjectCollidingWithHero } from "../utils/lib";
+import { isObjectCollidingWithHero, isValidPosition } from "../utils/lib";
 import {
   FallingObject,
   FallingObjectType,
-  Position,
+  NullablePosition,
   StateSetter,
 } from "../utils/types";
 import { OBJECT_SIZE, SCREEN_HEIGHT } from "../utils/variables";
 
 export default function useObjectGravity(
   setObjectPositions: StateSetter<FallingObject[]>,
-  heroOriginPoint: Position,
+  heroOriginPoint: NullablePosition,
   isSlow: boolean,
   gameStageMultiplier: number,
   isCollectible = false
@@ -33,7 +33,7 @@ export default function useObjectGravity(
     const filteredObjects = updatedObjects.filter((object) => {
       const isObjectInBounds = object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
 
-      if (!isObjectInBounds) return false;
+      if (!isObjectInBounds || !isValidPosition(heroOriginPoint)) return false;
 
       const isHittingHero = !!isObjectCollidingWithHero(
         object,

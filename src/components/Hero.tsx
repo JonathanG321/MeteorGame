@@ -1,7 +1,11 @@
 import { useContext } from "react";
 import { HERO_SIZE, SHIELD_WARNING_DURATION } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
-import { createObjectStyle, shouldShowFlash } from "../utils/lib";
+import {
+  createObjectStyle,
+  isValidPosition,
+  shouldShowFlash,
+} from "../utils/lib";
 import shield from "../assets/images/powerUps/PixelShield.png";
 import knightRight from "../assets/images/PixelKnightRight.png";
 import knightLeft from "../assets/images/PixelKnightLeft.png";
@@ -14,6 +18,8 @@ export default function Hero() {
     lastDirection,
     slowCount,
   } = useContext(GameStateContext);
+  if (!isValidPosition(heroOriginPoint)) return null;
+
   const style = createObjectStyle({
     ...heroOriginPoint,
     size: HERO_SIZE,
@@ -24,6 +30,7 @@ export default function Hero() {
   const newWidthNumber = parseInt(style.width.slice(0, -2));
   const newHeight = newHeightNumber + scale * 2 + "px";
   const newWidth = newWidthNumber + scale * 2 + "px";
+
   return (
     <div style={style} className="absolute">
       {!!shieldCount &&

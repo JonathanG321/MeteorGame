@@ -1,4 +1,9 @@
-import { Direction, Position, StateSetter } from "../utils/types";
+import {
+  Direction,
+  NullablePosition,
+  Position,
+  StateSetter,
+} from "../utils/types";
 import { HERO_SIZE, HERO_SPEED, SCREEN_WIDTH } from "../utils/variables";
 
 export default function useHeroMovementLogicX(
@@ -7,7 +12,7 @@ export default function useHeroMovementLogicX(
   pressedKeyRight: boolean,
   isSlow: boolean,
   lastDirection: Direction,
-  updatePosition: StateSetter<Position>,
+  updatePosition: StateSetter<NullablePosition>,
   setLastDirection: StateSetter<Direction>
 ) {
   if (!pressedKeyLeft && !pressedKeyRight) return;
