@@ -1,4 +1,4 @@
-import { Object, Position } from "./types";
+import { NullablePosition, Object, Position } from "./types";
 import { HERO_SIZE, OBJECT_COLLISION_THRESHOLD } from "./variables";
 
 export function createObjectStyle(object: Object) {
@@ -8,6 +8,12 @@ export function createObjectStyle(object: Object) {
     height: object.size + "px",
     width: object.size + "px",
   };
+}
+
+export function isValidPosition(
+  position: NullablePosition
+): position is Position {
+  return position.X !== null && position.X !== null;
 }
 
 export function countDownTo0(prevCount: number, isSlow: boolean) {
