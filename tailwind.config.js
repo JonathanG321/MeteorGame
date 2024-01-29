@@ -5,6 +5,9 @@ module.exports = {
       fontFamily: {
         "pix-con": ["PixCon", "serif"],
       },
+      spacing: {
+        31: "7.75rem",
+      },
     },
   },
   plugins: [],
