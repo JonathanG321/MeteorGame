@@ -94,4 +94,6 @@ export type ContextValues = {
   gameCounter: number;
   setGameCounter: StateSetter<number>;
   gameStage: number;
+  isTwoPlayers: boolean;
+  setIsTwoPlayers: StateSetter<boolean>;
 };

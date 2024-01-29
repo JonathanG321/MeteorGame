@@ -11,7 +11,6 @@ import {
   PressedKeys,
   Direction,
   ContextValues,
-  FallingObjectType,
 } from "../utils/types";
 
 function stateSetterNumber(_: React.SetStateAction<number>): void {}
@@ -21,9 +20,6 @@ function stateSetterDirection(_: React.SetStateAction<Direction>): void {}
 function stateSetterPressedKeys(_: React.SetStateAction<PressedKeys>): void {}
 function stateSetterFallingObject(
   _: React.SetStateAction<FallingObject[]>
-): void {}
-function stateSetterHitObjectType(
-  _: React.SetStateAction<FallingObjectType | null>
 ): void {}
 
 export const GameStateContext = createContext({
@@ -58,6 +54,8 @@ export const GameStateContext = createContext({
   setLastDirection: stateSetterDirection,
   gameCounter: 0,
   setGameCounter: stateSetterNumber,
+  isTwoPlayers: false,
+  setIsTwoPlayers: stateSetterBoolean,
   isHit: false,
   heroOriginPoint: HERO_SPAWN_POINT,
   shouldStopGame: false,

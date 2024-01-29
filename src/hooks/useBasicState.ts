@@ -4,6 +4,7 @@ import { NULL_POSITION, STAGE_LENGTH } from "../utils/variables";
 
 export default function useBasicState() {
   const [gameCounter, setGameCounter] = useState(1);
+  const [isTwoPlayers, setIsTwoPlayers] = useState(false);
   const [heroOriginPoint, setHeroOriginPoint] =
     useState<NullablePosition>(NULL_POSITION);
   const [lastDirection, setLastDirection] = useState<Direction>("right");
@@ -54,5 +55,7 @@ export default function useBasicState() {
     gameCounter,
     setGameCounter,
     gameStage,
+    isTwoPlayers,
+    setIsTwoPlayers,
   };
 }
