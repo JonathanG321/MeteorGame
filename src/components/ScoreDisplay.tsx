@@ -18,12 +18,23 @@ export default function ScoreDisplay({
   className,
 }: Props) {
   const { points } = useContext(GameStateContext);
+  const pointsDigits = (displayPoints ?? points)
+    .toLocaleString()
+    .split("")
+    .reverse();
+  const finalDigits = Array.from({ length: 9 })
+    .map((_, i) => {
+      if ((i + 1) % 4 === 0) return ",";
+      return pointsDigits[i] ?? "0";
+    })
+    .reverse()
+    .join("");
   return (
     <div
       className={classNames(
         "flex min-w-48 flex-col justify-center",
         className,
-        { "items-center": !left, "ml-6": left }
+        { "items-center": !left }
       )}
     >
       <div className="text-lg font-bold">{header ?? "Score"}</div>
@@ -33,11 +44,53 @@ export default function ScoreDisplay({
           "text-2xl": !large,
         })}
       >
-        {(displayPoints ?? points)
+        {/* {Array.from({ length: 9 }).map((_, i) => {
+          const char = pointsDigits[i];
+          if (i === 5 || i === 1) {
+            return (
+              <div
+                key={"," + i}
+                className={classNames("flex justify-center text-center", {
+                  "w-2": !large,
+                  "w-3": large,
+                })}
+              >
+                ,
+              </div>
+            );
+          } else if (i + pointsDigits.length < 9) {
+            return (
+              <div
+                key={"0" + i}
+                className={classNames("flex justify-center text-center", {
+                  "w-[22px]": !large,
+                  "w-[26px]": large,
+                })}
+              >
+                0
+              </div>
+            );
+          }
+          return (
+            <div
+              key={char + i}
+              className={classNames("flex justify-center text-center", {
+                "w-[22px]": char !== "," && !large,
+                "w-[26px]": char !== "," && large,
+                "w-2": char === "," && !large,
+                "w-3": char === "," && large,
+              })}
+            >
+              {char}
+            </div>
+          );
+        })} */}
+        {(displayPoints || finalDigits)
           .toLocaleString()
           .split("")
-          .map((char) => (
+          .map((char, i) => (
             <div
+              key={char + i}
               className={classNames("flex justify-center text-center", {
                 "w-[22px]": char !== "," && !large,
                 "w-[26px]": char !== "," && large,
