@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { NullablePosition } from "../utils/types";
+import { NULL_POSITION } from "../utils/variables";
 
 export default function useClick() {
   const [mousePressPosition, setMousePressPosition] =
-    useState<NullablePosition>({ X: null, Y: null });
+    useState<NullablePosition>(NULL_POSITION);
   const [mousePressed, setMousePressed] = useState(false);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function useClick() {
     }
     function handleMouseUp() {
       setMousePressed(false);
-      setMousePressPosition({ X: null, Y: null });
+      setMousePressPosition(NULL_POSITION);
     }
 
     document.addEventListener("mousemove", handleMouseMove);

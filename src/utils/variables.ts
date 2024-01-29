@@ -19,6 +19,10 @@ export const HERO_SPAWN_POINT = {
   X: SCREEN_WIDTH / 2 - HERO_SIZE,
   Y: SCREEN_HEIGHT - HERO_SIZE,
 };
+export const NULL_POSITION = {
+  X: null,
+  Y: null,
+};
 
 export const METEOR_SPAWN_CHANCE = 3; // chance of a meteor actually spawn on attempt
 export const OBJECT_GRAVITY = 2;
