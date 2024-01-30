@@ -21,12 +21,12 @@ import {
 } from "./utils/variables";
 import {
   countDownTo0,
+  getPowerUpList,
   isValidPosition,
   playAudio,
   resetAudio,
 } from "./utils/lib";
 import { clockTickingSound, themeSound, timeResumeSound } from "./utils/sounds";
-import { FallingObjectType } from "./utils/types";
 import UI from "./components/UI";
 
 function App() {
@@ -49,6 +49,13 @@ function App() {
     setLastDirection,
     setHeroOriginPoint,
     setGameCounter,
+    setHeroTwoOriginPoint,
+    setLastDirectionTwo,
+    setHeroVelocityDownTwo,
+    setLivesTwo,
+    setInvincibleCountTwo,
+    setShieldCountTwo,
+    setPointsTwo,
   } = contextValues;
 
   const contextRefs = hooks.useUpdatingRefsForObject(
@@ -72,6 +79,7 @@ function App() {
       const currentSlowCount = contextRefs.slowCount.current;
       setSlowCount((prevValue) => countDownTo0(prevValue, !!currentSlowCount));
       setPoints((prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10));
+      setPointsTwo((prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10));
       setGameCounter((prevValue) => prevValue + (currentSlowCount > 0 ? 1 : 2));
       const gameStage = contextRefs.gameStage.current;
       const gameStageMultiplier =
@@ -132,9 +140,10 @@ function App() {
         gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2
       );
 
-      const hisObjectType = hooks.useObjectGravity(
+      const hitObject = hooks.useObjectGravity(
         setPowerUpPositions,
         contextRefs.heroOriginPoint.current,
+        contextRefs.heroTwoOriginPoint.current,
         !!currentSlowCount,
         gameStageMultiplier,
         true
@@ -142,18 +151,55 @@ function App() {
       hooks.useObjectGravity(
         setMeteorPositions,
         contextRefs.heroOriginPoint.current,
+        contextRefs.heroTwoOriginPoint.current,
         !!currentSlowCount,
         gameStageMultiplier
       );
 
       hooks.usePowerUps(
-        hisObjectType,
+        hitObject.hitObjectType,
+        hitObject.isHeroTwo,
         gameStage,
         setLives,
         setPoints,
         setShieldCount,
+        setLivesTwo,
+        setPointsTwo,
+        setShieldCountTwo,
         setSlowCount
       );
+      if (contextRefs.isTwoPlayers.current) {
+        hooks.useDamageCalculation(
+          contextRefs.invincibleCountTwo.current,
+          contextRefs.shieldCountTwo.current,
+          contextRefs.isHitTwo.current,
+          !!currentSlowCount,
+          contextRefs.livesTwo.current,
+          setLivesTwo,
+          setInvincibleCountTwo,
+          setShieldCountTwo
+        );
+        if (isValidPosition(contextRefs.heroTwoOriginPoint.current)) {
+          hooks.useHeroMovementLogicX(
+            contextRefs.heroTwoOriginPoint.current.X,
+            contextRefs.pressedKeys.current.KeyA,
+            contextRefs.pressedKeys.current.KeyD,
+            !!currentSlowCount,
+            contextRefs.lastDirectionTwo.current,
+            setHeroTwoOriginPoint,
+            setLastDirectionTwo
+          );
+          hooks.useHeroMovementLogicY(
+            contextRefs.heroTwoOriginPoint.current.Y,
+            contextRefs.pressedKeys.current.KeyW,
+            contextRefs.pressedKeys.current.KeyS,
+            contextRefs.heroVelocityDownTwo.current,
+            currentSlowCount,
+            setHeroVelocityDownTwo,
+            setHeroTwoOriginPoint
+          );
+        }
+      }
     }, FRAME_RATE);
     return () => {
       clearInterval(frameIntervalId);
@@ -172,8 +218,21 @@ function App() {
           </Mask>
           <Canvas>
             <UI />
-            {(contextValues.isGameOver || contextValues.isMainMenu) && <Menu />}
-            <Hero />
+            {(isGameOver || isMainMenu) && <Menu />}
+            <Hero
+              heroOriginPoint={contextValues.heroOriginPoint}
+              invincibleCount={contextValues.invincibleCount}
+              lastDirection={contextValues.lastDirection}
+              shieldCount={contextValues.shieldCount}
+            />
+            {contextValues.isTwoPlayers && (
+              <Hero
+                heroOriginPoint={contextValues.heroTwoOriginPoint}
+                invincibleCount={contextValues.invincibleCountTwo}
+                lastDirection={contextValues.lastDirectionTwo}
+                shieldCount={contextValues.shieldCountTwo}
+              />
+            )}
             {contextValues.meteorPositions.map((meteorObject) => (
               <Meteor key={meteorObject.id} meteorObject={meteorObject} />
             ))}
@@ -189,14 +248,3 @@ function App() {
 }
 
 export default App;
-
-function getPowerUpList(gameStage: number) {
-  let powerUpList: FallingObjectType[] = ["pointsSmall", "health"];
-  if (gameStage >= 2) powerUpList = powerUpList.concat(["pointsMedium"]);
-  if (gameStage >= 3) powerUpList = powerUpList.concat(["shield"]);
-  if (gameStage >= 4)
-    powerUpList = powerUpList.concat(["pointsLarge", "pointsSmall"]);
-  if (gameStage >= 5)
-    powerUpList = powerUpList.concat(["slow", "pointsMedium", "pointsSmall"]);
-  return powerUpList;
-}

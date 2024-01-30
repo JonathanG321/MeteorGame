@@ -9,17 +9,23 @@ import {
 import shield from "../assets/images/powerUps/PixelShield.png";
 import knightRight from "../assets/images/PixelKnightRight.png";
 import knightLeft from "../assets/images/PixelKnightLeft.png";
+import { Direction, NullablePosition } from "../utils/types";
 
-export default function Hero() {
-  const {
-    heroOriginPoint,
-    invincibleCount,
-    shieldCount,
-    lastDirection,
-    slowCount,
-  } = useContext(GameStateContext);
+type Props = {
+  heroOriginPoint: NullablePosition;
+  invincibleCount: number;
+  shieldCount: number;
+  lastDirection: Direction;
+};
+
+export default function Hero({
+  heroOriginPoint,
+  invincibleCount,
+  shieldCount,
+  lastDirection,
+}: Props) {
+  const { slowCount } = useContext(GameStateContext);
   if (!isValidPosition(heroOriginPoint)) return null;
-
   const style = createObjectStyle({
     ...heroOriginPoint,
     size: HERO_SIZE,

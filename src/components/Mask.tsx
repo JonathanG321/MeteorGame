@@ -8,8 +8,6 @@ type Props = PropsWithChildren<{
 }>;
 
 export default function Mask({ top, className, children }: Props) {
-  const height =
-    OBJECT_SIZE * MASK_FACTOR > 80 ? OBJECT_SIZE * MASK_FACTOR : 80;
   return (
     <div
       style={{ height: OBJECT_SIZE * MASK_FACTOR, top }}

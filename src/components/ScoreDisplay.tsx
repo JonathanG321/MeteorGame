@@ -8,6 +8,7 @@ type Props = {
   className?: string;
   left?: boolean;
   large?: boolean;
+  isSecondPlayer?: boolean;
 };
 
 export default function ScoreDisplay({
@@ -15,10 +16,11 @@ export default function ScoreDisplay({
   displayPoints,
   left = false,
   large = false,
+  isSecondPlayer = false,
   className,
 }: Props) {
-  const { points } = useContext(GameStateContext);
-  const pointsDigits = (displayPoints ?? points)
+  const { points, pointsTwo } = useContext(GameStateContext);
+  const pointsDigits = (displayPoints ?? (isSecondPlayer ? pointsTwo : points))
     .toLocaleString()
     .split("")
     .reverse();
