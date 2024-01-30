@@ -1,4 +1,4 @@
-import { NullablePosition, Object, Position } from "./types";
+import { FallingObjectType, NullablePosition, Object, Position } from "./types";
 import { HERO_SIZE, OBJECT_COLLISION_THRESHOLD } from "./variables";
 
 export function createObjectStyle(object: Object) {
@@ -37,6 +37,17 @@ export function shouldShowFlash(count: number, isSlow: boolean) {
     slowCountMod === 6 ||
     slowCountMod === 7
   );
+}
+
+export function getPowerUpList(gameStage: number) {
+  let powerUpList: FallingObjectType[] = ["pointsSmall", "health"];
+  if (gameStage >= 2) powerUpList = powerUpList.concat(["pointsMedium"]);
+  if (gameStage >= 3) powerUpList = powerUpList.concat(["shield"]);
+  if (gameStage >= 4)
+    powerUpList = powerUpList.concat(["pointsLarge", "pointsSmall"]);
+  if (gameStage >= 5)
+    powerUpList = powerUpList.concat(["slow", "pointsMedium", "pointsSmall"]);
+  return powerUpList;
 }
 
 export function resetAudio(audio: HTMLAudioElement) {
