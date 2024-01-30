@@ -55,7 +55,7 @@ export function resetAudio(audio: HTMLAudioElement) {
   audio.currentTime = 0;
 }
 export function playAudio(audio: HTMLAudioElement, volume = 0.7) {
-  resetAudio(audio);
+  audio.currentTime = 0;
   audio.volume = volume;
   audio.play();
 }
