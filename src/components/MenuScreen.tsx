@@ -11,6 +11,7 @@ export default function MenuScreen() {
     setMeteorPositions,
     setPressedKeys,
     setHeroOriginPoint,
+    setHeroTwoOriginPoint,
     setIsTwoPlayers,
     isTwoPlayers,
   } = useContext(GameStateContext);
@@ -28,6 +29,9 @@ export default function MenuScreen() {
       } else if (e.code === "ArrowLeft") {
         setIsTwoPlayers(false);
       }
+      if (e.code === "Space" && isTwoPlayers) {
+        setHeroTwoOriginPoint(HERO_SPAWN_POINT);
+      }
     }
 
     document.addEventListener("keyup", handleKeyUp);
@@ -35,7 +39,7 @@ export default function MenuScreen() {
     return () => {
       document.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [isTwoPlayers]);
 
   return (
     <div className="flex flex-col items-center">
