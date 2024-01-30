@@ -4,7 +4,6 @@ import useCollectPowerUp from "./useCollectPowerUp";
 import useContextRefsUpdates from "./useContextRefsUpdates";
 import useContextValues from "./useContextValues";
 import useDamageCalculation from "./useDamageCalculation";
-import useDetectCollision from "./useDetectCollision";
 import useFallingObject from "./useObjectGravity";
 import useGameOver from "./useGameOver";
 import useHeroMovementLogicX from "./useHeroMovementLogicX";
@@ -20,7 +19,6 @@ export default {
   useClick,
   useCollectPowerUp,
   useContextRefsUpdates,
-  useDetectCollision,
   useFallingObject,
   usePowerUps,
   useUpdatingRefsForObject,
