@@ -10,11 +10,13 @@ import { OBJECT_SIZE, SCREEN_HEIGHT } from "../utils/variables";
 export default function useObjectGravity(
   setObjectPositions: StateSetter<FallingObject[]>,
   heroOriginPoint: NullablePosition,
+  heroTwoOriginPoint: NullablePosition,
   isSlow: boolean,
   gameStageMultiplier: number,
   isCollectible = false
-): FallingObjectType | null {
+): { hitObjectType: FallingObjectType | null; isHeroTwo: boolean } {
   let hitObjectType: FallingObjectType | null = null;
+  let isHeroTwo = false;
   setObjectPositions((oldValue) => {
     const updatedObjects = oldValue.map((object) => {
       const speed = object.speed * gameStageMultiplier;
@@ -40,10 +42,18 @@ export default function useObjectGravity(
         heroOriginPoint
       );
       if (isHittingHero) hitObjectType = object.type;
-      return !isHittingHero;
+
+      if (!isValidPosition(heroTwoOriginPoint)) return !isHittingHero;
+
+      const isHittingHeroTwo = !!isObjectCollidingWithHero(
+        object,
+        heroTwoOriginPoint
+      );
+      isHeroTwo = isHittingHeroTwo;
+      return !(isHittingHero || isHittingHeroTwo);
     });
 
     return filteredObjects;
   });
-  return hitObjectType;
+  return { hitObjectType, isHeroTwo };
 }

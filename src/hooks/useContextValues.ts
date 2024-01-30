@@ -7,12 +7,15 @@ import usePressedKeys from "./usePressedKeys";
 
 export default function useContextValues(): ContextValues {
   const basicState = useBasicState();
-  const { heroOriginPoint } = basicState;
+  const { heroOriginPoint, heroTwoOriginPoint } = basicState;
   const pressedKeys = usePressedKeys();
   const click = useClick();
 
   const isHit = isValidPosition(heroOriginPoint)
     ? !!useDetectCollision(basicState.meteorPositions, heroOriginPoint)
+    : false;
+  const isHitTwo = isValidPosition(heroTwoOriginPoint)
+    ? !!useDetectCollision(basicState.meteorPositions, heroTwoOriginPoint)
     : false;
 
   return {
@@ -20,5 +23,6 @@ export default function useContextValues(): ContextValues {
     ...pressedKeys,
     ...click,
     isHit,
+    isHitTwo,
   };
 }

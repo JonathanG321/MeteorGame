@@ -7,6 +7,10 @@ export type PressedKeys = {
   ArrowDown: boolean;
   ArrowLeft: boolean;
   ArrowRight: boolean;
+  KeyW: boolean;
+  KeyA: boolean;
+  KeyS: boolean;
+  KeyD: boolean;
 };
 
 export type Box = { topLeft: Position; bottomRight: Position };
@@ -60,6 +64,7 @@ export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export type ContextValues = {
   isHit: boolean;
+  isHitTwo: boolean;
   powerUpPositions: FallingObject[];
   setPowerUpPositions: StateSetter<FallingObject[]>;
   meteorPositions: FallingObject[];
@@ -96,4 +101,18 @@ export type ContextValues = {
   gameStage: number;
   isTwoPlayers: boolean;
   setIsTwoPlayers: StateSetter<boolean>;
+  heroTwoOriginPoint: NullablePosition;
+  setHeroTwoOriginPoint: StateSetter<NullablePosition>;
+  lastDirectionTwo: Direction;
+  setLastDirectionTwo: StateSetter<Direction>;
+  heroVelocityDownTwo: number;
+  setHeroVelocityDownTwo: StateSetter<number>;
+  pointsTwo: number;
+  setPointsTwo: StateSetter<number>;
+  livesTwo: number;
+  setLivesTwo: StateSetter<number>;
+  invincibleCountTwo: number;
+  setInvincibleCountTwo: StateSetter<number>;
+  shieldCountTwo: number;
+  setShieldCountTwo: StateSetter<number>;
 };
