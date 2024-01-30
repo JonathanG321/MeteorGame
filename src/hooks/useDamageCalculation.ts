@@ -1,8 +1,14 @@
 import { countDownTo0, playAudio } from "../utils/lib";
 import { hitSound, shieldSound } from "../utils/sounds";
-import { StateSetter } from "../utils/types";
+import {
+  ContextValues,
+  NullablePosition,
+  ObjectWithRefs,
+  StateSetter,
+} from "../utils/types";
 import {
   NEW_INVINCIBLE_COUNT,
+  NULL_POSITION,
   SHIELD_WARNING_DURATION,
 } from "../utils/variables";
 
@@ -14,10 +20,14 @@ export default function useDamageCalculation(
   lives: number,
   setLives: StateSetter<number>,
   setInvincibleCount: StateSetter<number>,
-  setShieldCount: StateSetter<number>
+  setShieldCount: StateSetter<number>,
+  setHeroPosition: StateSetter<NullablePosition>
 ) {
   if (invincibleCount <= 0 && shieldCount <= 0 && isHit) {
-    setLives((prev) => countDownTo0(prev, true));
+    setLives((prev) => {
+      if (prev === 1) setHeroPosition(NULL_POSITION);
+      return countDownTo0(prev, true);
+    });
     playAudio(hitSound);
     if (lives > 1) setInvincibleCount(NEW_INVINCIBLE_COUNT);
   } else if (shieldCount > SHIELD_WARNING_DURATION && isHit) {

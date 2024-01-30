@@ -9,54 +9,61 @@ import {
   lifeSound,
   themeSound,
 } from "../utils/sounds";
-import { FallingObjectType, StateSetter } from "../utils/types";
+import {
+  ContextValues,
+  FallingObjectType,
+  ObjectWithRefs,
+  StateSetter,
+} from "../utils/types";
 import { NEW_SHIELD_COUNT, NEW_SLOW_COUNT } from "../utils/variables";
 
 export default function usePowerUps(
-  hitObjectType: FallingObjectType | null,
-  isHeroTwo: boolean,
-  gameStage: number,
-  setLives: StateSetter<number>,
-  setPoints: StateSetter<number>,
-  setShieldCount: StateSetter<number>,
-  setLivesTwo: StateSetter<number>,
-  setPointsTwo: StateSetter<number>,
-  setShieldCountTwo: StateSetter<number>,
-  setSlowCount: StateSetter<number>
+  contextRefs: ObjectWithRefs<ContextValues>,
+  hitObject: { type: FallingObjectType | null; isPlayerTwo: boolean },
+  gameStage: number
 ) {
-  const setPointsFunc = isHeroTwo ? setPointsTwo : setPoints;
-  const setLivesFunc = isHeroTwo ? setLivesTwo : setLives;
-  const setShieldCountFunc = isHeroTwo ? setShieldCountTwo : setShieldCount;
-  if (!hitObjectType) return;
+  if (!hitObject.type) return;
+  const {
+    setSlowCount: { current: setSlowCount },
+    setLives: { current: setLives },
+    setLivesTwo: { current: setLivesTwo },
+    setPoints: { current: setPoints },
+    setPointsTwo: { current: setPointsTwo },
+    setShieldCount: { current: setShieldCount },
+    setShieldCountTwo: { current: setShieldCountTwo },
+  } = contextRefs;
   const bonus = gameStage > 5 ? (gameStage - 5) * 1000 : 0;
-  switch (hitObjectType) {
+  const isPlayerTwo = hitObject.isPlayerTwo;
+  const setLivesFunc = isPlayerTwo ? setLivesTwo : setLives;
+  const setPointsFunc = isPlayerTwo ? setPointsTwo : setPoints;
+  const setShieldCountFunc = isPlayerTwo ? setShieldCountTwo : setShieldCount;
+
+  switch (hitObject.type) {
     case "health":
-      setLivesFunc((previousLives) =>
-        previousLives >= 3 ? 3 : previousLives + 1
-      );
-      setPointsFunc((previousPoints) => previousPoints + 1000 + bonus);
+      setLivesFunc((prev) => (prev >= 3 ? 3 : prev + 1));
+      setPointsFunc((prev) => prev + 1000 + bonus);
       playAudio(lifeSound);
       break;
     case "pointsSmall":
-      setPointsFunc((previousPoints) => previousPoints + 3000 + bonus);
+      setPointsFunc((prev) => prev + 3000 + bonus);
       playAudio(coinSound);
       break;
     case "pointsMedium":
-      setPointsFunc((previousPoints) => previousPoints + 5000 + bonus);
+      setPointsFunc((prev) => prev + 5000 + bonus);
       playAudio(coinsSound);
       break;
     case "pointsLarge":
-      setPointsFunc((previousPoints) => previousPoints + 10000 + bonus);
+      setPointsFunc((prev) => prev + 10000 + bonus);
       playAudio(coinBagSound);
       break;
     case "shield":
       setShieldCountFunc(NEW_SHIELD_COUNT);
-      setPointsFunc((previousPoints) => previousPoints + 1000 + bonus);
+      setPointsFunc((prev) => prev + 1000 + bonus);
       playAudio(shieldSound);
       break;
     case "slow":
       setSlowCount(NEW_SLOW_COUNT);
-      setPointsFunc((previousPoints) => previousPoints + 1000 + bonus);
+      setPointsFunc((prev) => prev + 1000 + bonus);
       playAudio(timeSlowSound, 1);
       themeSound.playbackRate = 0.7;
       setTimeout(() => {

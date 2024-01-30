@@ -1,59 +1,70 @@
 import { isObjectCollidingWithHero, isValidPosition } from "../utils/lib";
 import {
+  ContextValues,
   FallingObject,
   FallingObjectType,
-  NullablePosition,
-  StateSetter,
+  ObjectWithRefs,
 } from "../utils/types";
 import { OBJECT_SIZE, SCREEN_HEIGHT } from "../utils/variables";
 
 export default function useObjectGravity(
-  setObjectPositions: StateSetter<FallingObject[]>,
-  heroOriginPoint: NullablePosition,
-  heroTwoOriginPoint: NullablePosition,
-  isSlow: boolean,
-  gameStageMultiplier: number,
-  isCollectible = false
-): { hitObjectType: FallingObjectType | null; isHeroTwo: boolean } {
-  let hitObjectType: FallingObjectType | null = null;
-  let isHeroTwo = false;
-  setObjectPositions((oldValue) => {
-    const updatedObjects = oldValue.map((object) => {
-      const speed = object.speed * gameStageMultiplier;
-      return {
+  contextRefs: ObjectWithRefs<ContextValues>,
+  gameStageMultiplier: number
+): {
+  type: FallingObjectType | null;
+  isPlayerTwo: boolean;
+} {
+  const {
+    heroOriginPoint: { current: heroOriginPoint },
+    heroTwoOriginPoint: { current: heroTwoOriginPoint },
+    slowCount: { current: slowCount },
+    setPowerUpPositions: { current: setPowerUpPositions },
+    setMeteorPositions: { current: setMeteorPositions },
+  } = contextRefs;
+
+  const isSlow = !!slowCount;
+  let type: FallingObjectType | null = null;
+  let isPlayerTwo = false;
+
+  const speedMultiplier = isSlow ? 0.5 : 1;
+
+  function objectSetter(oldValue: FallingObject[]) {
+    return oldValue
+      .map((object) => ({
         ...object,
-        Y: object.Y + (isSlow ? speed / 2 : speed),
-      };
-    });
+        Y: object.Y + object.speed * gameStageMultiplier * speedMultiplier,
+      }))
+      .filter((object) => object.Y <= SCREEN_HEIGHT + OBJECT_SIZE);
+  }
 
-    if (!isCollectible) {
-      return updatedObjects.filter(
-        (object) => object.Y <= SCREEN_HEIGHT + OBJECT_SIZE
-      );
-    }
+  function objectSetterCollectable(oldValue: FallingObject[]) {
+    return oldValue
+      .map((object) => ({
+        ...object,
+        Y: object.Y + object.speed * gameStageMultiplier * speedMultiplier,
+      }))
+      .filter((object) => {
+        const isHeroValid = isValidPosition(heroOriginPoint);
+        const isHeroTwoValid = isValidPosition(heroTwoOriginPoint);
 
-    const filteredObjects = updatedObjects.filter((object) => {
-      const isObjectInBounds = object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
+        const isHittingHero =
+          isHeroValid && isObjectCollidingWithHero(object, heroOriginPoint);
+        const isHittingHeroTwo =
+          isHeroTwoValid &&
+          isObjectCollidingWithHero(object, heroTwoOriginPoint);
 
-      if (!isObjectInBounds || !isValidPosition(heroOriginPoint)) return false;
+        if (isHittingHero || isHittingHeroTwo) {
+          type = object.type;
+          if (isHittingHeroTwo) isPlayerTwo = true;
+          return false;
+        }
 
-      const isHittingHero = !!isObjectCollidingWithHero(
-        object,
-        heroOriginPoint
-      );
-      if (isHittingHero) hitObjectType = object.type;
+        return true;
+      });
+  }
 
-      if (!isValidPosition(heroTwoOriginPoint)) return !isHittingHero;
+  setPowerUpPositions(objectSetterCollectable);
+  setMeteorPositions(objectSetter);
 
-      const isHittingHeroTwo = !!isObjectCollidingWithHero(
-        object,
-        heroTwoOriginPoint
-      );
-      isHeroTwo = isHittingHeroTwo;
-      return !(isHittingHero || isHittingHeroTwo);
-    });
-
-    return filteredObjects;
-  });
-  return { hitObjectType, isHeroTwo };
+  return { type, isPlayerTwo };
 }

@@ -36,6 +36,7 @@ function App() {
     isMainMenu,
     lives,
     isGameOver,
+    livesTwo,
     setHighScore,
     setIsGameOver,
     setLives,
@@ -64,11 +65,15 @@ function App() {
   );
 
   useEffect(() => {
-    const isDead = lives === 0;
+    const isDead = !contextRefs.isTwoPlayers.current
+      ? lives === 0
+      : lives === 0 && livesTwo === 0;
     const gameStopped = isDead || isMainMenu;
+    const points = contextRefs.points.current;
+    const pointsTwo = contextRefs.pointsTwo.current;
     hooks.useGameOver(
       isDead,
-      contextRefs.points.current,
+      points > pointsTwo ? points : pointsTwo,
       contextRefs.highScore.current,
       setHighScore,
       setIsGameOver
@@ -78,8 +83,12 @@ function App() {
     const frameIntervalId = setInterval(() => {
       const currentSlowCount = contextRefs.slowCount.current;
       setSlowCount((prevValue) => countDownTo0(prevValue, !!currentSlowCount));
-      setPoints((prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10));
-      setPointsTwo((prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10));
+      if (lives !== 0)
+        setPoints((prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10));
+      if (livesTwo !== 0 && contextRefs.isTwoPlayers.current)
+        setPointsTwo(
+          (prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10)
+        );
       setGameCounter((prevValue) => prevValue + (currentSlowCount > 0 ? 1 : 2));
       const gameStage = contextRefs.gameStage.current;
       const gameStageMultiplier =
@@ -94,12 +103,26 @@ function App() {
         contextRefs.lives.current,
         setLives,
         setInvincibleCount,
-        setShieldCount
+        setShieldCount,
+        setHeroOriginPoint
       );
+      if (contextRefs.isTwoPlayers.current) {
+        hooks.useDamageCalculation(
+          contextRefs.invincibleCountTwo.current,
+          contextRefs.shieldCountTwo.current,
+          contextRefs.isHitTwo.current,
+          !!currentSlowCount,
+          contextRefs.livesTwo.current,
+          setLivesTwo,
+          setInvincibleCountTwo,
+          setShieldCountTwo,
+          setHeroTwoOriginPoint
+        );
+      }
 
-      if (contextRefs.slowCount.current === 75) playAudio(timeResumeSound, 1);
-      if (contextRefs.slowCount.current === 60) resetAudio(clockTickingSound);
-      if (contextRefs.slowCount.current === 1) themeSound.playbackRate = 1;
+      if (currentSlowCount === 75) playAudio(timeResumeSound, 1);
+      if (currentSlowCount === 60) resetAudio(clockTickingSound);
+      if (currentSlowCount === 1) themeSound.playbackRate = 1;
 
       if (isValidPosition(contextRefs.heroOriginPoint.current)) {
         hooks.useHeroMovementLogicX(
@@ -119,6 +142,29 @@ function App() {
           currentSlowCount,
           setHeroVelocityDown,
           setHeroOriginPoint
+        );
+      }
+      if (
+        contextRefs.isTwoPlayers.current &&
+        isValidPosition(contextRefs.heroTwoOriginPoint.current)
+      ) {
+        hooks.useHeroMovementLogicX(
+          contextRefs.heroTwoOriginPoint.current.X,
+          contextRefs.pressedKeys.current.a,
+          contextRefs.pressedKeys.current.d,
+          !!currentSlowCount,
+          contextRefs.lastDirectionTwo.current,
+          setHeroTwoOriginPoint,
+          setLastDirectionTwo
+        );
+        hooks.useHeroMovementLogicY(
+          contextRefs.heroTwoOriginPoint.current.Y,
+          contextRefs.pressedKeys.current.w,
+          contextRefs.pressedKeys.current.s,
+          contextRefs.heroVelocityDownTwo.current,
+          currentSlowCount,
+          setHeroVelocityDownTwo,
+          setHeroTwoOriginPoint
         );
       }
 
@@ -141,70 +187,16 @@ function App() {
       );
 
       const hitObject = hooks.useObjectGravity(
-        setPowerUpPositions,
-        contextRefs.heroOriginPoint.current,
-        contextRefs.heroTwoOriginPoint.current,
-        !!currentSlowCount,
-        gameStageMultiplier,
-        true
-      );
-      hooks.useObjectGravity(
-        setMeteorPositions,
-        contextRefs.heroOriginPoint.current,
-        contextRefs.heroTwoOriginPoint.current,
-        !!currentSlowCount,
+        contextRefs,
         gameStageMultiplier
       );
 
-      hooks.usePowerUps(
-        hitObject.hitObjectType,
-        hitObject.isHeroTwo,
-        gameStage,
-        setLives,
-        setPoints,
-        setShieldCount,
-        setLivesTwo,
-        setPointsTwo,
-        setShieldCountTwo,
-        setSlowCount
-      );
-      if (contextRefs.isTwoPlayers.current) {
-        hooks.useDamageCalculation(
-          contextRefs.invincibleCountTwo.current,
-          contextRefs.shieldCountTwo.current,
-          contextRefs.isHitTwo.current,
-          !!currentSlowCount,
-          contextRefs.livesTwo.current,
-          setLivesTwo,
-          setInvincibleCountTwo,
-          setShieldCountTwo
-        );
-        if (isValidPosition(contextRefs.heroTwoOriginPoint.current)) {
-          hooks.useHeroMovementLogicX(
-            contextRefs.heroTwoOriginPoint.current.X,
-            contextRefs.pressedKeys.current.KeyA,
-            contextRefs.pressedKeys.current.KeyD,
-            !!currentSlowCount,
-            contextRefs.lastDirectionTwo.current,
-            setHeroTwoOriginPoint,
-            setLastDirectionTwo
-          );
-          hooks.useHeroMovementLogicY(
-            contextRefs.heroTwoOriginPoint.current.Y,
-            contextRefs.pressedKeys.current.KeyW,
-            contextRefs.pressedKeys.current.KeyS,
-            contextRefs.heroVelocityDownTwo.current,
-            currentSlowCount,
-            setHeroVelocityDownTwo,
-            setHeroTwoOriginPoint
-          );
-        }
-      }
+      hooks.usePowerUps(contextRefs, hitObject, gameStage);
     }, FRAME_RATE);
     return () => {
       clearInterval(frameIntervalId);
     };
-  }, [lives, isMainMenu, isGameOver]);
+  }, [lives, isMainMenu, isGameOver, livesTwo]);
 
   return (
     <GameStateContext.Provider value={contextValues}>
@@ -214,25 +206,29 @@ function App() {
           style={{ height: SCREEN_HEIGHT + 8, width: SCREEN_WIDTH + 8 }}
         >
           <Mask top={-(OBJECT_SIZE * MASK_FACTOR)}>
-            <HeaderBar />
+            <HeaderBar highScore={contextValues.highScore} />
           </Mask>
           <Canvas>
             <UI />
             {(isGameOver || isMainMenu) && <Menu />}
-            <Hero
-              heroOriginPoint={contextValues.heroOriginPoint}
-              invincibleCount={contextValues.invincibleCount}
-              lastDirection={contextValues.lastDirection}
-              shieldCount={contextValues.shieldCount}
-            />
-            {contextValues.isTwoPlayers && (
+            {isValidPosition(contextValues.heroOriginPoint) && (
               <Hero
-                heroOriginPoint={contextValues.heroTwoOriginPoint}
-                invincibleCount={contextValues.invincibleCountTwo}
-                lastDirection={contextValues.lastDirectionTwo}
-                shieldCount={contextValues.shieldCountTwo}
+                heroOriginPoint={contextValues.heroOriginPoint}
+                invincibleCount={contextValues.invincibleCount}
+                lastDirection={contextValues.lastDirection}
+                shieldCount={contextValues.shieldCount}
               />
             )}
+            {contextValues.isTwoPlayers &&
+              isValidPosition(contextValues.heroTwoOriginPoint) && (
+                <Hero
+                  heroOriginPoint={contextValues.heroTwoOriginPoint}
+                  invincibleCount={contextValues.invincibleCountTwo}
+                  lastDirection={contextValues.lastDirectionTwo}
+                  shieldCount={contextValues.shieldCountTwo}
+                  isPlayerTwo
+                />
+              )}
             {contextValues.meteorPositions.map((meteorObject) => (
               <Meteor key={meteorObject.id} meteorObject={meteorObject} />
             ))}
