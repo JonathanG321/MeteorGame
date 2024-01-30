@@ -17,6 +17,13 @@ export default function GameOverScreen() {
         context.setPoints(0);
         context.setLives(3);
         context.setInvincibleCount(0);
+        if (context.isTwoPlayers) {
+          context.setHeroTwoOriginPoint(HERO_SPAWN_POINT);
+          context.setHeroVelocityDownTwo(0);
+          context.setPointsTwo(0);
+          context.setLivesTwo(3);
+          context.setInvincibleCountTwo(0);
+        }
         context.setSlowCount(0);
         context.setPressedKeys(BASE_PRESSED_KEYS);
         context.setGameCounter(1);
