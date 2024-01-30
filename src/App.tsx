@@ -95,31 +95,6 @@ function App() {
         STAGE_DIFFICULTY_SCALE ** (gameStage <= 5 ? gameStage : 5);
       const powerUpList = getPowerUpList(gameStage);
 
-      hooks.useDamageCalculation(
-        contextRefs.invincibleCount.current,
-        contextRefs.shieldCount.current,
-        contextRefs.isHit.current,
-        !!currentSlowCount,
-        contextRefs.lives.current,
-        setLives,
-        setInvincibleCount,
-        setShieldCount,
-        setHeroOriginPoint
-      );
-      if (contextRefs.isTwoPlayers.current) {
-        hooks.useDamageCalculation(
-          contextRefs.invincibleCountTwo.current,
-          contextRefs.shieldCountTwo.current,
-          contextRefs.isHitTwo.current,
-          !!currentSlowCount,
-          contextRefs.livesTwo.current,
-          setLivesTwo,
-          setInvincibleCountTwo,
-          setShieldCountTwo,
-          setHeroTwoOriginPoint
-        );
-      }
-
       if (currentSlowCount === 75) playAudio(timeResumeSound, 1);
       if (currentSlowCount === 60) resetAudio(clockTickingSound);
       if (currentSlowCount === 1) themeSound.playbackRate = 1;
@@ -164,6 +139,31 @@ function App() {
           contextRefs.heroVelocityDownTwo.current,
           currentSlowCount,
           setHeroVelocityDownTwo,
+          setHeroTwoOriginPoint
+        );
+      }
+
+      hooks.useDamageCalculation(
+        contextRefs.invincibleCount.current,
+        contextRefs.shieldCount.current,
+        contextRefs.isHit.current,
+        !!currentSlowCount,
+        contextRefs.lives.current,
+        setLives,
+        setInvincibleCount,
+        setShieldCount,
+        setHeroOriginPoint
+      );
+      if (contextRefs.isTwoPlayers.current) {
+        hooks.useDamageCalculation(
+          contextRefs.invincibleCountTwo.current,
+          contextRefs.shieldCountTwo.current,
+          contextRefs.isHitTwo.current,
+          !!currentSlowCount,
+          contextRefs.livesTwo.current,
+          setLivesTwo,
+          setInvincibleCountTwo,
+          setShieldCountTwo,
           setHeroTwoOriginPoint
         );
       }
