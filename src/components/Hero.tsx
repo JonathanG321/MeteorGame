@@ -1,21 +1,20 @@
 import { useContext } from "react";
-import { HERO_SIZE, SHIELD_WARNING_DURATION } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
-import {
-  createObjectStyle,
-  isValidPosition,
-  shouldShowFlash,
-} from "../utils/lib";
+import { HERO_SIZE, SHIELD_WARNING_DURATION } from "../utils/variables";
+import { createObjectStyle, shouldShowFlash } from "../utils/lib";
+import { Direction, Position } from "../utils/types";
 import shield from "../assets/images/powerUps/PixelShield.png";
-import knightRight from "../assets/images/PixelKnightRight.png";
-import knightLeft from "../assets/images/PixelKnightLeft.png";
-import { Direction, NullablePosition } from "../utils/types";
+import knightRightImage from "../assets/images/PixelKnightRight.png";
+import knightLeftImage from "../assets/images/PixelKnightLeft.png";
+import knightTwoRightImage from "../assets/images/PixelKnightTwoRight.png";
+import knightTwoLeftImage from "../assets/images/PixelKnightTwoLeft.png";
 
 type Props = {
-  heroOriginPoint: NullablePosition;
+  heroOriginPoint: Position;
   invincibleCount: number;
   shieldCount: number;
   lastDirection: Direction;
+  isPlayerTwo?: boolean;
 };
 
 export default function Hero({
@@ -23,9 +22,9 @@ export default function Hero({
   invincibleCount,
   shieldCount,
   lastDirection,
+  isPlayerTwo = false,
 }: Props) {
   const { slowCount } = useContext(GameStateContext);
-  if (!isValidPosition(heroOriginPoint)) return null;
   const style = createObjectStyle({
     ...heroOriginPoint,
     size: HERO_SIZE,
@@ -36,6 +35,9 @@ export default function Hero({
   const newWidthNumber = parseInt(style.width.slice(0, -2));
   const newHeight = newHeightNumber + scale * 2 + "px";
   const newWidth = newWidthNumber + scale * 2 + "px";
+
+  const knightRight = isPlayerTwo ? knightTwoRightImage : knightRightImage;
+  const knightLeft = isPlayerTwo ? knightTwoLeftImage : knightLeftImage;
 
   return (
     <div style={style} className="absolute">
