@@ -7,10 +7,10 @@ export type PressedKeys = {
   ArrowDown: boolean;
   ArrowLeft: boolean;
   ArrowRight: boolean;
-  KeyW: boolean;
-  KeyA: boolean;
-  KeyS: boolean;
-  KeyD: boolean;
+  w: boolean;
+  a: boolean;
+  s: boolean;
+  d: boolean;
 };
 
 export type Box = { topLeft: Position; bottomRight: Position };

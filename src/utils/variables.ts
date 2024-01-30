@@ -47,8 +47,8 @@ export const BASE_PRESSED_KEYS: PressedKeys = {
   ArrowDown: false,
   ArrowLeft: false,
   ArrowRight: false,
-  KeyA: false,
-  KeyW: false,
-  KeyS: false,
-  KeyD: false,
+  a: false,
+  w: false,
+  s: false,
+  d: false,
 };
