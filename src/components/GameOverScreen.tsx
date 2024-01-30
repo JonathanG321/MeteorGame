@@ -6,6 +6,7 @@ import { playAudio } from "../utils/lib";
 
 export default function GameOverScreen() {
   const context = useContext(GameStateContext);
+  const { isTwoPlayers, points, pointsTwo } = context;
 
   useEffect(() => {
     function handleKeyUp(e: KeyboardEvent) {
@@ -17,7 +18,7 @@ export default function GameOverScreen() {
         context.setPoints(0);
         context.setLives(3);
         context.setInvincibleCount(0);
-        if (context.isTwoPlayers) {
+        if (isTwoPlayers) {
           context.setHeroTwoOriginPoint(HERO_SPAWN_POINT);
           context.setHeroVelocityDownTwo(0);
           context.setPointsTwo(0);
@@ -43,6 +44,16 @@ export default function GameOverScreen() {
   return (
     <div className="flex flex-col items-center">
       <div className="mb-4 text-4xl font-extrabold">Game Over!</div>
+      {isTwoPlayers && (
+        <>
+          <div className="mb-2 text-xl font-bold">
+            Player {points > pointsTwo ? "1" : "2"} wins with:
+          </div>
+          <div className="mb-2 text-lg font-bold">
+            {(points > pointsTwo ? points : pointsTwo).toLocaleString()} Points
+          </div>
+        </>
+      )}
       <div className="text-lg font-semibold">Press Space to Restart</div>
     </div>
   );
