@@ -13,28 +13,30 @@ export const SCREEN_HEIGHT = 480;
 export const SCREEN_WIDTH = 800;
 
 export const HERO_SIZE = 30;
+
+export const WIDTH_MINUS_HERO = SCREEN_WIDTH - HERO_SIZE;
+export const HEIGHT_MINUS_HERO = SCREEN_HEIGHT - HERO_SIZE;
+
 export const HERO_SPEED = 6;
 export const HERO_JUMP_SPEED = 20;
 export const HERO_GRAVITY = 1;
 export const MAX_HERO_VELOCITY_DOWN = 10;
 export const HERO_SPAWN_POINT = {
   X: SCREEN_WIDTH / 2 - HERO_SIZE,
-  Y: SCREEN_HEIGHT - HERO_SIZE,
+  Y: HEIGHT_MINUS_HERO,
 };
 export const FIRST_PLAYER_SPAWN_POINT = {
   X: SCREEN_WIDTH / 3 - HERO_SIZE,
-  Y: SCREEN_HEIGHT - HERO_SIZE,
+  Y: HEIGHT_MINUS_HERO,
 };
 export const SECOND_PLAYER_SPAWN_POINT = {
   X: (SCREEN_WIDTH / 3) * 2 - HERO_SIZE,
-  Y: SCREEN_HEIGHT - HERO_SIZE,
+  Y: HEIGHT_MINUS_HERO,
 };
 export const NULL_POSITION = {
   X: null,
   Y: null,
 };
-
-export const SCREEN_MINUS_HERO = SCREEN_WIDTH - HERO_SIZE;
 
 export const METEOR_SPAWN_CHANCE = 3; // chance of a meteor actually spawn on attempt
 export const OBJECT_GRAVITY = 2;
