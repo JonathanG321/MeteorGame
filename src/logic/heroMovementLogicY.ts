@@ -1,15 +1,61 @@
-import { playAudio } from "../utils/lib";
-import { jumpSound } from "../utils/sounds";
-import { NullablePosition, Position, StateSetter } from "../utils/types";
+import { isValidPosition, playAudio } from "../utils/lib";
+import sounds from "../utils/sounds";
 import {
+  ContextValues,
+  NullablePosition,
+  ObjectWithRefs,
+  Position,
+  StateSetter,
+} from "../utils/types";
+import {
+  HEIGHT_MINUS_HERO,
   HERO_GRAVITY,
   HERO_JUMP_SPEED,
-  HERO_SIZE,
   MAX_HERO_VELOCITY_DOWN,
-  SCREEN_HEIGHT,
 } from "../utils/variables";
 
 export default function heroMovementLogicY(
+  contextRefs: ObjectWithRefs<ContextValues>,
+  contextValues: ContextValues
+) {
+  const {
+    heroOriginPoint,
+    pressedKeys,
+    heroVelocityDown,
+    heroVelocityDownTwo,
+    slowCount,
+    heroTwoOriginPoint,
+    isTwoPlayers,
+  } = contextRefs;
+  const {
+    setHeroOriginPoint,
+    setHeroTwoOriginPoint,
+    setHeroVelocityDown,
+    setHeroVelocityDownTwo,
+  } = contextValues;
+  if (isValidPosition(heroOriginPoint.current))
+    singleHeroLogicY(
+      heroOriginPoint.current.Y,
+      pressedKeys.current.ArrowUp,
+      pressedKeys.current.ArrowDown,
+      heroVelocityDown.current,
+      slowCount.current,
+      setHeroVelocityDown,
+      setHeroOriginPoint
+    );
+  if (isValidPosition(heroTwoOriginPoint.current) && isTwoPlayers.current)
+    singleHeroLogicY(
+      heroTwoOriginPoint.current.Y,
+      pressedKeys.current.w,
+      pressedKeys.current.s,
+      heroVelocityDownTwo.current,
+      slowCount.current,
+      setHeroVelocityDownTwo,
+      setHeroTwoOriginPoint
+    );
+}
+
+function singleHeroLogicY(
   heroPositionY: Position["Y"],
   pressedKeyUp: boolean,
   pressedKeyDown: boolean,
@@ -20,32 +66,35 @@ export default function heroMovementLogicY(
 ) {
   if (
     slowCount % 2 !== 0 ||
-    (!pressedKeyUp &&
-      !pressedKeyDown &&
-      heroPositionY === SCREEN_HEIGHT - HERO_SIZE)
-  )
-    return;
-  if (
-    heroPositionY === SCREEN_HEIGHT - HERO_SIZE &&
-    velocityDown !== 0 &&
-    !pressedKeyUp
+    (!pressedKeyUp && !pressedKeyDown && heroPositionY === HEIGHT_MINUS_HERO)
   ) {
-    setVelocityDown(0);
-  } else if (pressedKeyUp && heroPositionY === SCREEN_HEIGHT - HERO_SIZE) {
-    setVelocityDown(-HERO_JUMP_SPEED);
-    playAudio(jumpSound);
-  } else if (velocityDown < MAX_HERO_VELOCITY_DOWN && !pressedKeyDown) {
-    setVelocityDown(velocityDown + HERO_GRAVITY);
-  } else if (pressedKeyDown) {
-    setVelocityDown(velocityDown + HERO_GRAVITY * 2);
-  } else {
-    setVelocityDown(MAX_HERO_VELOCITY_DOWN);
+    return;
   }
 
-  let newY = heroPositionY;
+  let newVelocityDown = velocityDown;
 
-  newY += velocityDown;
-  if (newY < 0) newY = 0;
-  if (newY > SCREEN_HEIGHT - HERO_SIZE) newY = SCREEN_HEIGHT - HERO_SIZE;
-  if (newY !== heroPositionY) updatePosition((prev) => ({ ...prev, Y: newY }));
+  const shouldHeroStopFalling =
+    heroPositionY === HEIGHT_MINUS_HERO && velocityDown !== 0 && !pressedKeyUp;
+  const shouldHeroJump = pressedKeyUp && heroPositionY === HEIGHT_MINUS_HERO;
+
+  if (shouldHeroStopFalling) {
+    newVelocityDown = 0;
+  } else if (shouldHeroJump) {
+    newVelocityDown = -HERO_JUMP_SPEED;
+    playAudio(sounds.jump);
+  } else if (pressedKeyDown) {
+    newVelocityDown = newVelocityDown + HERO_GRAVITY;
+  } else {
+    newVelocityDown = Math.min(
+      newVelocityDown + HERO_GRAVITY,
+      MAX_HERO_VELOCITY_DOWN
+    );
+  }
+
+  let newY = heroPositionY + newVelocityDown;
+
+  newY = Math.max(0, Math.min(newY, HEIGHT_MINUS_HERO));
+
+  if (velocityDown !== newVelocityDown) setVelocityDown(newVelocityDown);
+  updatePosition((prev) => ({ ...prev, Y: newY }));
 }
