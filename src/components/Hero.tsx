@@ -4,10 +4,10 @@ import { HERO_SIZE, SHIELD_WARNING_DURATION } from "../utils/variables";
 import { createObjectStyle, shouldShowFlash } from "../utils/lib";
 import { Direction, Position } from "../utils/types";
 import shield from "../assets/images/powerUps/PixelShield.png";
-import knightRightImage from "../assets/images/PixelKnightRight.png";
-import knightLeftImage from "../assets/images/PixelKnightLeft.png";
-import knightTwoRightImage from "../assets/images/PixelKnightTwoRight.png";
-import knightTwoLeftImage from "../assets/images/PixelKnightTwoLeft.png";
+import knightRightImage from "../assets/images/heroSprites/PixelKnightRight.png";
+import knightLeftImage from "../assets/images/heroSprites/PixelKnightLeft.png";
+import knightTwoRightImage from "../assets/images/heroSprites/PixelKnightTwoRight.png";
+import knightTwoLeftImage from "../assets/images/heroSprites/PixelKnightTwoLeft.png";
 
 type Props = {
   heroOriginPoint: Position;
