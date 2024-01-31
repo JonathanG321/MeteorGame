@@ -18,14 +18,8 @@ import {
   SCREEN_WIDTH,
   STAGE_DIFFICULTY_SCALE,
 } from "./utils/variables";
-import {
-  countDownTo0,
-  getPowerUpList,
-  isValidPosition,
-  playAudio,
-  resetAudio,
-} from "./utils/lib";
-import { clockTickingSound, themeSound, timeResumeSound } from "./utils/sounds";
+import { isValidPosition, playAudio, resetAudio } from "./utils/lib";
+import sounds from "./utils/sounds";
 import UI from "./components/UI";
 import spawnFallingObjectLogic from "./logic/spawnFallingObjectLogic";
 import damageCalculationLogic from "./logic/damageCalculationLogic";
@@ -36,6 +30,7 @@ import objectGravityLogic from "./logic/objectGravityLogic";
 import gameOverLogic from "./logic/gameOverLogic";
 import useContextValues from "./hooks/useContextValues";
 import useUpdatingRefsForObject from "./hooks/useUpdatingRefsForObject";
+import frameCounterLogic from "./logic/frameCounterLogic";
 
 function App() {
   const contextValues = useContextValues();
@@ -48,23 +43,15 @@ function App() {
     setHighScore,
     setIsGameOver,
     setLives,
-    setPoints,
     setShieldCount,
-    setSlowCount,
     setInvincibleCount,
     setPowerUpPositions,
     setMeteorPositions,
-    setHeroVelocityDown,
-    setLastDirection,
     setHeroOriginPoint,
-    setGameCounter,
     setHeroTwoOriginPoint,
-    setLastDirectionTwo,
-    setHeroVelocityDownTwo,
     setLivesTwo,
     setInvincibleCountTwo,
     setShieldCountTwo,
-    setPointsTwo,
   } = contextValues;
 
   const contextRefs = useUpdatingRefsForObject(
@@ -89,67 +76,15 @@ function App() {
     if (gameStopped) return;
 
     const frameIntervalId = setInterval(() => {
-      const currentSlowCount = contextRefs.slowCount.current;
-      setSlowCount((prevValue) => countDownTo0(prevValue, !!currentSlowCount));
-      if (lives !== 0)
-        setPoints((prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10));
-      if (livesTwo !== 0 && contextRefs.isTwoPlayers.current)
-        setPointsTwo(
-          (prevValue) => prevValue + (currentSlowCount > 0 ? 20 : 10)
-        );
-      setGameCounter((prevValue) => prevValue + (currentSlowCount > 0 ? 1 : 2));
-      const gameStage = contextRefs.gameStage.current;
-      const gameStageMultiplier =
-        STAGE_DIFFICULTY_SCALE ** (gameStage <= 5 ? gameStage : 5);
-      const powerUpList = getPowerUpList(gameStage);
+      const { currentSlowCount, gameStage, gameStageMultiplier, powerUpList } =
+        frameCounterLogic(contextRefs, contextValues);
 
-      if (currentSlowCount === 75) playAudio(timeResumeSound, 1);
-      if (currentSlowCount === 60) resetAudio(clockTickingSound);
-      if (currentSlowCount === 1) themeSound.playbackRate = 1;
+      if (currentSlowCount === 75) playAudio(sounds.timeResume, 1);
+      if (currentSlowCount === 60) resetAudio(sounds.clockTicking);
+      if (currentSlowCount === 1) sounds.theme.playbackRate = 1;
 
-      if (isValidPosition(contextRefs.heroOriginPoint.current)) {
-        heroMovementLogicX(
-          contextRefs.heroOriginPoint.current.X,
-          contextRefs.pressedKeys.current.ArrowLeft,
-          contextRefs.pressedKeys.current.ArrowRight,
-          !!currentSlowCount,
-          contextRefs.lastDirection.current,
-          setHeroOriginPoint,
-          setLastDirection
-        );
-        heroMovementLogicY(
-          contextRefs.heroOriginPoint.current.Y,
-          contextRefs.pressedKeys.current.ArrowUp,
-          contextRefs.pressedKeys.current.ArrowDown,
-          contextRefs.heroVelocityDown.current,
-          currentSlowCount,
-          setHeroVelocityDown,
-          setHeroOriginPoint
-        );
-      }
-      if (
-        contextRefs.isTwoPlayers.current &&
-        isValidPosition(contextRefs.heroTwoOriginPoint.current)
-      ) {
-        heroMovementLogicX(
-          contextRefs.heroTwoOriginPoint.current.X,
-          contextRefs.pressedKeys.current.a,
-          contextRefs.pressedKeys.current.d,
-          !!currentSlowCount,
-          contextRefs.lastDirectionTwo.current,
-          setHeroTwoOriginPoint,
-          setLastDirectionTwo
-        );
-        heroMovementLogicY(
-          contextRefs.heroTwoOriginPoint.current.Y,
-          contextRefs.pressedKeys.current.w,
-          contextRefs.pressedKeys.current.s,
-          contextRefs.heroVelocityDownTwo.current,
-          currentSlowCount,
-          setHeroVelocityDownTwo,
-          setHeroTwoOriginPoint
-        );
-      }
+      heroMovementLogicX(contextRefs, contextValues);
+      heroMovementLogicY(contextRefs, contextValues);
 
       damageCalculationLogic(
         contextRefs.invincibleCount.current,
