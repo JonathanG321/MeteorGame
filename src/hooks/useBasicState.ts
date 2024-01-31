@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Direction, FallingObject, NullablePosition } from "../utils/types";
-import { NULL_POSITION, STAGE_LENGTH } from "../utils/variables";
+import {
+  NULL_POSITION,
+  STAGE_LENGTH,
+  STARTING_POINT,
+} from "../utils/variables";
 
 export default function useBasicState() {
-  const [gameCounter, setGameCounter] = useState(1);
+  const [gameCounter, setGameCounter] = useState(STARTING_POINT);
   const [isTwoPlayers, setIsTwoPlayers] = useState(false);
   const [heroOriginPoint, setHeroOriginPoint] =
     useState<NullablePosition>(NULL_POSITION);

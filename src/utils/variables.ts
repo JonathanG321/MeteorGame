@@ -6,6 +6,8 @@ export const NORMAL_FPS = BASE_FPS * 2;
 
 export const STAGE_LENGTH = 50 * NORMAL_FPS;
 export const STAGE_DIFFICULTY_SCALE = 1.25;
+export const STARTING_STAGE = 1;
+export const STARTING_POINT = STARTING_STAGE * STAGE_LENGTH - STAGE_LENGTH + 1;
 
 export const SCREEN_HEIGHT = 480;
 export const SCREEN_WIDTH = 800;
