@@ -11,15 +11,17 @@ import theme from "../assets/sounds/Theme.mp3";
 import gameOver from "../assets/sounds/GameOver.mp3";
 import jump from "../assets/sounds/Jump.mp3";
 
-export const themeSound = new Audio(theme);
-export const gameOverSound = new Audio(gameOver);
-export const jumpSound = new Audio(jump);
-export const hitSound = new Audio(hit);
-export const coinSound = new Audio(coin);
-export const coinsSound = new Audio(coins);
-export const coinBagSound = new Audio(coinBag);
-export const timeResumeSound = new Audio(timeResume);
-export const timeSlowSound = new Audio(timeSlow);
-export const clockTickingSound = new Audio(clockTicking);
-export const shieldSound = new Audio(shield);
-export const lifeSound = new Audio(life);
+export default {
+  theme: new Audio(theme),
+  gameOver: new Audio(gameOver),
+  jump: new Audio(jump),
+  hit: new Audio(hit),
+  coin: new Audio(coin),
+  coins: new Audio(coins),
+  coinBag: new Audio(coinBag),
+  timeResume: new Audio(timeResume),
+  timeSlow: new Audio(timeSlow),
+  clockTicking: new Audio(clockTicking),
+  shield: new Audio(shield),
+  life: new Audio(life),
+};

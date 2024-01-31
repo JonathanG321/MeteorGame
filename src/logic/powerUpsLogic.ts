@@ -1,14 +1,5 @@
 import { playAudio } from "../utils/lib";
-import {
-  clockTickingSound,
-  coinSound,
-  coinsSound,
-  coinBagSound,
-  timeSlowSound,
-  shieldSound,
-  lifeSound,
-  themeSound,
-} from "../utils/sounds";
+import sounds from "../utils/sounds";
 import {
   ContextValues,
   FallingObjectType,
@@ -41,32 +32,32 @@ export default function powerUpsLogic(
     case "health":
       setLivesFunc((prev) => (prev >= 3 ? 3 : prev + 1));
       setPointsFunc((prev) => prev + 1000 + bonus);
-      playAudio(lifeSound);
+      playAudio(sounds.life);
       break;
     case "pointsSmall":
       setPointsFunc((prev) => prev + 3000 + bonus);
-      playAudio(coinSound);
+      playAudio(sounds.coin);
       break;
     case "pointsMedium":
       setPointsFunc((prev) => prev + 5000 + bonus);
-      playAudio(coinsSound);
+      playAudio(sounds.coins);
       break;
     case "pointsLarge":
       setPointsFunc((prev) => prev + 10000 + bonus);
-      playAudio(coinBagSound);
+      playAudio(sounds.coinBag);
       break;
     case "shield":
       setShieldCountFunc(NEW_SHIELD_COUNT);
       setPointsFunc((prev) => prev + 1000 + bonus);
-      playAudio(shieldSound);
+      playAudio(sounds.shield);
       break;
     case "slow":
       setSlowCount(NEW_SLOW_COUNT);
       setPointsFunc((prev) => prev + 1000 + bonus);
-      playAudio(timeSlowSound, 1);
-      themeSound.playbackRate = 0.7;
+      playAudio(sounds.timeSlow, 1);
+      sounds.theme.playbackRate = 0.7;
       setTimeout(() => {
-        playAudio(clockTickingSound, 1);
+        playAudio(sounds.clockTicking, 1);
       }, 1000);
       break;
   }

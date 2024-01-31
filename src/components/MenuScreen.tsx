@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { BASE_PRESSED_KEYS, HERO_SPAWN_POINT } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
-import { themeSound } from "../utils/sounds";
+import sounds from "../utils/sounds";
 import { playAudio } from "../utils/lib";
 import SelectButton from "./SelectButton";
 
@@ -23,7 +23,7 @@ export default function MenuScreen() {
         setPressedKeys(BASE_PRESSED_KEYS);
         setHeroOriginPoint(HERO_SPAWN_POINT);
         setIsMainMenu(false);
-        playAudio(themeSound, 0.5);
+        playAudio(sounds.theme, 0.5);
       } else if (e.code === "ArrowRight") {
         setIsTwoPlayers(true);
       } else if (e.code === "ArrowLeft") {

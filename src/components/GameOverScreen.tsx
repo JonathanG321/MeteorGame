@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { GameStateContext } from "../context/GameStateContext";
 import { BASE_PRESSED_KEYS, HERO_SPAWN_POINT } from "../utils/variables";
-import { themeSound } from "../utils/sounds";
+import sounds from "../utils/sounds";
 import { playAudio } from "../utils/lib";
 
 export default function GameOverScreen() {
@@ -29,8 +29,8 @@ export default function GameOverScreen() {
         context.setPressedKeys(BASE_PRESSED_KEYS);
         context.setGameCounter(1);
         context.setIsGameOver(false);
-        themeSound.playbackRate = 1;
-        playAudio(themeSound, 0.5);
+        sounds.theme.playbackRate = 1;
+        playAudio(sounds.theme, 0.5);
       }
     }
 
