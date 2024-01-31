@@ -21,40 +21,65 @@ export default function spawnFallingObjectLogic(
   gameStageMultiplier: number,
   sizeStageMultiplier?: number
 ) {
-  const stageSpawnChance = spawnChance * gameStageMultiplier;
-  const calcSpawnChance = isSlow ? stageSpawnChance / 2 : stageSpawnChance;
-  if (!(Math.random() * 100 < (calcSpawnChance || 100))) return;
-  const mouseX = mousePressPosition.X;
+  if (!shouldObjectSpawn(spawnChance, isSlow, gameStageMultiplier)) return;
 
-  let newObjectSize = OBJECT_SIZE;
-  if (sizeStageMultiplier) {
-    const min = -8;
-    const max = 15 * sizeStageMultiplier;
-    newObjectSize = OBJECT_SIZE + randomInRange(min, max);
-  }
-
-  let newObjectX = mouseX
-    ? mouseX - newObjectSize / 2
-    : Math.round(Math.random() * (SCREEN_WIDTH - newObjectSize));
-
-  if (newObjectX < 0) {
-    newObjectX = 0;
-  } else if (newObjectX > SCREEN_WIDTH - newObjectSize) {
-    newObjectX = SCREEN_WIDTH - newObjectSize;
-  }
-
-  const multiplier = sizeStageMultiplier || 1;
-  const newGravity =
-    OBJECT_GRAVITY + randomInRange(-0.25 * multiplier, 0.25 * multiplier);
+  const newObjectSize = calculateObjectSize(sizeStageMultiplier);
+  const newObjectX = calculateObjectX(mousePressPosition, newObjectSize);
+  const newGravity = calculateObjectGravity(sizeStageMultiplier);
 
   const newObjectPosition: FallingObject = {
     Y: OBJECT_STARTING_HEIGHT,
     X: newObjectX,
     id: crypto.randomUUID(),
-    type: possibleTypes[Math.floor(Math.random() * possibleTypes.length)],
+    type: getRandomType(possibleTypes),
     size: newObjectSize,
-    speed: newGravity < 0.5 ? 0.5 : newGravity,
+    speed: calculateObjectSpeed(newGravity),
   };
 
-  setObjectPositions((oldValue) => oldValue.concat([newObjectPosition]));
+  setObjectPositions((oldValue) => [...oldValue, newObjectPosition]);
+}
+
+function shouldObjectSpawn(
+  spawnChance: number,
+  isSlow: boolean,
+  gameStageMultiplier: number
+): boolean {
+  const stageSpawnChance = spawnChance * gameStageMultiplier;
+  const calcSpawnChance = isSlow ? stageSpawnChance / 2 : stageSpawnChance;
+  return Math.random() * 100 < (calcSpawnChance || 100);
+}
+
+function calculateObjectSize(sizeStageMultiplier?: number): number {
+  if (!sizeStageMultiplier) return OBJECT_SIZE;
+
+  const minSizeModifier = -8;
+  const maxSizeModifier = 15 * sizeStageMultiplier;
+  return OBJECT_SIZE + randomInRange(minSizeModifier, maxSizeModifier);
+}
+
+function calculateObjectX(
+  mousePressPosition: NullablePosition,
+  newObjectSize: number
+): number {
+  const mouseX = mousePressPosition?.X;
+
+  if (mouseX) {
+    const minX = Math.max(0, mouseX - newObjectSize / 2);
+    return Math.min(minX, SCREEN_WIDTH - newObjectSize);
+  }
+
+  return Math.round(Math.random() * (SCREEN_WIDTH - newObjectSize));
+}
+
+function calculateObjectGravity(sizeStageMultiplier?: number): number {
+  const multiplier = sizeStageMultiplier || 1;
+  return OBJECT_GRAVITY + randomInRange(-0.25 * multiplier, 0.25 * multiplier);
+}
+
+function getRandomType(possibleTypes: FallingObjectType[]): FallingObjectType {
+  return possibleTypes[Math.floor(Math.random() * possibleTypes.length)];
+}
+
+function calculateObjectSpeed(newGravity: number): number {
+  return newGravity < 0.5 ? 0.5 : newGravity;
 }
