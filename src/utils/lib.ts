@@ -56,6 +56,10 @@ export function getPowerUpList(gameStage: number) {
   return powerUpList;
 }
 
+export function randomInRange(min: number, max: number) {
+  return Math.random() * (max - min) + min;
+}
+
 export function resetAudio(audio: HTMLAudioElement) {
   audio.pause();
   audio.currentTime = 0;

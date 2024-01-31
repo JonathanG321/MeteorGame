@@ -9,7 +9,7 @@ import {
   SCREEN_HEIGHT,
 } from "../utils/variables";
 
-export default function useHeroMovementLogicY(
+export default function heroMovementLogicY(
   heroPositionY: Position["Y"],
   pressedKeyUp: boolean,
   pressedKeyDown: boolean,

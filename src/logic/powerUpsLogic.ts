@@ -13,11 +13,10 @@ import {
   ContextValues,
   FallingObjectType,
   ObjectWithRefs,
-  StateSetter,
 } from "../utils/types";
 import { NEW_SHIELD_COUNT, NEW_SLOW_COUNT } from "../utils/variables";
 
-export default function usePowerUps(
+export default function powerUpsLogic(
   contextRefs: ObjectWithRefs<ContextValues>,
   hitObject: { type: FallingObjectType | null; isPlayerTwo: boolean },
   gameStage: number

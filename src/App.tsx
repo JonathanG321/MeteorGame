@@ -7,7 +7,6 @@ import Menu from "./components/Menu";
 import Mask from "./components/Mask";
 import HeaderBar from "./components/HeaderBar";
 import PowerUp from "./components/PowerUp";
-import hooks from "./hooks";
 import {
   FRAME_RATE,
   MASK_FACTOR,
@@ -28,9 +27,18 @@ import {
 } from "./utils/lib";
 import { clockTickingSound, themeSound, timeResumeSound } from "./utils/sounds";
 import UI from "./components/UI";
+import spawnFallingObjectLogic from "./logic/spawnFallingObjectLogic";
+import damageCalculationLogic from "./logic/damageCalculationLogic";
+import powerUpsLogic from "./logic/powerUpsLogic";
+import heroMovementLogicX from "./logic/heroMovementLogicX";
+import heroMovementLogicY from "./logic/heroMovementLogicY";
+import objectGravityLogic from "./logic/objectGravityLogic";
+import gameOverLogic from "./logic/gameOverLogic";
+import useContextValues from "./hooks/useContextValues";
+import useUpdatingRefsForObject from "./hooks/useUpdatingRefsForObject";
 
 function App() {
-  const contextValues = hooks.useContextValues();
+  const contextValues = useContextValues();
 
   const {
     isMainMenu,
@@ -59,7 +67,7 @@ function App() {
     setPointsTwo,
   } = contextValues;
 
-  const contextRefs = hooks.useUpdatingRefsForObject(
+  const contextRefs = useUpdatingRefsForObject(
     contextValues,
     contextValues.isGameOver
   );
@@ -71,7 +79,7 @@ function App() {
     const gameStopped = isDead || isMainMenu;
     const points = contextRefs.points.current;
     const pointsTwo = contextRefs.pointsTwo.current;
-    hooks.useGameOver(
+    gameOverLogic(
       isDead,
       points > pointsTwo ? points : pointsTwo,
       contextRefs.highScore.current,
@@ -100,7 +108,7 @@ function App() {
       if (currentSlowCount === 1) themeSound.playbackRate = 1;
 
       if (isValidPosition(contextRefs.heroOriginPoint.current)) {
-        hooks.useHeroMovementLogicX(
+        heroMovementLogicX(
           contextRefs.heroOriginPoint.current.X,
           contextRefs.pressedKeys.current.ArrowLeft,
           contextRefs.pressedKeys.current.ArrowRight,
@@ -109,7 +117,7 @@ function App() {
           setHeroOriginPoint,
           setLastDirection
         );
-        hooks.useHeroMovementLogicY(
+        heroMovementLogicY(
           contextRefs.heroOriginPoint.current.Y,
           contextRefs.pressedKeys.current.ArrowUp,
           contextRefs.pressedKeys.current.ArrowDown,
@@ -123,7 +131,7 @@ function App() {
         contextRefs.isTwoPlayers.current &&
         isValidPosition(contextRefs.heroTwoOriginPoint.current)
       ) {
-        hooks.useHeroMovementLogicX(
+        heroMovementLogicX(
           contextRefs.heroTwoOriginPoint.current.X,
           contextRefs.pressedKeys.current.a,
           contextRefs.pressedKeys.current.d,
@@ -132,7 +140,7 @@ function App() {
           setHeroTwoOriginPoint,
           setLastDirectionTwo
         );
-        hooks.useHeroMovementLogicY(
+        heroMovementLogicY(
           contextRefs.heroTwoOriginPoint.current.Y,
           contextRefs.pressedKeys.current.w,
           contextRefs.pressedKeys.current.s,
@@ -143,7 +151,7 @@ function App() {
         );
       }
 
-      hooks.useDamageCalculation(
+      damageCalculationLogic(
         contextRefs.invincibleCount.current,
         contextRefs.shieldCount.current,
         contextRefs.isHit.current,
@@ -155,7 +163,7 @@ function App() {
         setHeroOriginPoint
       );
       if (contextRefs.isTwoPlayers.current) {
-        hooks.useDamageCalculation(
+        damageCalculationLogic(
           contextRefs.invincibleCountTwo.current,
           contextRefs.shieldCountTwo.current,
           contextRefs.isHitTwo.current,
@@ -168,7 +176,7 @@ function App() {
         );
       }
 
-      hooks.useSpawnFallingObject(
+      spawnFallingObjectLogic(
         setMeteorPositions,
         ["meteor"],
         contextRefs.mousePressPosition.current,
@@ -177,7 +185,7 @@ function App() {
         gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2,
         gameStageMultiplier
       );
-      hooks.useSpawnFallingObject(
+      spawnFallingObjectLogic(
         setPowerUpPositions,
         powerUpList,
         NULL_POSITION,
@@ -186,12 +194,9 @@ function App() {
         gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2
       );
 
-      const hitObject = hooks.useObjectGravity(
-        contextRefs,
-        gameStageMultiplier
-      );
+      const hitObject = objectGravityLogic(contextRefs, gameStageMultiplier);
 
-      hooks.usePowerUps(contextRefs, hitObject, gameStage);
+      powerUpsLogic(contextRefs, hitObject, gameStage);
     }, FRAME_RATE);
     return () => {
       clearInterval(frameIntervalId);

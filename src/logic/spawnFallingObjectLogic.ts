@@ -1,3 +1,4 @@
+import { randomInRange } from "../utils/lib";
 import {
   FallingObject,
   FallingObjectType,
@@ -11,7 +12,7 @@ import {
   SCREEN_WIDTH,
 } from "../utils/variables";
 
-export default function useSpawnFallingObject(
+export default function spawnFallingObjectLogic(
   setObjectPositions: StateSetter<FallingObject[]>,
   possibleTypes: FallingObjectType[],
   mousePressPosition: NullablePosition,
@@ -56,8 +57,4 @@ export default function useSpawnFallingObject(
   };
 
   setObjectPositions((oldValue) => oldValue.concat([newObjectPosition]));
-}
-
-function randomInRange(min: number, max: number) {
-  return Math.random() * (max - min) + min;
 }

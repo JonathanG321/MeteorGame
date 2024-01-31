@@ -6,7 +6,7 @@ import {
 } from "../utils/types";
 import { HERO_SIZE, HERO_SPEED, SCREEN_WIDTH } from "../utils/variables";
 
-export default function useHeroMovementLogicX(
+export default function heroMovementLogicX(
   heroPositionX: Position["X"],
   pressedKeyLeft: boolean,
   pressedKeyRight: boolean,

@@ -7,7 +7,7 @@ import {
 } from "../utils/types";
 import { OBJECT_SIZE, SCREEN_HEIGHT } from "../utils/variables";
 
-export default function useObjectGravity(
+export default function objectGravityLogic(
   contextRefs: ObjectWithRefs<ContextValues>,
   gameStageMultiplier: number
 ): {

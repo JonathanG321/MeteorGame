@@ -8,7 +8,7 @@ import {
 } from "../utils/sounds";
 import { playAudio, resetAudio } from "../utils/lib";
 
-export default function useGameOver(
+export default function gameOverLogic(
   isDead: boolean,
   points: number,
   highScore: number,

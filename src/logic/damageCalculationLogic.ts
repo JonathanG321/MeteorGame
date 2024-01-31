@@ -1,18 +1,13 @@
 import { countDownTo0, playAudio } from "../utils/lib";
 import { hitSound, shieldSound } from "../utils/sounds";
-import {
-  ContextValues,
-  NullablePosition,
-  ObjectWithRefs,
-  StateSetter,
-} from "../utils/types";
+import { NullablePosition, StateSetter } from "../utils/types";
 import {
   NEW_INVINCIBLE_COUNT,
   NULL_POSITION,
   SHIELD_WARNING_DURATION,
 } from "../utils/variables";
 
-export default function useDamageCalculation(
+export default function damageCalculationLogic(
   invincibleCount: number,
   shieldCount: number,
   isHit: boolean,
