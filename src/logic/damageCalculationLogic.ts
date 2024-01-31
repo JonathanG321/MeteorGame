@@ -1,5 +1,5 @@
 import { countDownTo0, playAudio } from "../utils/lib";
-import { hitSound, shieldSound } from "../utils/sounds";
+import sounds from "../utils/sounds";
 import { NullablePosition, StateSetter } from "../utils/types";
 import {
   NEW_INVINCIBLE_COUNT,
@@ -18,20 +18,52 @@ export default function damageCalculationLogic(
   setShieldCount: StateSetter<number>,
   setHeroPosition: StateSetter<NullablePosition>
 ) {
-  if (invincibleCount <= 0 && shieldCount <= 0 && isHit) {
-    setLives((prev) => {
-      if (prev === 1) setHeroPosition(NULL_POSITION);
-      return countDownTo0(prev, true);
-    });
-    playAudio(hitSound);
-    if (lives > 1) setInvincibleCount(NEW_INVINCIBLE_COUNT);
-  } else if (shieldCount > SHIELD_WARNING_DURATION && isHit) {
-    setShieldCount(SHIELD_WARNING_DURATION);
-    playAudio(shieldSound);
-  } else if (!!shieldCount && isHit) {
-    playAudio(shieldSound);
+  const hasLivesRemaining = lives > 1;
+
+  if (isHit) {
+    const hasNoProtection = invincibleCount <= 0 && shieldCount <= 0;
+    if (hasNoProtection) {
+      handleHitWithoutProtection(
+        hasLivesRemaining,
+        setLives,
+        setInvincibleCount,
+        setHeroPosition
+      );
+    } else if (shieldCount > SHIELD_WARNING_DURATION) {
+      handleHitWithShield(SHIELD_WARNING_DURATION, setShieldCount);
+    } else if (shieldCount > 0) {
+      handleShieldActiveHit();
+    }
   }
+
   if (invincibleCount > 0)
     setInvincibleCount((prev) => countDownTo0(prev, isSlow));
+
   if (shieldCount > 0) setShieldCount((prev) => countDownTo0(prev, isSlow));
+}
+
+function handleShieldActiveHit() {
+  playAudio(sounds.shield);
+}
+
+function handleHitWithShield(
+  shieldWarningDuration: number,
+  setShieldCount: StateSetter<number>
+) {
+  setShieldCount((prev) => Math.min(prev, shieldWarningDuration));
+  playAudio(sounds.shield);
+}
+
+function handleHitWithoutProtection(
+  hasLivesRemaining: boolean,
+  setLives: StateSetter<number>,
+  setInvincibleCount: StateSetter<number>,
+  setHeroPosition: StateSetter<NullablePosition>
+) {
+  setLives((prev) => {
+    if (prev === 1) setHeroPosition(NULL_POSITION);
+    return countDownTo0(prev, true);
+  });
+  playAudio(sounds.hit);
+  if (hasLivesRemaining) setInvincibleCount(NEW_INVINCIBLE_COUNT);
 }
