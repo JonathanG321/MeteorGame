@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { GameStateContext } from "../context/GameStateContext";
 import classNames from "classnames";
 
@@ -20,17 +20,13 @@ export default function ScoreDisplay({
   className,
 }: Props) {
   const { points, pointsTwo } = useContext(GameStateContext);
-  const pointsDigits = (displayPoints ?? (isSecondPlayer ? pointsTwo : points))
-    .toLocaleString()
-    .split("")
-    .reverse();
-  const finalDigits = Array.from({ length: 9 })
-    .map((_, i) => {
-      if ((i + 1) % 4 === 0) return ",";
-      return pointsDigits[i] ?? "0";
-    })
-    .reverse()
-    .join("");
+  const pointsToDisplay =
+    displayPoints ?? (isSecondPlayer ? pointsTwo : points);
+  const pointsDigits = pointsToDisplay.toLocaleString().split("").reverse();
+  const formattedPoints = !!displayPoints
+    ? undefined
+    : formatPoints(pointsDigits);
+
   return (
     <div
       className={classNames(
@@ -46,64 +42,52 @@ export default function ScoreDisplay({
           "text-2xl": !large,
         })}
       >
-        {/* {Array.from({ length: 9 }).map((_, i) => {
-          const char = pointsDigits[i];
-          if (i === 5 || i === 1) {
-            return (
-              <div
-                key={"," + i}
-                className={classNames("flex justify-center text-center", {
-                  "w-2": !large,
-                  "w-3": large,
-                })}
-              >
-                ,
-              </div>
-            );
-          } else if (i + pointsDigits.length < 9) {
-            return (
-              <div
-                key={"0" + i}
-                className={classNames("flex justify-center text-center", {
-                  "w-[22px]": !large,
-                  "w-[26px]": large,
-                })}
-              >
-                0
-              </div>
-            );
-          }
-          return (
-            <div
-              key={char + i}
-              className={classNames("flex justify-center text-center", {
-                "w-[22px]": char !== "," && !large,
-                "w-[26px]": char !== "," && large,
-                "w-2": char === "," && !large,
-                "w-3": char === "," && large,
-              })}
-            >
-              {char}
-            </div>
-          );
-        })} */}
-        {(displayPoints || finalDigits)
-          .toLocaleString()
-          .split("")
-          .map((char, i) => (
-            <div
-              key={char + i}
-              className={classNames("flex justify-center text-center", {
-                "w-[22px]": char !== "," && !large,
-                "w-[26px]": char !== "," && large,
-                "w-2": char === "," && !large,
-                "w-3": char === "," && large,
-              })}
-            >
-              {char}
-            </div>
-          ))}
+        <DisplayPoints
+          displayPoints={displayPoints}
+          formattedPoints={formattedPoints}
+          large
+        />
       </div>
     </div>
+  );
+}
+
+function formatPoints(pointsDigits: string[]): string[] {
+  return Array.from({ length: 9 })
+    .map((_, i) => {
+      const char = pointsDigits[i] ?? "0";
+      if ((i + 1) % 4 === 0) return ",";
+      return char;
+    })
+    .reverse();
+}
+
+function getClassNamesForChar(char: string, large: boolean): string {
+  const widthClass =
+    char === "," ? (large ? "w-3" : "w-2") : large ? "w-[26px]" : "w-[22px]";
+  return classNames("flex justify-center text-center", widthClass);
+}
+
+type DisplayPointsProps = {
+  large: boolean;
+  formattedPoints?: string[];
+  displayPoints?: number;
+};
+
+function DisplayPoints({
+  large,
+  formattedPoints,
+  displayPoints,
+}: DisplayPointsProps) {
+  if (!!displayPoints || !formattedPoints)
+    return <>{displayPoints?.toLocaleString()}</>;
+  return (
+    <>
+      {formattedPoints.map((char, i) => (
+        <div key={char + i} className={getClassNamesForChar(char, large)}>
+          {char}
+        </div>
+      ))}
+    </>
   );
 }
