@@ -4,7 +4,7 @@ export const BASE_FPS = 60;
 export const FRAME_RATE = Math.floor(1000 / BASE_FPS);
 export const NORMAL_FPS = BASE_FPS * 2;
 
-export const STAGE_LENGTH = 60 * NORMAL_FPS;
+export const STAGE_LENGTH = 50 * NORMAL_FPS;
 export const STAGE_DIFFICULTY_SCALE = 1.25;
 
 export const SCREEN_HEIGHT = 480;
@@ -23,6 +23,8 @@ export const NULL_POSITION = {
   X: null,
   Y: null,
 };
+
+export const SCREEN_MINUS_HERO = SCREEN_WIDTH - HERO_SIZE;
 
 export const METEOR_SPAWN_CHANCE = 3; // chance of a meteor actually spawn on attempt
 export const OBJECT_GRAVITY = 2;
