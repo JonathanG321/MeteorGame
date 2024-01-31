@@ -1,6 +1,11 @@
 import { useContext, useEffect } from "react";
 import { GameStateContext } from "../context/GameStateContext";
-import { BASE_PRESSED_KEYS, HERO_SPAWN_POINT } from "../utils/variables";
+import {
+  BASE_PRESSED_KEYS,
+  HERO_SPAWN_POINT,
+  FIRST_PLAYER_SPAWN_POINT,
+  SECOND_PLAYER_SPAWN_POINT,
+} from "../utils/variables";
 import sounds from "../utils/sounds";
 import { playAudio } from "../utils/lib";
 
@@ -13,13 +18,15 @@ export default function GameOverScreen() {
       if (e.code === "Space") {
         context.setMeteorPositions([]);
         context.setPowerUpPositions([]);
-        context.setHeroOriginPoint(HERO_SPAWN_POINT);
+        context.setHeroOriginPoint(
+          isTwoPlayers ? FIRST_PLAYER_SPAWN_POINT : HERO_SPAWN_POINT
+        );
         context.setHeroVelocityDown(0);
         context.setPoints(0);
         context.setLives(3);
         context.setInvincibleCount(0);
         if (isTwoPlayers) {
-          context.setHeroTwoOriginPoint(HERO_SPAWN_POINT);
+          context.setHeroTwoOriginPoint(SECOND_PLAYER_SPAWN_POINT);
           context.setHeroVelocityDownTwo(0);
           context.setPointsTwo(0);
           context.setLivesTwo(3);

@@ -3,6 +3,7 @@ import {
   BASE_PRESSED_KEYS,
   HERO_SPAWN_POINT,
   NULL_POSITION,
+  SECOND_PLAYER_SPAWN_POINT,
 } from "../utils/variables";
 import {
   FallingObject,
@@ -60,7 +61,7 @@ export const GameStateContext = createContext({
   heroOriginPoint: HERO_SPAWN_POINT,
   shouldStopGame: false,
   gameStage: 1,
-  heroTwoOriginPoint: HERO_SPAWN_POINT,
+  heroTwoOriginPoint: SECOND_PLAYER_SPAWN_POINT,
   setHeroTwoOriginPoint: stateSetterPosition,
   lastDirectionTwo: "right" as Direction,
   setLastDirectionTwo: stateSetterDirection,

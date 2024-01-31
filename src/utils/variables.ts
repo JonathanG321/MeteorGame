@@ -21,6 +21,14 @@ export const HERO_SPAWN_POINT = {
   X: SCREEN_WIDTH / 2 - HERO_SIZE,
   Y: SCREEN_HEIGHT - HERO_SIZE,
 };
+export const FIRST_PLAYER_SPAWN_POINT = {
+  X: SCREEN_WIDTH / 3 - HERO_SIZE,
+  Y: SCREEN_HEIGHT - HERO_SIZE,
+};
+export const SECOND_PLAYER_SPAWN_POINT = {
+  X: (SCREEN_WIDTH / 3) * 2 - HERO_SIZE,
+  Y: SCREEN_HEIGHT - HERO_SIZE,
+};
 export const NULL_POSITION = {
   X: null,
   Y: null,

@@ -1,5 +1,10 @@
 import { useContext, useEffect } from "react";
-import { BASE_PRESSED_KEYS, HERO_SPAWN_POINT } from "../utils/variables";
+import {
+  BASE_PRESSED_KEYS,
+  FIRST_PLAYER_SPAWN_POINT,
+  HERO_SPAWN_POINT,
+  SECOND_PLAYER_SPAWN_POINT,
+} from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
 import sounds from "../utils/sounds";
 import { playAudio } from "../utils/lib";
@@ -21,7 +26,9 @@ export default function MenuScreen() {
       if (e.code === "Space") {
         setMeteorPositions([]);
         setPressedKeys(BASE_PRESSED_KEYS);
-        setHeroOriginPoint(HERO_SPAWN_POINT);
+        setHeroOriginPoint(
+          isTwoPlayers ? FIRST_PLAYER_SPAWN_POINT : HERO_SPAWN_POINT
+        );
         setIsMainMenu(false);
         playAudio(sounds.theme, 0.5);
       } else if (e.code === "ArrowRight") {
@@ -30,7 +37,7 @@ export default function MenuScreen() {
         setIsTwoPlayers(false);
       }
       if (e.code === "Space" && isTwoPlayers) {
-        setHeroTwoOriginPoint(HERO_SPAWN_POINT);
+        setHeroTwoOriginPoint(SECOND_PLAYER_SPAWN_POINT);
       }
     }
 
