@@ -1,6 +1,11 @@
 import { countDownTo0, playAudio } from "../utils/lib";
 import sounds from "../utils/sounds";
-import { NullablePosition, StateSetter } from "../utils/types";
+import {
+  ContextValues,
+  NullablePosition,
+  ObjectWithRefs,
+  StateSetter,
+} from "../utils/types";
 import {
   NEW_INVINCIBLE_COUNT,
   NULL_POSITION,
@@ -8,6 +13,48 @@ import {
 } from "../utils/variables";
 
 export default function damageCalculationLogic(
+  contextRefs: ObjectWithRefs<ContextValues>,
+  contextValues: ContextValues
+) {
+  const isSlow = !!contextRefs.slowCount.current;
+  const {
+    setLives,
+    setInvincibleCount,
+    setShieldCount,
+    setHeroOriginPoint,
+    setLivesTwo,
+    setInvincibleCountTwo,
+    setShieldCountTwo,
+    setHeroTwoOriginPoint,
+  } = contextValues;
+
+  singleDamageCalc(
+    contextRefs.invincibleCount.current,
+    contextRefs.shieldCount.current,
+    contextRefs.isHit.current,
+    isSlow,
+    contextRefs.lives.current,
+    setLives,
+    setInvincibleCount,
+    setShieldCount,
+    setHeroOriginPoint
+  );
+  if (contextRefs.isTwoPlayers.current) {
+    singleDamageCalc(
+      contextRefs.invincibleCountTwo.current,
+      contextRefs.shieldCountTwo.current,
+      contextRefs.isHitTwo.current,
+      isSlow,
+      contextRefs.livesTwo.current,
+      setLivesTwo,
+      setInvincibleCountTwo,
+      setShieldCountTwo,
+      setHeroTwoOriginPoint
+    );
+  }
+}
+
+function singleDamageCalc(
   invincibleCount: number,
   shieldCount: number,
   isHit: boolean,
