@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { NullablePosition } from "../utils/types";
 import { NULL_POSITION } from "../utils/variables";
 
 export default function useClick() {
-  const [mousePressPosition, setMousePressPosition] =
-    useState<NullablePosition>(NULL_POSITION);
-  const [mousePressed, setMousePressed] = useState(false);
+  const mousePressPositionRef = useRef<NullablePosition>(NULL_POSITION);
+  const mousePressedRef = useRef(false);
 
   useEffect(() => {
     function moveMousePosition(e: MouseEvent) {
@@ -14,20 +13,23 @@ export default function useClick() {
         ?.getBoundingClientRect();
       const Y = e.y - Math.floor(rect?.y ?? 0);
       const X = e.x - Math.floor(rect?.x ?? 0);
-      setMousePressPosition({ X, Y });
+      mousePressPositionRef.current = { X, Y };
     }
+
     function handleMouseMove(e: MouseEvent) {
-      if (mousePressed) {
+      if (mousePressedRef.current) {
         moveMousePosition(e);
       }
     }
+
     function handleMouseDown(e: MouseEvent) {
-      setMousePressed(true);
+      mousePressedRef.current = true;
       moveMousePosition(e);
     }
+
     function handleMouseUp() {
-      setMousePressed(false);
-      setMousePressPosition(NULL_POSITION);
+      mousePressedRef.current = false;
+      mousePressPositionRef.current = NULL_POSITION;
     }
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -39,7 +41,7 @@ export default function useClick() {
       document.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [mousePressed]);
+  }, []);
 
-  return { mousePressPosition, setMousePressPosition };
+  return { mousePressPosition: mousePressPositionRef.current };
 }

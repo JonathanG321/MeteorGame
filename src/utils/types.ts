@@ -76,7 +76,6 @@ export type ContextValues = {
   setShieldCount: StateSetter<number>;
   shieldCount: number;
   mousePressPosition: NullablePosition;
-  setMousePressPosition: StateSetter<NullablePosition>;
   pressedKeys: PressedKeys;
   setPressedKeys: StateSetter<PressedKeys>;
   points: number;

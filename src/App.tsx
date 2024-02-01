@@ -72,10 +72,6 @@ function App() {
         contextValues
       );
 
-      // if (isCountAtThreshold(slowCount, 75)) playAudio(sounds.timeResume, 1);
-      // if (isCountAtThreshold(slowCount, 60)) resetAudio(sounds.clockTicking);
-      // if (isCountAtThreshold(slowCount, 1)) sounds.theme.playbackRate = 1;
-
       heroMovementLogicX(contextRefs, contextValues);
       heroMovementLogicY(contextRefs, contextValues);
 

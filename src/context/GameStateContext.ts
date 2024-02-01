@@ -33,7 +33,6 @@ export const GameStateContext = createContext({
   lives: 3,
   setLives: stateSetterNumber,
   mousePressPosition: NULL_POSITION as NullablePosition,
-  setMousePressPosition: stateSetterPosition,
   highScore: 0,
   setHighScore: stateSetterNumber,
   setHeroOriginPoint: stateSetterPosition,
