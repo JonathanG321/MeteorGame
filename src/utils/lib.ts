@@ -24,25 +24,24 @@ export function isValidPosition(
 
 export function countDownTo0(prevCount: number, isSlow: boolean) {
   const dropAmount = isSlow ? 1 : 2;
-  return prevCount > 0 ? prevCount - dropAmount : 0;
+  return Math.max(prevCount - dropAmount, 0);
 }
 
-export function shouldShowFlash(count: number, isSlow: boolean) {
+export function shouldShowFlash(count: number, isSlow: boolean): boolean {
   const countMod = (count / 2) % 8;
-  if (!isSlow) return countMod < 4;
-
   const slowCountMod = (count / 2) % 16;
-  return slowCountMod < 8;
+
+  return isSlow ? slowCountMod < 8 : countMod < 4;
 }
 
-export function getPowerUpList(gameStage: number) {
-  let powerUpList: FallingObjectType[] = ["pointsSmall", "health"];
-  if (gameStage >= 2) powerUpList = powerUpList.concat(["pointsMedium"]);
-  if (gameStage >= 3) powerUpList = powerUpList.concat(["shield"]);
-  if (gameStage >= 4)
-    powerUpList = powerUpList.concat(["pointsLarge", "pointsSmall"]);
-  if (gameStage >= 5)
-    powerUpList = powerUpList.concat(["slow", "pointsMedium", "pointsSmall"]);
+export function getPowerUpList(gameStage: number): FallingObjectType[] {
+  const powerUpList: FallingObjectType[] = ["pointsSmall", "health"];
+
+  if (gameStage >= 2) powerUpList.push("pointsMedium");
+  if (gameStage >= 3) powerUpList.push("shield");
+  if (gameStage >= 4) powerUpList.push("pointsLarge", "pointsSmall");
+  if (gameStage >= 5) powerUpList.push("slow", "pointsMedium", "pointsSmall");
+
   return powerUpList;
 }
 
@@ -86,8 +85,11 @@ export function isObjectCollidingWithHero(
 
   const objectLeft = object.X + OBJECT_COLLISION_THRESHOLD;
   const objectTop = object.Y + OBJECT_COLLISION_THRESHOLD;
-  const objectRight = objectLeft + object.size - OBJECT_COLLISION_THRESHOLD * 2;
-  const objectBottom = objectTop + object.size - OBJECT_COLLISION_THRESHOLD * 2;
+
+  const calcObjectSize = object.size - OBJECT_COLLISION_THRESHOLD * 2;
+
+  const objectRight = objectLeft + calcObjectSize;
+  const objectBottom = objectTop + calcObjectSize;
 
   const isHeroColliding =
     heroLeft < objectRight &&
