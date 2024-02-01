@@ -3,6 +3,7 @@ import {
   ContextValues,
   FallingObject,
   FallingObjectType,
+  NullablePosition,
   ObjectWithRefs,
 } from "../utils/types";
 import { OBJECT_SIZE, SCREEN_HEIGHT } from "../utils/variables";
@@ -27,44 +28,69 @@ export default function objectGravityLogic(
   let isPlayerTwo = false;
 
   const speedMultiplier = isSlow ? 0.5 : 1;
-
-  function objectSetter(oldValue: FallingObject[]) {
-    return oldValue
-      .map((object) => ({
-        ...object,
-        Y: object.Y + object.speed * gameStageMultiplier * speedMultiplier,
-      }))
-      .filter((object) => object.Y <= SCREEN_HEIGHT + OBJECT_SIZE);
-  }
+  const calcDifficultyModifier = gameStageMultiplier * speedMultiplier;
 
   function objectSetterCollectable(oldValue: FallingObject[]) {
     return oldValue
-      .map((object) => ({
-        ...object,
-        Y: object.Y + object.speed * gameStageMultiplier * speedMultiplier,
-      }))
+      .map((object) => calcObjectsFalling(object, calcDifficultyModifier))
       .filter((object) => {
-        const isHeroValid = isValidPosition(heroOriginPoint);
-        const isHeroTwoValid = isValidPosition(heroTwoOriginPoint);
+        const isInBounds = object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
+        if (!isInBounds) return false;
 
-        const isHittingHero =
-          isHeroValid && isObjectCollidingWithHero(object, heroOriginPoint);
-        const isHittingHeroTwo =
-          isHeroTwoValid &&
-          isObjectCollidingWithHero(object, heroTwoOriginPoint);
+        const { isHittingHero, isHittingHeroTwo } = heroCollisionCalcs(
+          object,
+          heroOriginPoint,
+          heroTwoOriginPoint
+        );
 
-        if (isHittingHero || isHittingHeroTwo) {
-          type = object.type;
-          if (isHittingHeroTwo) isPlayerTwo = true;
-          return false;
-        }
+        if (!isHittingHero && !isHittingHeroTwo) return true;
 
-        return true;
+        type = object.type;
+        if (isHittingHeroTwo) isPlayerTwo = true;
+        return false;
       });
   }
 
   setPowerUpPositions(objectSetterCollectable);
-  setMeteorPositions(objectSetter);
+  setMeteorPositions((object) => objectSetter(object, calcDifficultyModifier));
 
   return { type, isPlayerTwo };
+}
+
+function objectSetter(
+  oldValue: FallingObject[],
+  calcDifficultyModifier: number
+) {
+  return oldValue
+    .map((object) => calcObjectsFalling(object, calcDifficultyModifier))
+    .filter(outOfBoundsFilter);
+}
+
+function calcObjectsFalling(
+  object: FallingObject,
+  calcDifficultyModifier: number
+) {
+  return {
+    ...object,
+    Y: object.Y + object.speed * calcDifficultyModifier,
+  };
+}
+
+function outOfBoundsFilter(object: FallingObject) {
+  return object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
+}
+
+function heroCollisionCalcs(
+  object: FallingObject,
+  heroOriginPoint: NullablePosition,
+  heroTwoOriginPoint: NullablePosition
+) {
+  const isHeroValid = isValidPosition(heroOriginPoint);
+  const isHeroTwoValid = isValidPosition(heroTwoOriginPoint);
+
+  const isHittingHero =
+    isHeroValid && isObjectCollidingWithHero(object, heroOriginPoint);
+  const isHittingHeroTwo =
+    isHeroTwoValid && isObjectCollidingWithHero(object, heroTwoOriginPoint);
+  return { isHittingHero, isHittingHeroTwo };
 }
