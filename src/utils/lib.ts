@@ -60,6 +60,10 @@ export function randomInRange(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
+export function isCountAtThreshold(currentCount: number, threshold: number) {
+  return currentCount <= threshold && currentCount + 1 > threshold;
+}
+
 export function resetAudio(audio: HTMLAudioElement) {
   audio.pause();
   audio.currentTime = 0;
