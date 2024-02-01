@@ -1,18 +1,53 @@
-import { randomInRange } from "../utils/lib";
+import { getPowerUpList, randomInRange } from "../utils/lib";
 import {
+  ContextValues,
   FallingObject,
   FallingObjectType,
   NullablePosition,
+  ObjectWithRefs,
   StateSetter,
 } from "../utils/types";
 import {
+  METEOR_SPAWN_CHANCE,
+  NULL_POSITION,
   OBJECT_GRAVITY,
   OBJECT_SIZE,
   OBJECT_STARTING_HEIGHT,
+  POWER_UP_SPAWN_CHANCE,
   SCREEN_WIDTH,
+  STAGE_DIFFICULTY_SCALE,
 } from "../utils/variables";
 
 export default function spawnFallingObjectLogic(
+  contextRefs: ObjectWithRefs<ContextValues>,
+  contextValues: ContextValues,
+  gameStageMultiplier: number
+) {
+  const { slowCount, gameStage } = contextRefs;
+  const isSlow = !!slowCount.current;
+  const { setMeteorPositions, setPowerUpPositions } = contextValues;
+  const powerUpList = getPowerUpList(gameStage.current);
+
+  spawnFallingObjectGroup(
+    setMeteorPositions,
+    ["meteor"],
+    contextRefs.mousePressPosition.current,
+    METEOR_SPAWN_CHANCE,
+    isSlow,
+    gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2,
+    gameStageMultiplier
+  );
+  spawnFallingObjectGroup(
+    setPowerUpPositions,
+    powerUpList,
+    NULL_POSITION,
+    POWER_UP_SPAWN_CHANCE,
+    isSlow,
+    gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2
+  );
+}
+
+function spawnFallingObjectGroup(
   setObjectPositions: StateSetter<FallingObject[]>,
   possibleTypes: FallingObjectType[],
   mousePressPosition: NullablePosition,

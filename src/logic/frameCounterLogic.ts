@@ -25,12 +25,9 @@ export default function frameCounterLogic(
   const gameStageMultiplier =
     STAGE_DIFFICULTY_SCALE ** (gameStage.current <= 5 ? gameStage.current : 5);
 
-  const powerUpList = getPowerUpList(gameStage.current);
-
   return {
-    currentSlowCount,
+    slowCount: currentSlowCount,
     gameStage: gameStage.current,
     gameStageMultiplier,
-    powerUpList,
   };
 }
