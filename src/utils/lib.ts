@@ -29,20 +29,10 @@ export function countDownTo0(prevCount: number, isSlow: boolean) {
 
 export function shouldShowFlash(count: number, isSlow: boolean) {
   const countMod = (count / 2) % 8;
-  if (!isSlow)
-    return countMod === 0 || countMod === 1 || countMod === 2 || countMod === 3;
+  if (!isSlow) return countMod < 4;
 
   const slowCountMod = (count / 2) % 16;
-  return (
-    slowCountMod === 0 ||
-    slowCountMod === 1 ||
-    slowCountMod === 2 ||
-    slowCountMod === 3 ||
-    slowCountMod === 4 ||
-    slowCountMod === 5 ||
-    slowCountMod === 6 ||
-    slowCountMod === 7
-  );
+  return slowCountMod < 8;
 }
 
 export function getPowerUpList(gameStage: number) {
