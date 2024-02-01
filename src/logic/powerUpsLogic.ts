@@ -1,27 +1,27 @@
-import { playAudio } from "../utils/lib";
+import { isCountAtThreshold, playAudio, resetAudio } from "../utils/lib";
 import sounds from "../utils/sounds";
-import {
-  ContextValues,
-  FallingObjectType,
-  ObjectWithRefs,
-} from "../utils/types";
+import { ContextValues, FallingObjectType } from "../utils/types";
 import { NEW_SHIELD_COUNT, NEW_SLOW_COUNT } from "../utils/variables";
 
 export default function powerUpsLogic(
-  contextRefs: ObjectWithRefs<ContextValues>,
+  contextValues: ContextValues,
   hitObject: { type: FallingObjectType | null; isPlayerTwo: boolean },
-  gameStage: number
+  gameStage: number,
+  slowCount: number
 ) {
+  if (isCountAtThreshold(slowCount, 75)) playAudio(sounds.timeResume, 1);
+  if (isCountAtThreshold(slowCount, 60)) resetAudio(sounds.clockTicking);
+  if (isCountAtThreshold(slowCount, 1)) sounds.theme.playbackRate = 1;
   if (!hitObject.type) return;
   const {
-    setSlowCount: { current: setSlowCount },
-    setLives: { current: setLives },
-    setLivesTwo: { current: setLivesTwo },
-    setPoints: { current: setPoints },
-    setPointsTwo: { current: setPointsTwo },
-    setShieldCount: { current: setShieldCount },
-    setShieldCountTwo: { current: setShieldCountTwo },
-  } = contextRefs;
+    setSlowCount,
+    setLives,
+    setLivesTwo,
+    setPoints,
+    setPointsTwo,
+    setShieldCount,
+    setShieldCountTwo,
+  } = contextValues;
   const bonus = gameStage > 5 ? (gameStage - 5) * 1000 : 0;
   const isPlayerTwo = hitObject.isPlayerTwo;
   const setLivesFunc = isPlayerTwo ? setLivesTwo : setLives;
@@ -54,10 +54,10 @@ export default function powerUpsLogic(
     case "slow":
       setSlowCount(NEW_SLOW_COUNT);
       setPointsFunc((prev) => prev + 1000 + bonus);
-      playAudio(sounds.timeSlow, 1);
+      if (sounds.clockTicking.paused) playAudio(sounds.timeSlow, 1);
       sounds.theme.playbackRate = 0.7;
       setTimeout(() => {
-        playAudio(sounds.clockTicking, 1);
+        if (sounds.clockTicking.paused) playAudio(sounds.clockTicking, 1);
       }, 1000);
       break;
   }
