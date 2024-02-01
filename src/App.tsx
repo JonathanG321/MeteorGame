@@ -7,30 +7,31 @@ import Menu from "./components/Menu";
 import Mask from "./components/Mask";
 import HeaderBar from "./components/HeaderBar";
 import PowerUp from "./components/PowerUp";
+import UI from "./components/UI";
 import {
   FRAME_RATE,
   MASK_FACTOR,
-  METEOR_SPAWN_CHANCE,
-  NULL_POSITION,
   OBJECT_SIZE,
-  POWER_UP_SPAWN_CHANCE,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
-  STAGE_DIFFICULTY_SCALE,
 } from "./utils/variables";
-import { isValidPosition, playAudio, resetAudio } from "./utils/lib";
+import {
+  isCountAtThreshold,
+  isValidPosition,
+  playAudio,
+  resetAudio,
+} from "./utils/lib";
 import sounds from "./utils/sounds";
-import UI from "./components/UI";
-import spawnFallingObjectLogic from "./logic/spawnFallingObjectLogic";
+import spawnFallingObjectsLogic from "./logic/spawnFallingObjectsLogic";
 import damageCalculationLogic from "./logic/damageCalculationLogic";
 import powerUpsLogic from "./logic/powerUpsLogic";
 import heroMovementLogicX from "./logic/heroMovementLogicX";
 import heroMovementLogicY from "./logic/heroMovementLogicY";
 import objectGravityLogic from "./logic/objectGravityLogic";
 import gameOverLogic from "./logic/gameOverLogic";
+import frameCounterLogic from "./logic/frameCounterLogic";
 import useContextValues from "./hooks/useContextValues";
 import useUpdatingRefsForObject from "./hooks/useUpdatingRefsForObject";
-import frameCounterLogic from "./logic/frameCounterLogic";
 
 function App() {
   const contextValues = useContextValues();
@@ -42,16 +43,6 @@ function App() {
     livesTwo,
     setHighScore,
     setIsGameOver,
-    setLives,
-    setShieldCount,
-    setInvincibleCount,
-    setPowerUpPositions,
-    setMeteorPositions,
-    setHeroOriginPoint,
-    setHeroTwoOriginPoint,
-    setLivesTwo,
-    setInvincibleCountTwo,
-    setShieldCountTwo,
   } = contextValues;
 
   const contextRefs = useUpdatingRefsForObject(
@@ -76,62 +67,24 @@ function App() {
     if (gameStopped) return;
 
     const frameIntervalId = setInterval(() => {
-      const { currentSlowCount, gameStage, gameStageMultiplier, powerUpList } =
-        frameCounterLogic(contextRefs, contextValues);
+      const { slowCount, gameStage, gameStageMultiplier } = frameCounterLogic(
+        contextRefs,
+        contextValues
+      );
 
-      if (currentSlowCount === 75) playAudio(sounds.timeResume, 1);
-      if (currentSlowCount === 60) resetAudio(sounds.clockTicking);
-      if (currentSlowCount === 1) sounds.theme.playbackRate = 1;
+      // if (isCountAtThreshold(slowCount, 75)) playAudio(sounds.timeResume, 1);
+      // if (isCountAtThreshold(slowCount, 60)) resetAudio(sounds.clockTicking);
+      // if (isCountAtThreshold(slowCount, 1)) sounds.theme.playbackRate = 1;
 
       heroMovementLogicX(contextRefs, contextValues);
       heroMovementLogicY(contextRefs, contextValues);
 
-      damageCalculationLogic(
-        contextRefs.invincibleCount.current,
-        contextRefs.shieldCount.current,
-        contextRefs.isHit.current,
-        !!currentSlowCount,
-        contextRefs.lives.current,
-        setLives,
-        setInvincibleCount,
-        setShieldCount,
-        setHeroOriginPoint
-      );
-      if (contextRefs.isTwoPlayers.current) {
-        damageCalculationLogic(
-          contextRefs.invincibleCountTwo.current,
-          contextRefs.shieldCountTwo.current,
-          contextRefs.isHitTwo.current,
-          !!currentSlowCount,
-          contextRefs.livesTwo.current,
-          setLivesTwo,
-          setInvincibleCountTwo,
-          setShieldCountTwo,
-          setHeroTwoOriginPoint
-        );
-      }
+      damageCalculationLogic(contextRefs, contextValues);
 
-      spawnFallingObjectLogic(
-        setMeteorPositions,
-        ["meteor"],
-        contextRefs.mousePressPosition.current,
-        METEOR_SPAWN_CHANCE,
-        !!currentSlowCount,
-        gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2,
-        gameStageMultiplier
-      );
-      spawnFallingObjectLogic(
-        setPowerUpPositions,
-        powerUpList,
-        NULL_POSITION,
-        POWER_UP_SPAWN_CHANCE,
-        !!currentSlowCount,
-        gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2
-      );
+      spawnFallingObjectsLogic(contextRefs, contextValues, gameStageMultiplier);
 
       const hitObject = objectGravityLogic(contextRefs, gameStageMultiplier);
-
-      powerUpsLogic(contextRefs, hitObject, gameStage);
+      powerUpsLogic(contextValues, hitObject, gameStage, slowCount);
     }, FRAME_RATE);
     return () => {
       clearInterval(frameIntervalId);
