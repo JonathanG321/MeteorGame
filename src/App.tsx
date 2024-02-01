@@ -35,19 +35,30 @@ function App() {
     lives,
     isGameOver,
     livesTwo,
+    isTwoPlayers,
+    heroOriginPoint,
+    heroTwoOriginPoint,
+    meteorPositions,
+    powerUpPositions,
+    highScore,
+    invincibleCount,
+    invincibleCountTwo,
+    lastDirection,
+    lastDirectionTwo,
+    shieldCount,
+    shieldCountTwo,
     setHighScore,
     setIsGameOver,
   } = contextValues;
 
-  const contextRefs = useUpdatingRefsForObject(
-    contextValues,
-    contextValues.isGameOver
-  );
+  const contextRefs = useUpdatingRefsForObject(contextValues, isGameOver);
 
   useEffect(() => {
+    const isP1Alive = lives <= 0;
+    const isP2Alive = livesTwo <= 0;
     const isDead = !contextRefs.isTwoPlayers.current
-      ? lives <= 0
-      : lives <= 0 && livesTwo <= 0;
+      ? isP1Alive
+      : isP1Alive && isP2Alive;
     const gameStopped = isDead || isMainMenu;
     const points = contextRefs.points.current;
     const pointsTwo = contextRefs.pointsTwo.current;
@@ -81,41 +92,45 @@ function App() {
     };
   }, [lives, isMainMenu, isGameOver, livesTwo]);
 
+  const borderWidth = 4 * 2;
+
   return (
     <GameStateContext.Provider value={contextValues}>
       <div className="flex h-screen w-full items-center justify-center overflow-hidden font-pix-con">
         <div
           className="relative"
-          style={{ height: SCREEN_HEIGHT + 8, width: SCREEN_WIDTH + 8 }}
+          style={{
+            height: SCREEN_HEIGHT + borderWidth,
+            width: SCREEN_WIDTH + borderWidth,
+          }}
         >
           <Mask top={-(OBJECT_SIZE * MASK_FACTOR)}>
-            <HeaderBar highScore={contextValues.highScore} />
+            <HeaderBar highScore={highScore} />
           </Mask>
           <Canvas>
             {!isGameOver && !isMainMenu && <UI />}
             {(isGameOver || isMainMenu) && <Menu />}
-            {isValidPosition(contextValues.heroOriginPoint) && (
+            {isValidPosition(heroOriginPoint) && (
               <Hero
-                heroOriginPoint={contextValues.heroOriginPoint}
-                invincibleCount={contextValues.invincibleCount}
-                lastDirection={contextValues.lastDirection}
-                shieldCount={contextValues.shieldCount}
+                heroOriginPoint={heroOriginPoint}
+                invincibleCount={invincibleCount}
+                lastDirection={lastDirection}
+                shieldCount={shieldCount}
               />
             )}
-            {contextValues.isTwoPlayers &&
-              isValidPosition(contextValues.heroTwoOriginPoint) && (
-                <Hero
-                  heroOriginPoint={contextValues.heroTwoOriginPoint}
-                  invincibleCount={contextValues.invincibleCountTwo}
-                  lastDirection={contextValues.lastDirectionTwo}
-                  shieldCount={contextValues.shieldCountTwo}
-                  isPlayerTwo
-                />
-              )}
-            {contextValues.meteorPositions.map((meteorObject) => (
+            {isTwoPlayers && isValidPosition(heroTwoOriginPoint) && (
+              <Hero
+                heroOriginPoint={heroTwoOriginPoint}
+                invincibleCount={invincibleCountTwo}
+                lastDirection={lastDirectionTwo}
+                shieldCount={shieldCountTwo}
+                isPlayerTwo
+              />
+            )}
+            {meteorPositions.map((meteorObject) => (
               <Meteor key={meteorObject.id} meteorObject={meteorObject} />
             ))}
-            {contextValues.powerUpPositions.map((powerUpObject) => (
+            {powerUpPositions.map((powerUpObject) => (
               <PowerUp key={powerUpObject.id} powerUpObject={powerUpObject} />
             ))}
           </Canvas>
