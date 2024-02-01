@@ -64,12 +64,9 @@ function singleHeroLogicY(
   setVelocityDown: StateSetter<number>,
   updatePosition: StateSetter<NullablePosition>
 ) {
-  if (
-    slowCount % 2 !== 0 ||
-    (!pressedKeyUp && !pressedKeyDown && heroPositionY === HEIGHT_MINUS_HERO)
-  ) {
-    return;
-  }
+  const isNotFallingOrJumping =
+    !pressedKeyUp && !pressedKeyDown && heroPositionY === HEIGHT_MINUS_HERO;
+  if (slowCount % 2 !== 0 || isNotFallingOrJumping) return;
 
   let newVelocityDown = velocityDown;
 
