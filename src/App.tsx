@@ -15,13 +15,7 @@ import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "./utils/variables";
-import {
-  isCountAtThreshold,
-  isValidPosition,
-  playAudio,
-  resetAudio,
-} from "./utils/lib";
-import sounds from "./utils/sounds";
+import { isValidPosition } from "./utils/lib";
 import spawnFallingObjectsLogic from "./logic/spawnFallingObjectsLogic";
 import damageCalculationLogic from "./logic/damageCalculationLogic";
 import powerUpsLogic from "./logic/powerUpsLogic";
@@ -52,8 +46,8 @@ function App() {
 
   useEffect(() => {
     const isDead = !contextRefs.isTwoPlayers.current
-      ? lives === 0
-      : lives === 0 && livesTwo === 0;
+      ? lives <= 0
+      : lives <= 0 && livesTwo <= 0;
     const gameStopped = isDead || isMainMenu;
     const points = contextRefs.points.current;
     const pointsTwo = contextRefs.pointsTwo.current;
