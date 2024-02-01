@@ -92,7 +92,7 @@ function App() {
             <HeaderBar highScore={contextValues.highScore} />
           </Mask>
           <Canvas>
-            <UI />
+            {!isGameOver && !isMainMenu && <UI />}
             {(isGameOver || isMainMenu) && <Menu />}
             {isValidPosition(contextValues.heroOriginPoint) && (
               <Hero
@@ -115,8 +115,8 @@ function App() {
             {contextValues.meteorPositions.map((meteorObject) => (
               <Meteor key={meteorObject.id} meteorObject={meteorObject} />
             ))}
-            {contextValues.powerUpPositions.map((object) => (
-              <PowerUp key={object.id} object={object} />
+            {contextValues.powerUpPositions.map((powerUpObject) => (
+              <PowerUp key={powerUpObject.id} powerUpObject={powerUpObject} />
             ))}
           </Canvas>
           <Mask top={SCREEN_HEIGHT} className="border-t-4 border-black" />
