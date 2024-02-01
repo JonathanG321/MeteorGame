@@ -1,13 +1,7 @@
 import { useContext, useEffect } from "react";
 import { GameStateContext } from "../context/GameStateContext";
-import {
-  BASE_PRESSED_KEYS,
-  HERO_SPAWN_POINT,
-  FIRST_PLAYER_SPAWN_POINT,
-  SECOND_PLAYER_SPAWN_POINT,
-} from "../utils/variables";
+import { BASE_PRESSED_KEYS } from "../utils/variables";
 import sounds from "../utils/sounds";
-import { playAudio } from "../utils/lib";
 
 export default function GameOverScreen() {
   const context = useContext(GameStateContext);
@@ -18,26 +12,20 @@ export default function GameOverScreen() {
       if (e.code === "Space") {
         context.setMeteorPositions([]);
         context.setPowerUpPositions([]);
-        context.setHeroOriginPoint(
-          isTwoPlayers ? FIRST_PLAYER_SPAWN_POINT : HERO_SPAWN_POINT
-        );
         context.setHeroVelocityDown(0);
         context.setPoints(0);
         context.setLives(3);
         context.setInvincibleCount(0);
-        if (isTwoPlayers) {
-          context.setHeroTwoOriginPoint(SECOND_PLAYER_SPAWN_POINT);
-          context.setHeroVelocityDownTwo(0);
-          context.setPointsTwo(0);
-          context.setLivesTwo(3);
-          context.setInvincibleCountTwo(0);
-        }
+        context.setHeroVelocityDownTwo(0);
+        context.setPointsTwo(0);
+        context.setLivesTwo(3);
+        context.setInvincibleCountTwo(0);
         context.setSlowCount(0);
         context.setPressedKeys(BASE_PRESSED_KEYS);
         context.setGameCounter(1);
         context.setIsGameOver(false);
+        context.setIsMainMenu(true);
         sounds.theme.playbackRate = 1;
-        playAudio(sounds.theme, 0.5);
       }
     }
 
@@ -56,6 +44,14 @@ export default function GameOverScreen() {
           <div className="mb-2 text-xl font-bold">
             Player {points > pointsTwo ? "1" : "2"} wins with:
           </div>
+          <div className="mb-2 text-lg font-bold">
+            {(points > pointsTwo ? points : pointsTwo).toLocaleString()} Points
+          </div>
+        </>
+      )}
+      {!isTwoPlayers && (
+        <>
+          <div className="mb-2 text-xl font-bold">Score</div>
           <div className="mb-2 text-lg font-bold">
             {(points > pointsTwo ? points : pointsTwo).toLocaleString()} Points
           </div>
