@@ -8,10 +8,14 @@ import pointsLarge from "../assets/images/powerUps/PixelGemstone.gif";
 import shield from "../assets/images/powerUps/PixelShield.png";
 import hourglass from "../assets/images/powerUps/PixelHourglass.png";
 
-export default function PowerUp({ object }: { object: FallingObject }) {
-  const style = createObjectStyle(object);
+export default function PowerUp({
+  powerUpObject,
+}: {
+  powerUpObject: FallingObject;
+}) {
+  const style = createObjectStyle(powerUpObject);
   let texture = "";
-  switch (object.type) {
+  switch (powerUpObject.type) {
     case "health":
       texture = heart;
       break;
@@ -35,9 +39,7 @@ export default function PowerUp({ object }: { object: FallingObject }) {
     <div
       style={style}
       {...style}
-      className={classNames("absolute", object.type, {
-        "bg-purple-500": object.type === "meteor",
-      })}
+      className={classNames("absolute", powerUpObject.type)}
     >
       <img src={texture} className={classNames("absolute", "left-0")} />
     </div>
