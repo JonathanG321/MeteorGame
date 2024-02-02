@@ -47,6 +47,8 @@ export const GameStateContext = createContext({
   setMeteorPositions: stateSetterFallingObject,
   powerUpPositions: [] as FallingObject[],
   setPowerUpPositions: stateSetterFallingObject,
+  specialPositions: [] as FallingObject[],
+  setSpecialPositions: stateSetterFallingObject,
   isGameOver: false,
   setIsGameOver: stateSetterBoolean,
   isMainMenu: true,
