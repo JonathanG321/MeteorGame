@@ -19,9 +19,9 @@ export default function ScoreDisplay({
   isSecondPlayer = false,
   className,
 }: Props) {
-  const { points, pointsTwo } = useContext(GameStateContext);
+  const { points } = useContext(GameStateContext);
   const pointsToDisplay =
-    displayPoints ?? (isSecondPlayer ? pointsTwo : points);
+    displayPoints ?? (isSecondPlayer ? points[1] : points[0]);
   const pointsDigits = pointsToDisplay.toLocaleString().split("").reverse();
   const formattedPoints = !!displayPoints
     ? undefined

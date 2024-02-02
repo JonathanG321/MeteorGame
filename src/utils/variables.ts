@@ -1,4 +1,4 @@
-import { PressedKeys } from "./types";
+import { NullablePosition, PressedKeys } from "./types";
 
 export const BASE_FPS = 60;
 export const FRAME_RATE = Math.floor(1000 / BASE_FPS);
@@ -21,19 +21,19 @@ export const HERO_SPEED = 6;
 export const HERO_JUMP_SPEED = 20;
 export const HERO_GRAVITY = 1;
 export const MAX_HERO_VELOCITY_DOWN = 10;
-export const HERO_SPAWN_POINT = {
+export const HERO_SPAWN_POINT: NullablePosition = {
   X: SCREEN_WIDTH / 2 - HERO_SIZE,
   Y: HEIGHT_MINUS_HERO,
 };
-export const FIRST_PLAYER_SPAWN_POINT = {
+export const FIRST_PLAYER_SPAWN_POINT: NullablePosition = {
   X: SCREEN_WIDTH / 3 - HERO_SIZE,
   Y: HEIGHT_MINUS_HERO,
 };
-export const SECOND_PLAYER_SPAWN_POINT = {
+export const SECOND_PLAYER_SPAWN_POINT: NullablePosition = {
   X: (SCREEN_WIDTH / 3) * 2 - HERO_SIZE,
   Y: HEIGHT_MINUS_HERO,
 };
-export const NULL_POSITION = {
+export const NULL_POSITION: NullablePosition = {
   X: null,
   Y: null,
 };

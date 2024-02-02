@@ -7,16 +7,16 @@ import {
 } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
 import sounds from "../utils/sounds";
-import { playAudio } from "../utils/lib";
+import { playAudio, updateItemInArrayFunction } from "../utils/lib";
 import SelectButton from "./SelectButton";
+import { NullablePosition } from "../utils/types";
 
 export default function MenuScreen() {
   const {
     setIsMainMenu,
     setMeteorPositions,
     setPressedKeys,
-    setHeroOriginPoint,
-    setHeroTwoOriginPoint,
+    setHeroOriginPoints,
     setIsTwoPlayers,
     isTwoPlayers,
   } = useContext(GameStateContext);
@@ -26,8 +26,11 @@ export default function MenuScreen() {
       if (e.code === "Space") {
         setMeteorPositions([]);
         setPressedKeys(BASE_PRESSED_KEYS);
-        setHeroOriginPoint(
-          isTwoPlayers ? FIRST_PLAYER_SPAWN_POINT : HERO_SPAWN_POINT
+        setHeroOriginPoints(
+          updateItemInArrayFunction(
+            0,
+            isTwoPlayers ? FIRST_PLAYER_SPAWN_POINT : HERO_SPAWN_POINT
+          )
         );
         setIsMainMenu(false);
         playAudio(sounds.theme, 0.5);
@@ -37,7 +40,9 @@ export default function MenuScreen() {
         setIsTwoPlayers(false);
       }
       if (e.code === "Space" && isTwoPlayers) {
-        setHeroTwoOriginPoint(SECOND_PLAYER_SPAWN_POINT);
+        setHeroOriginPoints(
+          updateItemInArrayFunction(1, SECOND_PLAYER_SPAWN_POINT)
+        );
       }
     }
 

@@ -5,21 +5,17 @@ import sounds from "../utils/sounds";
 
 export default function GameOverScreen() {
   const context = useContext(GameStateContext);
-  const { isTwoPlayers, points, pointsTwo } = context;
+  const { isTwoPlayers, points } = context;
 
   useEffect(() => {
     function handleKeyUp(e: KeyboardEvent) {
       if (e.code === "Space") {
         context.setMeteorPositions([]);
         context.setPowerUpPositions([]);
-        context.setHeroVelocityDown(0);
-        context.setPoints(0);
-        context.setLives(3);
-        context.setInvincibleCount(0);
-        context.setHeroVelocityDownTwo(0);
-        context.setPointsTwo(0);
-        context.setLivesTwo(3);
-        context.setInvincibleCountTwo(0);
+        context.setHeroVelocityDowns([0, 0]);
+        context.setPoints([0, 0]);
+        context.setLives([3, 3]);
+        context.setInvincibleCounts([0, 0]);
         context.setSlowCount(0);
         context.setPressedKeys(BASE_PRESSED_KEYS);
         context.setGameCounter(1);
@@ -42,10 +38,11 @@ export default function GameOverScreen() {
       {isTwoPlayers && (
         <>
           <div className="mb-2 text-xl font-bold">
-            Player {points > pointsTwo ? "1" : "2"} wins with:
+            Player {points[0] > points[1] ? "1" : "2"} wins with:
           </div>
           <div className="mb-2 text-lg font-bold">
-            {(points > pointsTwo ? points : pointsTwo).toLocaleString()} Points
+            {(points[0] > points[1] ? points[0] : points[1]).toLocaleString()}{" "}
+            Points
           </div>
         </>
       )}
@@ -53,7 +50,8 @@ export default function GameOverScreen() {
         <>
           <div className="mb-2 text-xl font-bold">Score</div>
           <div className="mb-2 text-lg font-bold">
-            {(points > pointsTwo ? points : pointsTwo).toLocaleString()} Points
+            {(points[0] > points[1] ? points[0] : points[1]).toLocaleString()}{" "}
+            Points
           </div>
         </>
       )}

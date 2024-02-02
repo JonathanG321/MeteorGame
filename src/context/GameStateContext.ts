@@ -15,9 +15,10 @@ import {
 } from "../utils/types";
 
 function stateSetterNumber(_: React.SetStateAction<number>): void {}
+function stateSetterNumbers(_: React.SetStateAction<number[]>): void {}
 function stateSetterBoolean(_: React.SetStateAction<boolean>): void {}
-function stateSetterPosition(_: React.SetStateAction<Position>): void {}
-function stateSetterDirection(_: React.SetStateAction<Direction>): void {}
+function stateSetterPositions(_: React.SetStateAction<Position[]>): void {}
+function stateSetterDirections(_: React.SetStateAction<Direction[]>): void {}
 function stateSetterPressedKeys(_: React.SetStateAction<PressedKeys>): void {}
 function stateSetterFallingObject(
   _: React.SetStateAction<FallingObject[]>
@@ -26,20 +27,20 @@ function stateSetterFallingObject(
 export const GameStateContext = createContext({
   setSlowCount: stateSetterNumber,
   slowCount: 0,
-  setShieldCount: stateSetterNumber,
-  shieldCount: 0,
-  setInvincibleCount: stateSetterNumber,
-  invincibleCount: 0,
-  lives: 3,
-  setLives: stateSetterNumber,
+  setShieldCounts: stateSetterNumbers,
+  shieldCounts: [0, 0],
+  setInvincibleCounts: stateSetterNumbers,
+  invincibleCounts: [0, 0],
+  lives: [3, 3],
+  setLives: stateSetterNumbers,
   mousePressPosition: NULL_POSITION as NullablePosition,
   highScore: 0,
   setHighScore: stateSetterNumber,
-  setHeroOriginPoint: stateSetterPosition,
-  heroVelocityDown: 0,
-  setHeroVelocityDown: stateSetterNumber,
-  points: 0,
-  setPoints: stateSetterNumber,
+  setHeroOriginPoints: stateSetterPositions,
+  heroVelocityDowns: [0, 0],
+  setHeroVelocityDowns: stateSetterNumbers,
+  points: [0, 0],
+  setPoints: stateSetterNumbers,
   pressedKeys: BASE_PRESSED_KEYS,
   setPressedKeys: stateSetterPressedKeys,
   meteorPositions: [] as FallingObject[],
@@ -50,28 +51,15 @@ export const GameStateContext = createContext({
   setIsGameOver: stateSetterBoolean,
   isMainMenu: true,
   setIsMainMenu: stateSetterBoolean,
-  lastDirection: "right" as Direction,
-  setLastDirection: stateSetterDirection,
+  lastDirections: ["right", "right"] as Direction[],
+  setLastDirections: stateSetterDirections,
   gameCounter: 0,
   setGameCounter: stateSetterNumber,
   isTwoPlayers: false,
   setIsTwoPlayers: stateSetterBoolean,
   isHit: false,
-  heroOriginPoint: HERO_SPAWN_POINT,
+  isHitTwo: false,
+  heroOriginPoints: [HERO_SPAWN_POINT, SECOND_PLAYER_SPAWN_POINT],
   shouldStopGame: false,
   gameStage: 1,
-  heroTwoOriginPoint: SECOND_PLAYER_SPAWN_POINT,
-  setHeroTwoOriginPoint: stateSetterPosition,
-  lastDirectionTwo: "right" as Direction,
-  setLastDirectionTwo: stateSetterDirection,
-  heroVelocityDownTwo: 0,
-  setHeroVelocityDownTwo: stateSetterNumber,
-  pointsTwo: 0,
-  setPointsTwo: stateSetterNumber,
-  livesTwo: 3,
-  setLivesTwo: stateSetterNumber,
-  invincibleCountTwo: 0,
-  setInvincibleCountTwo: stateSetterNumber,
-  shieldCountTwo: 0,
-  setShieldCountTwo: stateSetterNumber,
 } as ContextValues);

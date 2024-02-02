@@ -34,19 +34,14 @@ function App() {
     isMainMenu,
     lives,
     isGameOver,
-    livesTwo,
     isTwoPlayers,
-    heroOriginPoint,
-    heroTwoOriginPoint,
     meteorPositions,
     powerUpPositions,
+    heroOriginPoints,
+    invincibleCounts,
+    lastDirections,
+    shieldCounts,
     highScore,
-    invincibleCount,
-    invincibleCountTwo,
-    lastDirection,
-    lastDirectionTwo,
-    shieldCount,
-    shieldCountTwo,
     setHighScore,
     setIsGameOver,
   } = contextValues;
@@ -54,14 +49,14 @@ function App() {
   const contextRefs = useUpdatingRefsForObject(contextValues, isGameOver);
 
   useEffect(() => {
-    const isP1Alive = lives <= 0;
-    const isP2Alive = livesTwo <= 0;
+    const isP1Alive = lives[0] <= 0;
+    const isP2Alive = lives[1] <= 0;
     const isDead = !contextRefs.isTwoPlayers.current
       ? isP1Alive
       : isP1Alive && isP2Alive;
     const gameStopped = isDead || isMainMenu;
-    const points = contextRefs.points.current;
-    const pointsTwo = contextRefs.pointsTwo.current;
+    const points = contextRefs.points.current[0];
+    const pointsTwo = contextRefs.points.current[1];
     gameOverLogic(
       isDead,
       points > pointsTwo ? points : pointsTwo,
@@ -90,7 +85,7 @@ function App() {
     return () => {
       clearInterval(frameIntervalId);
     };
-  }, [lives, isMainMenu, isGameOver, livesTwo]);
+  }, [lives, isMainMenu, isGameOver]);
 
   const borderWidth = 4 * 2;
 
@@ -110,20 +105,20 @@ function App() {
           <Canvas>
             {!isGameOver && !isMainMenu && <UI />}
             {(isGameOver || isMainMenu) && <Menu />}
-            {isValidPosition(heroOriginPoint) && (
+            {isValidPosition(heroOriginPoints[0]) && (
               <Hero
-                heroOriginPoint={heroOriginPoint}
-                invincibleCount={invincibleCount}
-                lastDirection={lastDirection}
-                shieldCount={shieldCount}
+                heroOriginPoint={heroOriginPoints[0]}
+                invincibleCount={invincibleCounts[0]}
+                lastDirection={lastDirections[0]}
+                shieldCount={shieldCounts[0]}
               />
             )}
-            {isTwoPlayers && isValidPosition(heroTwoOriginPoint) && (
+            {isTwoPlayers && isValidPosition(heroOriginPoints[1]) && (
               <Hero
-                heroOriginPoint={heroTwoOriginPoint}
-                invincibleCount={invincibleCountTwo}
-                lastDirection={lastDirectionTwo}
-                shieldCount={shieldCountTwo}
+                heroOriginPoint={heroOriginPoints[1]}
+                invincibleCount={invincibleCounts[1]}
+                lastDirection={lastDirections[1]}
+                shieldCount={shieldCounts[1]}
                 isPlayerTwo
               />
             )}

@@ -1,4 +1,4 @@
-import { isValidPosition, playAudio } from "../utils/lib";
+import { isValidPosition, playAudio, updateItemInArray } from "../utils/lib";
 import sounds from "../utils/sounds";
 import {
   ContextValues,
@@ -19,39 +19,34 @@ export default function heroMovementLogicY(
   contextValues: ContextValues
 ) {
   const {
-    heroOriginPoint,
+    heroOriginPoints,
     pressedKeys,
-    heroVelocityDown,
-    heroVelocityDownTwo,
+    heroVelocityDowns,
     slowCount,
-    heroTwoOriginPoint,
     isTwoPlayers,
   } = contextRefs;
-  const {
-    setHeroOriginPoint,
-    setHeroTwoOriginPoint,
-    setHeroVelocityDown,
-    setHeroVelocityDownTwo,
-  } = contextValues;
-  if (isValidPosition(heroOriginPoint.current))
+  const { setHeroOriginPoints, setHeroVelocityDowns } = contextValues;
+  if (isValidPosition(heroOriginPoints.current[0]))
     singleHeroLogicY(
-      heroOriginPoint.current.Y,
+      heroOriginPoints.current[0].Y,
       pressedKeys.current.ArrowUp,
       pressedKeys.current.ArrowDown,
-      heroVelocityDown.current,
+      heroVelocityDowns.current[0],
       slowCount.current,
-      setHeroVelocityDown,
-      setHeroOriginPoint
+      0,
+      setHeroVelocityDowns,
+      setHeroOriginPoints
     );
-  if (isValidPosition(heroTwoOriginPoint.current) && isTwoPlayers.current)
+  if (isValidPosition(heroOriginPoints.current[1]) && isTwoPlayers.current)
     singleHeroLogicY(
-      heroTwoOriginPoint.current.Y,
+      heroOriginPoints.current[1].Y,
       pressedKeys.current.w,
       pressedKeys.current.s,
-      heroVelocityDownTwo.current,
+      heroVelocityDowns.current[1],
       slowCount.current,
-      setHeroVelocityDownTwo,
-      setHeroTwoOriginPoint
+      1,
+      setHeroVelocityDowns,
+      setHeroOriginPoints
     );
 }
 
@@ -61,8 +56,9 @@ function singleHeroLogicY(
   pressedKeyDown: boolean,
   velocityDown: number,
   slowCount: number,
-  setVelocityDown: StateSetter<number>,
-  updatePosition: StateSetter<NullablePosition>
+  index: number,
+  setVelocityDown: StateSetter<number[]>,
+  updatePosition: StateSetter<NullablePosition[]>
 ) {
   const isNotFallingOrJumping =
     !pressedKeyUp && !pressedKeyDown && heroPositionY === HEIGHT_MINUS_HERO;
@@ -92,6 +88,9 @@ function singleHeroLogicY(
 
   newY = Math.max(0, Math.min(newY, HEIGHT_MINUS_HERO));
 
-  if (velocityDown !== newVelocityDown) setVelocityDown(newVelocityDown);
-  updatePosition((prev) => ({ ...prev, Y: newY }));
+  if (velocityDown !== newVelocityDown)
+    setVelocityDown((prev) => updateItemInArray(prev, index, newVelocityDown));
+  updatePosition((prev) =>
+    updateItemInArray(prev, index, { ...prev[index], Y: newY })
+  );
 }

@@ -99,3 +99,10 @@ export function isObjectCollidingWithHero(
 
   return isHeroColliding ? object.id : "";
 }
+
+export function updateItemInArray<T>(prev: T[], index: number, newValue: T) {
+  return prev.map((val, i) => (i === index ? newValue : val));
+}
+export function updateItemInArrayFunction<T>(index: number, newValue: T) {
+  return (prev: T[]) => updateItemInArray(prev, index, newValue);
+}

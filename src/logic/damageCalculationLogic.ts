@@ -1,4 +1,9 @@
-import { countDownTo0, playAudio } from "../utils/lib";
+import {
+  countDownTo0,
+  playAudio,
+  updateItemInArray,
+  updateItemInArrayFunction,
+} from "../utils/lib";
 import sounds from "../utils/sounds";
 import {
   ContextValues,
@@ -17,54 +22,41 @@ export default function damageCalculationLogic(
   contextValues: ContextValues
 ) {
   const isSlow = !!contextRefs.slowCount.current;
-  const {
-    setLives,
-    setInvincibleCount,
-    setShieldCount,
-    setHeroOriginPoint,
-    setLivesTwo,
-    setInvincibleCountTwo,
-    setShieldCountTwo,
-    setHeroTwoOriginPoint,
-  } = contextValues;
 
-  singleDamageCalc(
-    contextRefs.invincibleCount.current,
-    contextRefs.shieldCount.current,
-    contextRefs.isHit.current,
-    isSlow,
-    contextRefs.lives.current,
-    setLives,
-    setInvincibleCount,
-    setShieldCount,
-    setHeroOriginPoint
-  );
+  singleDamageCalc(contextValues, contextRefs, isSlow, 0);
   if (contextRefs.isTwoPlayers.current) {
-    singleDamageCalc(
-      contextRefs.invincibleCountTwo.current,
-      contextRefs.shieldCountTwo.current,
-      contextRefs.isHitTwo.current,
-      isSlow,
-      contextRefs.livesTwo.current,
-      setLivesTwo,
-      setInvincibleCountTwo,
-      setShieldCountTwo,
-      setHeroTwoOriginPoint
-    );
+    singleDamageCalc(contextValues, contextRefs, isSlow, 1);
   }
 }
 
 function singleDamageCalc(
-  invincibleCount: number,
-  shieldCount: number,
-  isHit: boolean,
+  {
+    setHeroOriginPoints,
+    setInvincibleCounts,
+    setLives,
+    setShieldCounts,
+  }: ContextValues,
+  {
+    invincibleCounts: {
+      current: [invincibleCount1, invincibleCount2],
+    },
+    shieldCounts: {
+      current: [shieldCount1, shieldCount2],
+    },
+    isHit: { current: isHit1 },
+    isHitTwo: { current: isHit2 },
+    lives: {
+      current: [lives1, lives2],
+    },
+  }: ObjectWithRefs<ContextValues>,
   isSlow: boolean,
-  lives: number,
-  setLives: StateSetter<number>,
-  setInvincibleCount: StateSetter<number>,
-  setShieldCount: StateSetter<number>,
-  setHeroPosition: StateSetter<NullablePosition>
+  index: number
 ) {
+  const invincibleCount = index === 0 ? invincibleCount1 : invincibleCount2;
+  const shieldCount = index === 0 ? shieldCount1 : shieldCount2;
+  const isHit = index === 0 ? isHit1 : isHit2;
+  const lives = index === 0 ? lives1 : lives2;
+
   const hasLivesRemaining = lives > 1;
 
   if (isHit) {
@@ -72,21 +64,20 @@ function singleDamageCalc(
     if (hasNoProtection) {
       handleHitWithoutProtection(
         hasLivesRemaining,
+        index,
         setLives,
-        setInvincibleCount,
-        setHeroPosition
+        setInvincibleCounts,
+        setHeroOriginPoints
       );
     } else if (shieldCount > SHIELD_WARNING_DURATION) {
-      handleHitWithShield(SHIELD_WARNING_DURATION, setShieldCount);
+      handleHitWithShield(SHIELD_WARNING_DURATION, setShieldCounts, index);
     } else if (shieldCount > 0) {
       handleShieldActiveHit();
     }
   }
 
-  if (invincibleCount > 0)
-    setInvincibleCount((prev) => countDownTo0(prev, isSlow));
-
-  if (shieldCount > 0) setShieldCount((prev) => countDownTo0(prev, isSlow));
+  updateCounter(index, invincibleCount, isSlow, setInvincibleCounts);
+  updateCounter(index, shieldCount, isSlow, setShieldCounts);
 }
 
 function handleShieldActiveHit() {
@@ -95,22 +86,43 @@ function handleShieldActiveHit() {
 
 function handleHitWithShield(
   shieldWarningDuration: number,
-  setShieldCount: StateSetter<number>
+  setShieldCount: StateSetter<number[]>,
+  index: number
 ) {
-  setShieldCount((prev) => Math.min(prev, shieldWarningDuration));
+  setShieldCount((prev) =>
+    updateItemInArray(prev, index, Math.min(prev[index], shieldWarningDuration))
+  );
   playAudio(sounds.shield);
 }
 
 function handleHitWithoutProtection(
   hasLivesRemaining: boolean,
-  setLives: StateSetter<number>,
-  setInvincibleCount: StateSetter<number>,
-  setHeroPosition: StateSetter<NullablePosition>
+  index: number,
+  setLives: StateSetter<number[]>,
+  setInvincibleCount: StateSetter<number[]>,
+  setHeroPosition: StateSetter<NullablePosition[]>
 ) {
   setLives((prev) => {
-    if (prev === 1) setHeroPosition(NULL_POSITION);
-    return countDownTo0(prev, true);
+    return prev.map((val, i) => {
+      if (!hasLivesRemaining)
+        setHeroPosition(updateItemInArrayFunction(index, NULL_POSITION));
+      if (index !== i) return val;
+      return countDownTo0(val, true);
+    });
   });
   playAudio(sounds.hit);
-  if (hasLivesRemaining) setInvincibleCount(NEW_INVINCIBLE_COUNT);
+  if (hasLivesRemaining)
+    setInvincibleCount(updateItemInArrayFunction(index, NEW_INVINCIBLE_COUNT));
+}
+
+function updateCounter(
+  index: number,
+  count: number,
+  isSlow: boolean,
+  setCount: StateSetter<number[]>
+) {
+  if (count > 0)
+    setCount((prev) =>
+      updateItemInArray(prev, index, countDownTo0(prev[index], isSlow))
+    );
 }

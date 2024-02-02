@@ -1,4 +1,9 @@
-import { isCountAtThreshold, playAudio, resetAudio } from "../utils/lib";
+import {
+  isCountAtThreshold,
+  playAudio,
+  resetAudio,
+  updateItemInArrayFunction,
+} from "../utils/lib";
 import sounds from "../utils/sounds";
 import { ContextValues, FallingObjectType } from "../utils/types";
 import { NEW_SHIELD_COUNT, NEW_SLOW_COUNT } from "../utils/variables";
@@ -13,47 +18,43 @@ export default function powerUpsLogic(
   if (isCountAtThreshold(slowCount, 60)) resetAudio(sounds.clockTicking);
   if (isCountAtThreshold(slowCount, 1)) sounds.theme.playbackRate = 1;
   if (!hitObject.type) return;
-  const {
-    setSlowCount,
-    setLives,
-    setLivesTwo,
-    setPoints,
-    setPointsTwo,
-    setShieldCount,
-    setShieldCountTwo,
-  } = contextValues;
+  const { setSlowCount, setLives, setPoints, setShieldCounts } = contextValues;
   const bonus = gameStage > 5 ? (gameStage - 5) * 1000 : 0;
-  const isPlayerTwo = hitObject.isPlayerTwo;
-  const setLivesFunc = isPlayerTwo ? setLivesTwo : setLives;
-  const setPointsFunc = isPlayerTwo ? setPointsTwo : setPoints;
-  const setShieldCountFunc = isPlayerTwo ? setShieldCountTwo : setShieldCount;
+
+  const index = hitObject.isPlayerTwo ? 1 : 0;
 
   switch (hitObject.type) {
     case "health":
-      setLivesFunc((prev) => (prev >= 3 ? 3 : prev + 1));
-      setPointsFunc((prev) => prev + 1000 + bonus);
+      setLives((prev) => {
+        return prev.map((val, i) => {
+          if (i !== index) return val;
+          const incrementedValue = val >= 3 ? 3 : val + 1;
+          return incrementedValue;
+        });
+      });
+      setPoints((prev) => pointsUpdate(prev, index, bonus, 1000));
       playAudio(sounds.life);
       break;
     case "pointsSmall":
-      setPointsFunc((prev) => prev + 3000 + bonus);
+      setPoints((prev) => pointsUpdate(prev, index, bonus, 3000));
       playAudio(sounds.coin);
       break;
     case "pointsMedium":
-      setPointsFunc((prev) => prev + 5000 + bonus);
+      setPoints((prev) => pointsUpdate(prev, index, bonus, 5000));
       playAudio(sounds.coins);
       break;
     case "pointsLarge":
-      setPointsFunc((prev) => prev + 10000 + bonus);
+      setPoints((prev) => pointsUpdate(prev, index, bonus, 10000));
       playAudio(sounds.coinBag);
       break;
     case "shield":
-      setShieldCountFunc(NEW_SHIELD_COUNT);
-      setPointsFunc((prev) => prev + 1000 + bonus);
+      setShieldCounts(updateItemInArrayFunction(index, NEW_SHIELD_COUNT));
+      setPoints((prev) => pointsUpdate(prev, index, bonus, 1000));
       playAudio(sounds.shield);
       break;
     case "slow":
       setSlowCount(NEW_SLOW_COUNT);
-      setPointsFunc((prev) => prev + 1000 + bonus);
+      setPoints((prev) => pointsUpdate(prev, index, bonus, 1000));
       if (sounds.clockTicking.paused) playAudio(sounds.timeSlow, 1);
       sounds.theme.playbackRate = 0.7;
       setTimeout(() => {
@@ -61,4 +62,13 @@ export default function powerUpsLogic(
       }, 1000);
       break;
   }
+}
+
+function pointsUpdate(
+  prev: number[],
+  index: number,
+  bonus: number,
+  baseValue: number
+) {
+  return prev.map((val, i) => (i === index ? val + baseValue + bonus : val));
 }
