@@ -43,5 +43,5 @@ export default function useClick() {
     };
   }, []);
 
-  return { mousePressPosition: mousePressPositionRef.current };
+  return mousePressPositionRef.current;
 }

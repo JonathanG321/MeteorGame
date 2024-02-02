@@ -26,6 +26,7 @@ import gameOverLogic from "./logic/gameOverLogic";
 import frameCounterLogic from "./logic/frameCounterLogic";
 import useContextValues from "./hooks/useContextValues";
 import useUpdatingRefsForObject from "./hooks/useUpdatingRefsForObject";
+import specialMeteorLogic from "./logic/specialMeteorLogic";
 
 function App() {
   const contextValues = useContextValues();
@@ -36,6 +37,7 @@ function App() {
     isGameOver,
     isTwoPlayers,
     meteorPositions,
+    specialPositions,
     powerUpPositions,
     heroOriginPoints,
     invincibleCounts,
@@ -78,6 +80,7 @@ function App() {
       damageCalculationLogic(contextRefs, contextValues);
 
       spawnFallingObjectsLogic(contextRefs, contextValues, gameStageMultiplier);
+      specialMeteorLogic(contextRefs, contextValues);
 
       const hitObject = objectGravityLogic(contextRefs, gameStageMultiplier);
       powerUpsLogic(contextValues, hitObject, gameStage, slowCount);
@@ -124,6 +127,9 @@ function App() {
             )}
             {meteorPositions.map((meteorObject) => (
               <Meteor key={meteorObject.id} meteorObject={meteorObject} />
+            ))}
+            {specialPositions.map((specialObject) => (
+              <Meteor key={specialObject.id} meteorObject={specialObject} />
             ))}
             {powerUpPositions.map((powerUpObject) => (
               <PowerUp key={powerUpObject.id} powerUpObject={powerUpObject} />

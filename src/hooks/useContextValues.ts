@@ -1,4 +1,4 @@
-import { detectCollision, isValidPosition } from "../utils/lib";
+import { calcIsHit } from "../utils/lib";
 import { ContextValues } from "../utils/types";
 import useBasicState from "./useBasicState";
 import useClick from "./useClick";
@@ -6,21 +6,25 @@ import usePressedKeys from "./usePressedKeys";
 
 export default function useContextValues(): ContextValues {
   const basicState = useBasicState();
-  const { heroOriginPoints } = basicState;
+  const { heroOriginPoints, meteorPositions, specialPositions } = basicState;
   const pressedKeys = usePressedKeys();
-  const click = useClick();
+  const mousePressPosition = useClick();
 
-  const isHit = isValidPosition(heroOriginPoints[0])
-    ? !!detectCollision(basicState.meteorPositions, heroOriginPoints[0])
-    : false;
-  const isHitTwo = isValidPosition(heroOriginPoints[1])
-    ? !!detectCollision(basicState.meteorPositions, heroOriginPoints[1])
-    : false;
+  const isHit = calcIsHit(
+    meteorPositions,
+    specialPositions,
+    heroOriginPoints[0]
+  );
+  const isHitTwo = calcIsHit(
+    meteorPositions,
+    specialPositions,
+    heroOriginPoints[1]
+  );
 
   return {
     ...basicState,
     ...pressedKeys,
-    ...click,
+    mousePressPosition,
     isHit,
     isHitTwo,
   };

@@ -106,3 +106,14 @@ export function updateItemInArray<T>(prev: T[], index: number, newValue: T) {
 export function updateItemInArrayFunction<T>(index: number, newValue: T) {
   return (prev: T[]) => updateItemInArray(prev, index, newValue);
 }
+
+export function calcIsHit(
+  meteorPositions: FallingObject[],
+  specialPositions: FallingObject[],
+  heroOriginPoint: NullablePosition
+) {
+  return isValidPosition(heroOriginPoint)
+    ? !!detectCollision(meteorPositions, heroOriginPoint) ||
+        !!detectCollision(specialPositions, heroOriginPoint)
+    : false;
+}

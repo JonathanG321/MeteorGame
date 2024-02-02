@@ -20,6 +20,8 @@ import {
   POWER_UP_SPAWN_CHANCE,
   SCREEN_WIDTH,
   STAGE_DIFFICULTY_SCALE,
+  SPECIAL_METEOR_SPAWN_CHANCE,
+  SPECIAL_METEOR_SIZE,
 } from "../utils/variables";
 
 export default function spawnFallingObjectLogic(
@@ -29,9 +31,15 @@ export default function spawnFallingObjectLogic(
 ) {
   const { slowCount, gameStage } = contextRefs;
   const isSlow = !!slowCount.current;
-  const { setMeteorPositions, setPowerUpPositions } = contextValues;
+  const { setMeteorPositions, setPowerUpPositions, setSpecialPositions } =
+    contextValues;
   const powerUpList = getPowerUpList(gameStage.current);
   const difficultyModifier = gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2;
+  const specialMeteorSpawnChance = Math.max(
+    0,
+    SPECIAL_METEOR_SPAWN_CHANCE * gameStageMultiplier -
+      SPECIAL_METEOR_SPAWN_CHANCE * 2
+  );
 
   spawnFallingObjectGroup(
     setMeteorPositions,
@@ -41,6 +49,16 @@ export default function spawnFallingObjectLogic(
     isSlow,
     difficultyModifier,
     gameStageMultiplier
+  );
+  spawnFallingObjectGroup(
+    setSpecialPositions,
+    ["specialMeteor"],
+    contextRefs.mousePressPosition.current,
+    specialMeteorSpawnChance,
+    isSlow,
+    difficultyModifier,
+    gameStageMultiplier,
+    SPECIAL_METEOR_SIZE
   );
   spawnFallingObjectGroup(
     setPowerUpPositions,
@@ -59,11 +77,12 @@ function spawnFallingObjectGroup(
   spawnChance: number,
   isSlow: boolean,
   gameStageMultiplier: number,
-  sizeStageMultiplier?: number
+  sizeStageMultiplier?: number,
+  setSize?: number
 ) {
   if (!shouldObjectSpawn(spawnChance, isSlow, gameStageMultiplier)) return;
 
-  const newObjectSize = calculateObjectSize(sizeStageMultiplier);
+  const newObjectSize = setSize ?? calculateObjectSize(sizeStageMultiplier);
   const newObjectX = calculateObjectX(mousePressPosition, newObjectSize);
   const newGravity = calculateObjectGravity(sizeStageMultiplier);
   const newSpeed = calculateObjectSpeed(newGravity);
