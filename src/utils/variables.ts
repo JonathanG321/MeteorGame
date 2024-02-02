@@ -38,10 +38,14 @@ export const NULL_POSITION: NullablePosition = {
   Y: null,
 };
 
-export const METEOR_SPAWN_CHANCE = 3; // chance of a meteor actually spawn on attempt
+export const METEOR_SPAWN_CHANCE = 3; // chance for a meteor to actually spawn on attempt
+export const SPECIAL_METEOR_SPAWN_CHANCE = 0.15; // chance for a special meteor to actually spawn on attempt
+export const SPECIAL_METEOR_SPAWN_RANGE = 60;
+export const SPECIAL_METEOR_EXPLOSION_CHANCE = 1;
 export const OBJECT_GRAVITY = 2;
 export const MIN_GRAVITY_INTERVAL = 0.5;
 export const OBJECT_SIZE = 60;
+export const SPECIAL_METEOR_SIZE = 125;
 export const OBJECT_COLLISION_THRESHOLD = 8;
 export const OBJECT_STARTING_HEIGHT = -(OBJECT_SIZE * 2);
 export const MIN_OBJECT_SIZE_MODIFIER = -8;
