@@ -49,7 +49,7 @@ export default function FallingObject({ object }: Props) {
       {...style}
       className={classNames("absolute", object.type)}
     >
-      <img src={texture} className={classNames("absolute", "left-0")} />
+      <img src={texture} className="absolute bottom-0 left-0" />
     </div>
   );
 }
