@@ -70,8 +70,6 @@ export type ContextValues = {
   setPowerUpPositions: StateSetter<FallingObject[]>;
   meteorPositions: FallingObject[];
   setMeteorPositions: StateSetter<FallingObject[]>;
-  specialPositions: FallingObject[];
-  setSpecialPositions: StateSetter<FallingObject[]>;
   lives: number[];
   setLives: StateSetter<number[]>;
   setInvincibleCounts: StateSetter<number[]>;

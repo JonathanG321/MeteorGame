@@ -37,7 +37,6 @@ function App() {
     isGameOver,
     isTwoPlayers,
     meteorPositions,
-    specialPositions,
     powerUpPositions,
     heroOriginPoints,
     invincibleCounts,
@@ -127,9 +126,6 @@ function App() {
             )}
             {meteorPositions.map((meteorObject) => (
               <Meteor key={meteorObject.id} meteorObject={meteorObject} />
-            ))}
-            {specialPositions.map((specialObject) => (
-              <Meteor key={specialObject.id} meteorObject={specialObject} />
             ))}
             {powerUpPositions.map((powerUpObject) => (
               <PowerUp key={powerUpObject.id} powerUpObject={powerUpObject} />

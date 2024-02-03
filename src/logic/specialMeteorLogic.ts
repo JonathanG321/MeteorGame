@@ -10,16 +10,21 @@ export default function specialMeteorLogic(
   contextRefs: ObjectWithRefs<ContextValues>,
   contextValues: ContextValues
 ) {
-  const { specialPositions } = contextRefs;
-  const { setMeteorPositions, setSpecialPositions } = contextValues;
-  specialPositions.current.forEach((meteor) => {
-    if (Math.random() * 100 < SPECIAL_METEOR_EXPLOSION_CHANCE) {
-      setSpecialPositions((prev) =>
-        prev.filter((object) => object.id !== meteor.id)
-      );
-      setMeteorPositions((prev) => [...prev, ...createThreeNewMeteors(meteor)]);
-    }
-  });
+  const { meteorPositions } = contextRefs;
+  const { setMeteorPositions } = contextValues;
+  meteorPositions.current
+    .filter((meteor) => meteor.type === "specialMeteor")
+    .forEach((meteor) => {
+      if (Math.random() * 100 < SPECIAL_METEOR_EXPLOSION_CHANCE) {
+        setMeteorPositions((prev) =>
+          prev.filter((object) => object.id !== meteor.id)
+        );
+        setMeteorPositions((prev) => [
+          ...prev,
+          ...createThreeNewMeteors(meteor),
+        ]);
+      }
+    });
 }
 
 function createThreeNewMeteors(specialMeteor: FallingObject) {

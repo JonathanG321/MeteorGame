@@ -20,7 +20,6 @@ export default function objectGravityLogic(
     slowCount: { current: slowCount },
     setPowerUpPositions: { current: setPowerUpPositions },
     setMeteorPositions: { current: setMeteorPositions },
-    setSpecialPositions: { current: setSpecialPositions },
   } = contextRefs;
 
   const isSlow = !!slowCount;
@@ -53,7 +52,6 @@ export default function objectGravityLogic(
 
   setPowerUpPositions(objectSetterCollectable);
   setMeteorPositions((object) => objectSetter(object, calcDifficultyModifier));
-  setSpecialPositions((object) => objectSetter(object, calcDifficultyModifier));
 
   return { type, isPlayerTwo };
 }

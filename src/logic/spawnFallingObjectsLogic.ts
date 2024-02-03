@@ -31,8 +31,7 @@ export default function spawnFallingObjectLogic(
 ) {
   const { slowCount, gameStage } = contextRefs;
   const isSlow = !!slowCount.current;
-  const { setMeteorPositions, setPowerUpPositions, setSpecialPositions } =
-    contextValues;
+  const { setMeteorPositions, setPowerUpPositions } = contextValues;
   const powerUpList = getPowerUpList(gameStage.current);
   const difficultyModifier = gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2;
   const specialMeteorSpawnChance = Math.max(
@@ -40,25 +39,22 @@ export default function spawnFallingObjectLogic(
     SPECIAL_METEOR_SPAWN_CHANCE * gameStageMultiplier -
       SPECIAL_METEOR_SPAWN_CHANCE * 2
   );
+  const shouldSpawnSpecial = Math.random() * 100 < specialMeteorSpawnChance;
+  const meteorType: FallingObjectType[] = shouldSpawnSpecial
+    ? ["specialMeteor"]
+    : ["meteor"];
+  const spawnChance = shouldSpawnSpecial ? 100 : METEOR_SPAWN_CHANCE;
+  const setSize = shouldSpawnSpecial ? SPECIAL_METEOR_SIZE : undefined;
 
   spawnFallingObjectGroup(
     setMeteorPositions,
-    ["meteor"],
+    meteorType,
     contextRefs.mousePressPosition.current,
-    METEOR_SPAWN_CHANCE,
-    isSlow,
-    difficultyModifier,
-    gameStageMultiplier
-  );
-  spawnFallingObjectGroup(
-    setSpecialPositions,
-    ["specialMeteor"],
-    contextRefs.mousePressPosition.current,
-    specialMeteorSpawnChance,
+    spawnChance,
     isSlow,
     difficultyModifier,
     gameStageMultiplier,
-    SPECIAL_METEOR_SIZE
+    setSize
   );
   spawnFallingObjectGroup(
     setPowerUpPositions,
