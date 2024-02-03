@@ -10,6 +10,7 @@ import life from "../assets/sounds/Life.mp3";
 import theme from "../assets/sounds/Theme.mp3";
 import gameOver from "../assets/sounds/GameOver.mp3";
 import jump from "../assets/sounds/Jump.mp3";
+import meteorExplode from "../assets/sounds/MeteorExplode.mp3";
 
 export default {
   theme: new Audio(theme),
@@ -24,4 +25,5 @@ export default {
   clockTicking: new Audio(clockTicking),
   shield: new Audio(shield),
   life: new Audio(life),
+  meteorExplode: new Audio(meteorExplode),
 };
