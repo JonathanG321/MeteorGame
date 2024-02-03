@@ -1,6 +1,11 @@
-import { playAudio, randomInRange } from "../utils/lib";
+import { notEmpty, playAudio } from "../utils/lib";
 import sounds from "../utils/sounds";
-import { ContextValues, FallingObject, ObjectWithRefs } from "../utils/types";
+import {
+  ContextValues,
+  FallingObject,
+  FallingObjectType,
+  ObjectWithRefs,
+} from "../utils/types";
 import {
   SPECIAL_METEOR_SIZE,
   SPECIAL_METEOR_SPAWN_RANGE,
@@ -15,14 +20,11 @@ export default function specialMeteorLogic(
 ) {
   const { fallingObjectPositions } = contextRefs;
   const { setFallingObjectPositions } = contextValues;
+
   fallingObjectPositions.current
     .filter((meteor) => meteor.type === "specialMeteor")
     .forEach((meteor) => {
-      const meteorExplodesRandom =
-        Math.random() * 100 < SPECIAL_METEOR_EXPLOSION_CHANCE;
-      const meteorExplodesFall = meteor.Y + meteor.size / 2 > SCREEN_HEIGHT / 3;
-
-      if (meteorExplodesRandom || meteorExplodesFall) {
+      if (shouldSpecialMeteorExplode(meteor)) {
         playAudio(sounds.meteorExplode, 0.3);
         setFallingObjectPositions((prev) => [
           ...prev.filter((object) => object.id !== meteor.id),
@@ -32,21 +34,38 @@ export default function specialMeteorLogic(
     });
 }
 
-function createThreeNewMeteors(specialMeteor: FallingObject) {
+function shouldSpecialMeteorExplode(meteor: FallingObject): boolean {
+  const minExplodeHeight = 0;
+  const atMinExplodeHeight = meteor.Y > minExplodeHeight;
+  const meteorExplodesRandom =
+    atMinExplodeHeight && Math.random() * 100 < SPECIAL_METEOR_EXPLOSION_CHANCE;
+  const meteorExplodesFall = meteor.Y + meteor.size / 2 > SCREEN_HEIGHT / 3;
+
+  return meteorExplodesRandom || meteorExplodesFall;
+}
+
+function createThreeNewMeteors(specialMeteor: FallingObject): FallingObject[] {
   const newSize = SPECIAL_METEOR_SIZE * 0.6;
   const minPosition = specialMeteor.X - SPECIAL_METEOR_SPAWN_RANGE;
   const maxPosition = specialMeteor.X + SPECIAL_METEOR_SPAWN_RANGE;
-  return Array.from({ length: 3 }).map(
-    (): FallingObject => ({
-      Y: specialMeteor.Y,
-      X: randomInRange(
-        Math.max(0, minPosition),
-        Math.min(maxPosition, SCREEN_WIDTH - newSize)
-      ),
-      id: crypto.randomUUID(),
-      type: "meteor",
-      size: newSize,
-      speed: specialMeteor.speed,
+
+  const xPositions = [
+    minPosition >= 0 ? minPosition : null,
+    specialMeteor.X,
+    maxPosition <= SCREEN_WIDTH - newSize ? maxPosition : null,
+  ];
+
+  return xPositions
+    .map((X) => {
+      if (!X) return;
+      return {
+        Y: specialMeteor.Y,
+        X,
+        id: crypto.randomUUID(),
+        type: "meteor" as FallingObjectType,
+        size: newSize,
+        speed: specialMeteor.speed,
+      };
     })
-  );
+    .filter(notEmpty);
 }
