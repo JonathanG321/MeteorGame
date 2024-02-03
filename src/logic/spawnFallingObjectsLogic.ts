@@ -37,12 +37,8 @@ export default function spawnFallingObjectLogic(
   const specialMeteorSpawnChance = Math.max(
     0,
     SPECIAL_METEOR_SPAWN_CHANCE * gameStageMultiplier -
-      SPECIAL_METEOR_SPAWN_CHANCE * 2
+      SPECIAL_METEOR_SPAWN_CHANCE * 1.75
   );
-
-  let fallingObjectTypes: FallingObjectType[] = ["meteor"];
-  let sizeStageMultiplier: number | undefined = gameStageMultiplier;
-  let setSize: number | undefined = undefined;
 
   function getShouldSpawn(chance: number) {
     return shouldObjectSpawn(chance, isSlow, difficultyModifier);
@@ -53,24 +49,27 @@ export default function spawnFallingObjectLogic(
   const shouldMeteorsSpawn = getShouldSpawn(METEOR_SPAWN_CHANCE);
 
   if (shouldSpawnSpecial) {
-    fallingObjectTypes = ["specialMeteor"];
-    setSize = SPECIAL_METEOR_SIZE;
-  } else if (shouldSpawnPowerUp) {
-    fallingObjectTypes = powerUpList;
-    sizeStageMultiplier = undefined;
-    setSize = OBJECT_SIZE;
-  }
-
-  const shouldSpawn =
-    shouldMeteorsSpawn || shouldSpawnSpecial || shouldSpawnPowerUp;
-
-  if (shouldSpawn) {
     spawnFallingObjectGroup(
       setFallingObjectPositions,
-      fallingObjectTypes,
+      ["specialMeteor"],
       contextRefs.mousePressPosition.current,
-      sizeStageMultiplier,
-      setSize
+      gameStageMultiplier,
+      SPECIAL_METEOR_SIZE
+    );
+  }
+  if (shouldSpawnPowerUp) {
+    spawnFallingObjectGroup(
+      setFallingObjectPositions,
+      powerUpList,
+      contextRefs.mousePressPosition.current
+    );
+  }
+  if (shouldMeteorsSpawn) {
+    spawnFallingObjectGroup(
+      setFallingObjectPositions,
+      ["meteor"],
+      contextRefs.mousePressPosition.current,
+      gameStageMultiplier
     );
   }
 }
@@ -105,7 +104,7 @@ function shouldObjectSpawn(
 ): boolean {
   const stageSpawnChance = spawnChance * gameStageMultiplier;
   const calcSpawnChance = isSlow ? stageSpawnChance / 2 : stageSpawnChance;
-  return Math.random() * 100 < (calcSpawnChance || 100);
+  return Math.random() * 100 < (calcSpawnChance ?? 100);
 }
 
 function calculateObjectSize(sizeStageMultiplier?: number): number {
