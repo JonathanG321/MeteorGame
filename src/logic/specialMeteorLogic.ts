@@ -6,6 +6,7 @@ import {
   SPECIAL_METEOR_SPAWN_RANGE,
   SPECIAL_METEOR_EXPLOSION_CHANCE,
   SCREEN_HEIGHT,
+  SCREEN_WIDTH,
 } from "../utils/variables";
 
 export default function specialMeteorLogic(
@@ -38,7 +39,10 @@ function createThreeNewMeteors(specialMeteor: FallingObject) {
   return Array.from({ length: 3 }).map(
     (): FallingObject => ({
       Y: specialMeteor.Y,
-      X: randomInRange(minPosition, maxPosition),
+      X: randomInRange(
+        Math.max(0, minPosition),
+        Math.min(maxPosition, SCREEN_WIDTH - newSize)
+      ),
       id: crypto.randomUUID(),
       type: "meteor",
       size: newSize,
