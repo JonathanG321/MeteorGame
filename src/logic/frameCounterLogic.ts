@@ -17,6 +17,7 @@ export default function frameCounterLogic(
   function updatePoints(index: number) {
     setPoints(updatePointsFunc(slowCountEffect, index));
   }
+
   if (lives.current[0] !== 0) updatePoints(0);
   if (isTwoPlayers && lives.current[1] !== 0) updatePoints(1);
 

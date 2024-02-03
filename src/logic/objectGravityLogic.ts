@@ -28,37 +28,48 @@ export default function objectGravityLogic(
   const speedMultiplier = isSlow ? 0.5 : 1;
   const calcDifficultyModifier = gameStageMultiplier * speedMultiplier;
 
+  function filterAndCheckHeroCollisions(object: FallingObject) {
+    if (isObjectOutOfBounds(object)) {
+      return false;
+    } else if (isMeteorOrSpecialMeteor(object)) {
+      return true;
+    }
+
+    const { isHittingHero, isHittingHeroTwo } = heroCollisionCalcs(
+      object,
+      heroOriginPoints[0],
+      heroOriginPoints[1]
+    );
+
+    if (!isHittingHero && !isHittingHeroTwo) {
+      return true;
+    }
+
+    type = object.type;
+    if (isHittingHeroTwo) {
+      isPlayerTwo = true;
+    }
+
+    return false;
+  }
+
   function objectSetterCollectable(oldValue: FallingObject[]) {
     return oldValue
       .map((object) => calcObjectsFalling(object, calcDifficultyModifier))
-      .filter((object) => {
-        const outOfBounds = !(object.Y <= SCREEN_HEIGHT + OBJECT_SIZE);
-        if (outOfBounds) {
-          return false;
-        } else if (
-          object.type === "meteor" ||
-          object.type === "specialMeteor"
-        ) {
-          return true;
-        }
-
-        const { isHittingHero, isHittingHeroTwo } = heroCollisionCalcs(
-          object,
-          heroOriginPoints[0],
-          heroOriginPoints[1]
-        );
-
-        if (!isHittingHero && !isHittingHeroTwo) return true;
-
-        type = object.type;
-        if (isHittingHeroTwo) isPlayerTwo = true;
-        return false;
-      });
+      .filter(filterAndCheckHeroCollisions);
   }
 
   setFallingObjectPositions(objectSetterCollectable);
 
   return { type, isPlayerTwo };
+}
+
+function isObjectOutOfBounds(object: FallingObject) {
+  return !(object.Y <= SCREEN_HEIGHT + OBJECT_SIZE);
+}
+
+function isMeteorOrSpecialMeteor(object: FallingObject) {
+  return object.type === "meteor" || object.type === "specialMeteor";
 }
 
 function calcObjectsFalling(
