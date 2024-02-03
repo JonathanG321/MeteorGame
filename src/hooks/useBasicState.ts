@@ -28,16 +28,15 @@ export default function useBasicState() {
   const [lives, setLives] = useState([3, 3]);
   const [invincibleCounts, setInvincibleCounts] = useState([0, 0]);
   const [shieldCounts, setShieldCounts] = useState([0, 0]);
-  const [powerUpPositions, setPowerUpPositions] = useState<FallingObject[]>([]);
-  const [meteorPositions, setMeteorPositions] = useState<FallingObject[]>([]);
+  const [fallingObjectPositions, setFallingObjectPositions] = useState<
+    FallingObject[]
+  >([]);
   const shouldStopGame = isGameOver || isMainMenu;
   const gameStage = Math.ceil(gameCounter / STAGE_LENGTH);
 
   return {
-    powerUpPositions,
-    setPowerUpPositions,
-    meteorPositions,
-    setMeteorPositions,
+    fallingObjectPositions,
+    setFallingObjectPositions,
     lives,
     setLives,
     invincibleCounts,

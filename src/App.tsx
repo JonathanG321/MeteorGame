@@ -2,11 +2,10 @@ import { useEffect } from "react";
 import { GameStateContext } from "./context/GameStateContext";
 import Canvas from "./components/Canvas";
 import Hero from "./components/Hero";
-import Meteor from "./components/Meteor";
 import Menu from "./components/Menu";
 import Mask from "./components/Mask";
 import HeaderBar from "./components/HeaderBar";
-import PowerUp from "./components/PowerUp";
+import FallingObject from "./components/FallingObject";
 import UI from "./components/UI";
 import {
   FRAME_RATE,
@@ -36,8 +35,7 @@ function App() {
     lives,
     isGameOver,
     isTwoPlayers,
-    meteorPositions,
-    powerUpPositions,
+    fallingObjectPositions,
     heroOriginPoints,
     invincibleCounts,
     lastDirections,
@@ -124,11 +122,8 @@ function App() {
                 isPlayerTwo
               />
             )}
-            {meteorPositions.map((meteorObject) => (
-              <Meteor key={meteorObject.id} meteorObject={meteorObject} />
-            ))}
-            {powerUpPositions.map((powerUpObject) => (
-              <PowerUp key={powerUpObject.id} powerUpObject={powerUpObject} />
+            {fallingObjectPositions.map((object) => (
+              <FallingObject key={object.id} object={object} />
             ))}
           </Canvas>
           <Mask top={SCREEN_HEIGHT} className="border-t-4 border-black" />

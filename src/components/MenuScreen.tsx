@@ -14,7 +14,7 @@ import { NullablePosition } from "../utils/types";
 export default function MenuScreen() {
   const {
     setIsMainMenu,
-    setMeteorPositions,
+    setFallingObjectPositions,
     setPressedKeys,
     setHeroOriginPoints,
     setIsTwoPlayers,
@@ -24,7 +24,7 @@ export default function MenuScreen() {
   useEffect(() => {
     function handleKeyUp(e: KeyboardEvent) {
       if (e.code === "Space") {
-        setMeteorPositions([]);
+        setFallingObjectPositions([]);
         setPressedKeys(BASE_PRESSED_KEYS);
         setHeroOriginPoints(
           updateItemInArrayFunction(

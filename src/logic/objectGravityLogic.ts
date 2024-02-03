@@ -18,8 +18,7 @@ export default function objectGravityLogic(
   const {
     heroOriginPoints: { current: heroOriginPoints },
     slowCount: { current: slowCount },
-    setPowerUpPositions: { current: setPowerUpPositions },
-    setMeteorPositions: { current: setMeteorPositions },
+    setFallingObjectPositions: { current: setFallingObjectPositions },
   } = contextRefs;
 
   const isSlow = !!slowCount;
@@ -33,8 +32,15 @@ export default function objectGravityLogic(
     return oldValue
       .map((object) => calcObjectsFalling(object, calcDifficultyModifier))
       .filter((object) => {
-        const isInBounds = object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
-        if (!isInBounds) return false;
+        const outOfBounds = !(object.Y <= SCREEN_HEIGHT + OBJECT_SIZE);
+        if (outOfBounds) {
+          return false;
+        } else if (
+          object.type === "meteor" ||
+          object.type === "specialMeteor"
+        ) {
+          return true;
+        }
 
         const { isHittingHero, isHittingHeroTwo } = heroCollisionCalcs(
           object,
@@ -50,19 +56,9 @@ export default function objectGravityLogic(
       });
   }
 
-  setPowerUpPositions(objectSetterCollectable);
-  setMeteorPositions((object) => objectSetter(object, calcDifficultyModifier));
+  setFallingObjectPositions(objectSetterCollectable);
 
   return { type, isPlayerTwo };
-}
-
-function objectSetter(
-  oldValue: FallingObject[],
-  calcDifficultyModifier: number
-) {
-  return oldValue
-    .map((object) => calcObjectsFalling(object, calcDifficultyModifier))
-    .filter(outOfBoundsFilter);
 }
 
 function calcObjectsFalling(
@@ -73,10 +69,6 @@ function calcObjectsFalling(
     ...object,
     Y: object.Y + object.speed * calcDifficultyModifier,
   };
-}
-
-function outOfBoundsFilter(object: FallingObject) {
-  return object.Y <= SCREEN_HEIGHT + OBJECT_SIZE;
 }
 
 function heroCollisionCalcs(

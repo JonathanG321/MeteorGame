@@ -66,10 +66,8 @@ export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
 export type ContextValues = {
   isHit: boolean;
   isHitTwo: boolean;
-  powerUpPositions: FallingObject[];
-  setPowerUpPositions: StateSetter<FallingObject[]>;
-  meteorPositions: FallingObject[];
-  setMeteorPositions: StateSetter<FallingObject[]>;
+  fallingObjectPositions: FallingObject[];
+  setFallingObjectPositions: StateSetter<FallingObject[]>;
   lives: number[];
   setLives: StateSetter<number[]>;
   setInvincibleCounts: StateSetter<number[]>;

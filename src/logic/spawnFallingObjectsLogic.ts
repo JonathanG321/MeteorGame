@@ -12,7 +12,6 @@ import {
   METEOR_SPAWN_CHANCE,
   MIN_GRAVITY_INTERVAL,
   MIN_OBJECT_SIZE_MODIFIER,
-  NULL_POSITION,
   OBJECT_GRAVITY,
   OBJECT_SIZE,
   OBJECT_SIZE_VARIATION,
@@ -31,53 +30,58 @@ export default function spawnFallingObjectLogic(
 ) {
   const { slowCount, gameStage } = contextRefs;
   const isSlow = !!slowCount.current;
-  const { setMeteorPositions, setPowerUpPositions } = contextValues;
+  const { setFallingObjectPositions } = contextValues;
   const powerUpList = getPowerUpList(gameStage.current);
   const difficultyModifier = gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2;
+
   const specialMeteorSpawnChance = Math.max(
     0,
     SPECIAL_METEOR_SPAWN_CHANCE * gameStageMultiplier -
       SPECIAL_METEOR_SPAWN_CHANCE * 2
   );
-  const shouldSpawnSpecial = Math.random() * 100 < specialMeteorSpawnChance;
-  const meteorType: FallingObjectType[] = shouldSpawnSpecial
-    ? ["specialMeteor"]
-    : ["meteor"];
-  const spawnChance = shouldSpawnSpecial ? 100 : METEOR_SPAWN_CHANCE;
-  const setSize = shouldSpawnSpecial ? SPECIAL_METEOR_SIZE : undefined;
 
-  spawnFallingObjectGroup(
-    setMeteorPositions,
-    meteorType,
-    contextRefs.mousePressPosition.current,
-    spawnChance,
-    isSlow,
-    difficultyModifier,
-    gameStageMultiplier,
-    setSize
-  );
-  spawnFallingObjectGroup(
-    setPowerUpPositions,
-    powerUpList,
-    NULL_POSITION,
-    POWER_UP_SPAWN_CHANCE,
-    isSlow,
-    difficultyModifier
-  );
+  let fallingObjectTypes: FallingObjectType[] = ["meteor"];
+  let sizeStageMultiplier: number | undefined = gameStageMultiplier;
+  let setSize: number | undefined = undefined;
+
+  function getShouldSpawn(chance: number) {
+    return shouldObjectSpawn(chance, isSlow, difficultyModifier);
+  }
+
+  const shouldSpawnSpecial = getShouldSpawn(specialMeteorSpawnChance);
+  const shouldSpawnPowerUp = getShouldSpawn(POWER_UP_SPAWN_CHANCE);
+  const shouldMeteorsSpawn = getShouldSpawn(METEOR_SPAWN_CHANCE);
+
+  if (shouldSpawnSpecial) {
+    fallingObjectTypes = ["specialMeteor"];
+    setSize = SPECIAL_METEOR_SIZE;
+  } else if (shouldSpawnPowerUp) {
+    fallingObjectTypes = powerUpList;
+    sizeStageMultiplier = undefined;
+    setSize = OBJECT_SIZE;
+  }
+
+  const shouldSpawn =
+    shouldMeteorsSpawn || shouldSpawnSpecial || shouldSpawnPowerUp;
+
+  if (shouldSpawn) {
+    spawnFallingObjectGroup(
+      setFallingObjectPositions,
+      fallingObjectTypes,
+      contextRefs.mousePressPosition.current,
+      sizeStageMultiplier,
+      setSize
+    );
+  }
 }
 
 function spawnFallingObjectGroup(
   setObjectPositions: StateSetter<FallingObject[]>,
   possibleTypes: FallingObjectType[],
   mousePressPosition: NullablePosition,
-  spawnChance: number,
-  isSlow: boolean,
-  gameStageMultiplier: number,
   sizeStageMultiplier?: number,
   setSize?: number
 ) {
-  if (!shouldObjectSpawn(spawnChance, isSlow, gameStageMultiplier)) return;
-
   const newObjectSize = setSize ?? calculateObjectSize(sizeStageMultiplier);
   const newObjectX = calculateObjectX(mousePressPosition, newObjectSize);
   const newGravity = calculateObjectGravity(sizeStageMultiplier);

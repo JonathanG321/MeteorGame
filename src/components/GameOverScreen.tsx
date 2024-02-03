@@ -10,8 +10,7 @@ export default function GameOverScreen() {
   useEffect(() => {
     function handleKeyUp(e: KeyboardEvent) {
       if (e.code === "Space") {
-        context.setMeteorPositions([]);
-        context.setPowerUpPositions([]);
+        context.setFallingObjectPositions([]);
         context.setHeroVelocityDowns([0, 0]);
         context.setPoints([0, 0]);
         context.setLives([3, 3]);
