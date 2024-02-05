@@ -46,7 +46,10 @@ export default function FallingObject({ animation }: Props) {
         </>
       )}
       {animation.type === "explosion" && (
-        <img src={explosion} className="absolute bottom-0 left-0" />
+        <img
+          src={explosion + `?dummy="${animation.id}"`}
+          className="absolute bottom-0 left-0"
+        />
       )}
     </div>
   );
