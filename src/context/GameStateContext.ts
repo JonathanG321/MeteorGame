@@ -10,13 +10,15 @@ import {
   PressedKeys,
   ContextValues,
   NullablePlayer,
+  Animation,
 } from "../utils/types";
 
 function stateSetterNumber(_: React.SetStateAction<number>): void {}
 function stateSetterPlayers(_: React.SetStateAction<NullablePlayer[]>): void {}
 function stateSetterBoolean(_: React.SetStateAction<boolean>): void {}
 function stateSetterPressedKeys(_: React.SetStateAction<PressedKeys>): void {}
-function stateSetterFallingObject(
+function stateSetterAnimations(_: React.SetStateAction<Animation[]>): void {}
+function stateSetterFallingObjects(
   _: React.SetStateAction<FallingObject[]>
 ): void {}
 
@@ -31,7 +33,9 @@ export const GameStateContext = createContext({
   pressedKeys: BASE_PRESSED_KEYS,
   setPressedKeys: stateSetterPressedKeys,
   fallingObjectPositions: [] as FallingObject[],
-  setFallingObjectPositions: stateSetterFallingObject,
+  setFallingObjectPositions: stateSetterFallingObjects,
+  animationPositions: [] as Animation[],
+  setAnimationPositions: stateSetterAnimations,
   isGameOver: false,
   setIsGameOver: stateSetterBoolean,
   isMainMenu: true,

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FallingObject, NullablePlayer } from "../utils/types";
+import { FallingObject, NullablePlayer, Animation } from "../utils/types";
 import {
   STAGE_LENGTH,
   STARTING_POINT,
@@ -18,6 +18,7 @@ export default function useBasicState() {
   const [fallingObjectPositions, setFallingObjectPositions] = useState<
     FallingObject[]
   >([]);
+  const [animationPositions, setAnimationPositions] = useState<Animation[]>([]);
   const gameStage = Math.ceil(gameCounter / STAGE_LENGTH);
   const isP1Alive = players[0].lives > 0;
   const isP2Alive = players[1].lives > 0;
@@ -28,6 +29,8 @@ export default function useBasicState() {
     setPlayers,
     fallingObjectPositions,
     setFallingObjectPositions,
+    animationPositions,
+    setAnimationPositions,
     highScore,
     setHighScore,
     isGameOver,
