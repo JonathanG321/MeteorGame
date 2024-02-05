@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { GameStateContext } from "../context/GameStateContext";
 import classNames from "classnames";
 
@@ -19,9 +19,9 @@ export default function ScoreDisplay({
   isSecondPlayer = false,
   className,
 }: Props) {
-  const { points } = useContext(GameStateContext);
+  const { players } = useContext(GameStateContext);
   const pointsToDisplay =
-    displayPoints ?? (isSecondPlayer ? points[1] : points[0]);
+    displayPoints ?? (isSecondPlayer ? players[1].points : players[0].points);
   const pointsDigits = pointsToDisplay.toLocaleString().split("").reverse();
   const formattedPoints = !!displayPoints
     ? undefined

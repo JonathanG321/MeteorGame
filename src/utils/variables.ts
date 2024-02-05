@@ -1,4 +1,4 @@
-import { NullablePosition, PressedKeys } from "./types";
+import { NullablePosition, Player, NullablePlayer, PressedKeys } from "./types";
 
 export const BASE_FPS = 60;
 export const FRAME_RATE = Math.floor(1000 / BASE_FPS);
@@ -37,6 +37,34 @@ export const NULL_POSITION: NullablePosition = {
   X: null,
   Y: null,
 };
+const basicPlayerValues: Omit<Player, "X" | "Y"> = {
+  points: 0,
+  velocityDown: 0,
+  direction: "right",
+  invincibleCount: 0,
+  lives: 3,
+  shieldCount: 0,
+};
+export const DEFAULT_ONE_PLAYER: NullablePlayer[] = [
+  {
+    ...HERO_SPAWN_POINT,
+    ...basicPlayerValues,
+  },
+  {
+    ...NULL_POSITION,
+    ...basicPlayerValues,
+  },
+];
+export const DEFAULT_TWO_PLAYERS: NullablePlayer[] = [
+  {
+    ...FIRST_PLAYER_SPAWN_POINT,
+    ...basicPlayerValues,
+  },
+  {
+    ...SECOND_PLAYER_SPAWN_POINT,
+    ...basicPlayerValues,
+  },
+];
 
 export const METEOR_SPAWN_CHANCE = 3; // chance for a meteor to actually spawn on attempt
 export const SPECIAL_METEOR_SPAWN_CHANCE = 0.15; // chance for a special meteor to actually spawn on attempt

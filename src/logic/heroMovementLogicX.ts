@@ -1,14 +1,9 @@
-import {
-  isValidPosition,
-  updateItemInArray,
-  updateItemInArrayFunction,
-} from "../utils/lib";
+import { isValidPosition, setPlayerValueFunction } from "../utils/lib";
 import {
   ContextValues,
-  Direction,
-  NullablePosition,
+  NullablePlayer,
   ObjectWithRefs,
-  Position,
+  Player,
   StateSetter,
 } from "../utils/types";
 import { HERO_SPEED, WIDTH_MINUS_HERO } from "../utils/variables";
@@ -17,64 +12,39 @@ export default function heroMovementLogicX(
   contextRefs: ObjectWithRefs<ContextValues>,
   contextValues: ContextValues
 ) {
-  const {
-    heroOriginPoints,
-    pressedKeys,
-    slowCount,
-    lastDirections,
-    isTwoPlayers,
-  } = contextRefs;
-  const { setHeroOriginPoints, setLastDirections } = contextValues;
+  const { players, pressedKeys, slowCount } = contextRefs;
+  const { setPlayers } = contextValues;
+  const { ArrowLeft, ArrowRight, a, d } = pressedKeys.current;
+  const isSlow = !!slowCount.current;
 
-  if (isValidPosition(heroOriginPoints.current[0]))
-    singleHeroLogicX(
-      heroOriginPoints.current[0].X,
-      pressedKeys.current.ArrowLeft,
-      pressedKeys.current.ArrowRight,
-      !!slowCount.current,
-      lastDirections.current[0],
-      0,
-      setHeroOriginPoints,
-      setLastDirections
-    );
-  if (isTwoPlayers.current && isValidPosition(heroOriginPoints.current[1]))
-    singleHeroLogicX(
-      heroOriginPoints.current[1].X,
-      pressedKeys.current.a,
-      pressedKeys.current.d,
-      !!slowCount.current,
-      lastDirections.current[1],
-      1,
-      setHeroOriginPoints,
-      setLastDirections
-    );
+  players.current.forEach((player, index) => {
+    if (!isValidPosition(player)) return;
+    const left = index === 0 ? ArrowLeft : a;
+    const right = index === 0 ? ArrowRight : d;
+    singleHeroLogicX(player, left, right, isSlow, index, setPlayers);
+  });
 }
 
 function singleHeroLogicX(
-  heroPositionX: Position["X"],
+  player: Player,
   pressedKeyLeft: boolean,
   pressedKeyRight: boolean,
   isSlow: boolean,
-  lastDirection: Direction,
   index: number,
-  updatePosition: StateSetter<NullablePosition[]>,
-  setLastDirection: StateSetter<Direction[]>
+  setPlayer: StateSetter<NullablePlayer[]>
 ) {
   if (!pressedKeyLeft && !pressedKeyRight) return;
 
   const speed = isSlow ? HERO_SPEED / 2 : HERO_SPEED;
   const direction = pressedKeyLeft ? "left" : "right";
 
-  if (lastDirection !== direction)
-    setLastDirection(updateItemInArrayFunction(index, direction));
+  if (player.direction !== direction)
+    setPlayerValueFunction(index, { direction: direction }, setPlayer);
 
   let newX = Math.min(
     WIDTH_MINUS_HERO,
-    Math.max(0, heroPositionX + (pressedKeyLeft ? -speed : speed))
+    Math.max(0, player.X + (pressedKeyLeft ? -speed : speed))
   );
 
-  if (newX !== heroPositionX)
-    updatePosition((prev) =>
-      updateItemInArray(prev, index, { ...prev[index], X: newX })
-    );
+  if (newX !== player.X) setPlayerValueFunction(index, { X: newX }, setPlayer);
 }

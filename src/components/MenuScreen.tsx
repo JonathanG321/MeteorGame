@@ -1,22 +1,20 @@
 import { useContext, useEffect } from "react";
 import {
   BASE_PRESSED_KEYS,
-  FIRST_PLAYER_SPAWN_POINT,
-  HERO_SPAWN_POINT,
-  SECOND_PLAYER_SPAWN_POINT,
+  DEFAULT_ONE_PLAYER,
+  DEFAULT_TWO_PLAYERS,
 } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
 import sounds from "../utils/sounds";
-import { playAudio, updateItemInArrayFunction } from "../utils/lib";
+import { playAudio } from "../utils/lib";
 import SelectButton from "./SelectButton";
-import { NullablePosition } from "../utils/types";
 
 export default function MenuScreen() {
   const {
     setIsMainMenu,
     setFallingObjectPositions,
     setPressedKeys,
-    setHeroOriginPoints,
+    setPlayers,
     setIsTwoPlayers,
     isTwoPlayers,
   } = useContext(GameStateContext);
@@ -26,23 +24,13 @@ export default function MenuScreen() {
       if (e.code === "Space") {
         setFallingObjectPositions([]);
         setPressedKeys(BASE_PRESSED_KEYS);
-        setHeroOriginPoints(
-          updateItemInArrayFunction(
-            0,
-            isTwoPlayers ? FIRST_PLAYER_SPAWN_POINT : HERO_SPAWN_POINT
-          )
-        );
+        setPlayers(!isTwoPlayers ? DEFAULT_ONE_PLAYER : DEFAULT_TWO_PLAYERS);
         setIsMainMenu(false);
         playAudio(sounds.theme, 0.5);
       } else if (e.code === "ArrowRight") {
         setIsTwoPlayers(true);
       } else if (e.code === "ArrowLeft") {
         setIsTwoPlayers(false);
-      }
-      if (e.code === "Space" && isTwoPlayers) {
-        setHeroOriginPoints(
-          updateItemInArrayFunction(1, SECOND_PLAYER_SPAWN_POINT)
-        );
       }
     }
 

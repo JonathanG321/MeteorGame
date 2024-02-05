@@ -14,7 +14,6 @@ import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "./utils/variables";
-import { isValidPosition } from "./utils/lib";
 import spawnFallingObjectsLogic from "./logic/spawnFallingObjectsLogic";
 import damageCalculationLogic from "./logic/damageCalculationLogic";
 import powerUpsLogic from "./logic/powerUpsLogic";
@@ -32,36 +31,24 @@ function App() {
 
   const {
     isMainMenu,
-    lives,
+    players,
     isGameOver,
-    isTwoPlayers,
     fallingObjectPositions,
-    heroOriginPoints,
-    invincibleCounts,
-    lastDirections,
-    shieldCounts,
     highScore,
     setHighScore,
-    setIsGameOver,
   } = contextValues;
 
   const contextRefs = useUpdatingRefsForObject(contextValues, isGameOver);
 
   useEffect(() => {
-    const isP1Alive = lives[0] <= 0;
-    const isP2Alive = lives[1] <= 0;
-    const isDead = !contextRefs.isTwoPlayers.current
-      ? isP1Alive
-      : isP1Alive && isP2Alive;
-    const gameStopped = isDead || isMainMenu;
-    const points = contextRefs.points.current[0];
-    const pointsTwo = contextRefs.points.current[1];
+    const gameStopped = isGameOver || isMainMenu;
+    const points = contextRefs.players.current[0].points;
+    const pointsTwo = contextRefs.players.current[1].points;
     gameOverLogic(
-      isDead,
+      isGameOver,
       points > pointsTwo ? points : pointsTwo,
       contextRefs.highScore.current,
-      setHighScore,
-      setIsGameOver
+      setHighScore
     );
     if (gameStopped) return;
 
@@ -85,7 +72,7 @@ function App() {
     return () => {
       clearInterval(frameIntervalId);
     };
-  }, [lives, isMainMenu, isGameOver]);
+  }, [players[0].lives, players[1].lives, isMainMenu, isGameOver]);
 
   const borderWidth = 4 * 2;
 
@@ -103,25 +90,13 @@ function App() {
             <HeaderBar highScore={highScore} />
           </Mask>
           <Canvas>
-            {!isGameOver && !isMainMenu && <UI />}
+            {/* {!isGameOver && !isMainMenu &&  */}
+            <UI />
+            {/* //  */}
             {(isGameOver || isMainMenu) && <Menu />}
-            {isValidPosition(heroOriginPoints[0]) && (
-              <Hero
-                heroOriginPoint={heroOriginPoints[0]}
-                invincibleCount={invincibleCounts[0]}
-                lastDirection={lastDirections[0]}
-                shieldCount={shieldCounts[0]}
-              />
-            )}
-            {isTwoPlayers && isValidPosition(heroOriginPoints[1]) && (
-              <Hero
-                heroOriginPoint={heroOriginPoints[1]}
-                invincibleCount={invincibleCounts[1]}
-                lastDirection={lastDirections[1]}
-                shieldCount={shieldCounts[1]}
-                isPlayerTwo
-              />
-            )}
+            {players.map((player, i) => {
+              return <Hero key={i} player={player} isPlayerTwo={i !== 0} />;
+            })}
             {fallingObjectPositions.map((object) => (
               <FallingObject key={object.id} object={object} />
             ))}

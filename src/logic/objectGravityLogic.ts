@@ -16,7 +16,7 @@ export default function objectGravityLogic(
   isPlayerTwo: boolean;
 } {
   const {
-    heroOriginPoints: { current: heroOriginPoints },
+    players: { current: players },
     slowCount: { current: slowCount },
     setFallingObjectPositions: { current: setFallingObjectPositions },
   } = contextRefs;
@@ -37,8 +37,8 @@ export default function objectGravityLogic(
 
     const { isHittingHero, isHittingHeroTwo } = heroCollisionCalcs(
       object,
-      heroOriginPoints[0],
-      heroOriginPoints[1]
+      players[0],
+      players[1]
     );
 
     if (!isHittingHero && !isHittingHeroTwo) {

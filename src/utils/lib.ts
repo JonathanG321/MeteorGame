@@ -3,7 +3,10 @@ import {
   FallingObjectType,
   NullablePosition,
   Object,
+  Player,
+  NullablePlayer,
   Position,
+  StateSetter,
 } from "./types";
 import { HERO_SIZE, OBJECT_COLLISION_THRESHOLD } from "./variables";
 
@@ -19,7 +22,7 @@ export function createObjectStyle(object: Object) {
 export function isValidPosition(
   position: NullablePosition
 ): position is Position {
-  return position.X !== null && position.X !== null;
+  return !!position && position.X !== null && position.X !== null;
 }
 
 export function countDownTo0(prevCount: number, isSlow: boolean) {
@@ -100,13 +103,6 @@ export function isObjectCollidingWithHero(
   return isHeroColliding ? object.id : "";
 }
 
-export function updateItemInArray<T>(prev: T[], index: number, newValue: T) {
-  return prev.map((val, i) => (i === index ? newValue : val));
-}
-export function updateItemInArrayFunction<T>(index: number, newValue: T) {
-  return (prev: T[]) => updateItemInArray(prev, index, newValue);
-}
-
 export function calcIsHit(
   meteorPositions: FallingObject[],
   heroOriginPoint: NullablePosition
@@ -116,6 +112,26 @@ export function calcIsHit(
     : false;
 }
 
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+export function notEmpty<TValue>(
+  value: TValue | null | undefined
+): value is TValue {
   return value !== null && value !== undefined;
+}
+
+export function setPlayerValue(
+  prev: NullablePlayer[],
+  index: number,
+  newPlayer: Partial<Player>
+): NullablePlayer[] {
+  return prev.map((player, i) => {
+    if (i !== index || !player) return player;
+    return { ...(player as Player), ...newPlayer };
+  });
+}
+export function setPlayerValueFunction(
+  index: number,
+  newPlayer: Partial<Player>,
+  setPlayer: StateSetter<NullablePlayer[]>
+) {
+  setPlayer((prev) => setPlayerValue(prev, index, newPlayer));
 }

@@ -3,13 +3,12 @@ import sounds from "../utils/sounds";
 import { playAudio, resetAudio } from "../utils/lib";
 
 export default function gameOverLogic(
-  isDead: boolean,
+  isGameOver: boolean,
   points: number,
   highScore: number,
-  setHighScore: StateSetter<number>,
-  setIsGameOver: StateSetter<boolean>
+  setHighScore: StateSetter<number>
 ) {
-  if (isDead) {
+  if (isGameOver) {
     if (points > highScore) {
       setHighScore(points);
       localStorage.setItem("highScore", points.toString());
@@ -19,6 +18,5 @@ export default function gameOverLogic(
     resetAudio(sounds.timeSlow);
     resetAudio(sounds.theme);
     playAudio(sounds.gameOver);
-    setIsGameOver(true);
   }
 }

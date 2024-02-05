@@ -15,13 +15,24 @@ export type PressedKeys = {
 
 export type Box = { topLeft: Position; bottomRight: Position };
 
-export type Position = {
-  X: number;
-  Y: number;
+export type Position = { X: number; Y: number };
+export type NullablePosition = Position | { X: null; Y: null };
+
+export type NullablePlayer = NullablePosition & {
+  velocityDown: number;
+  points: number;
+  shieldCount: number;
+  invincibleCount: number;
+  direction: Direction;
+  lives: number;
 };
-export type NullablePosition = {
-  X: null | number;
-  Y: null | number;
+export type Player = Position & {
+  velocityDown: number;
+  points: number;
+  shieldCount: number;
+  invincibleCount: number;
+  direction: Direction;
+  lives: number;
 };
 
 export type Object = Position & {
@@ -66,34 +77,20 @@ export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
 export type ContextValues = {
   isHit: boolean;
   isHitTwo: boolean;
+  players: NullablePlayer[];
+  setPlayers: StateSetter<NullablePlayer[]>;
   fallingObjectPositions: FallingObject[];
   setFallingObjectPositions: StateSetter<FallingObject[]>;
-  lives: number[];
-  setLives: StateSetter<number[]>;
-  setInvincibleCounts: StateSetter<number[]>;
-  invincibleCounts: number[];
-  setShieldCounts: StateSetter<number[]>;
-  shieldCounts: number[];
   mousePressPosition: NullablePosition;
   pressedKeys: PressedKeys;
   setPressedKeys: StateSetter<PressedKeys>;
-  points: number[];
-  setPoints: StateSetter<number[]>;
   highScore: number;
   setHighScore: StateSetter<number>;
-  heroOriginPoints: NullablePosition[];
-  setHeroOriginPoints: StateSetter<NullablePosition[]>;
   isGameOver: boolean;
-  setIsGameOver: StateSetter<boolean>;
-  shouldStopGame: boolean;
   isMainMenu: boolean;
   setIsMainMenu: StateSetter<boolean>;
-  heroVelocityDowns: number[];
-  setHeroVelocityDowns: StateSetter<number[]>;
   slowCount: number;
   setSlowCount: StateSetter<number>;
-  lastDirections: Direction[];
-  setLastDirections: StateSetter<Direction[]>;
   gameCounter: number;
   setGameCounter: StateSetter<number>;
   gameStage: number;

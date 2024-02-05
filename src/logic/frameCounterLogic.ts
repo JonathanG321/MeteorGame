@@ -1,4 +1,4 @@
-import { countDownTo0, updateItemInArray } from "../utils/lib";
+import { countDownTo0, isValidPosition, setPlayerValue } from "../utils/lib";
 import { ContextValues, ObjectWithRefs } from "../utils/types";
 import { STAGE_DIFFICULTY_SCALE } from "../utils/variables";
 
@@ -6,8 +6,8 @@ export default function frameCounterLogic(
   contextRefs: ObjectWithRefs<ContextValues>,
   contextValues: ContextValues
 ) {
-  const { slowCount, lives, isTwoPlayers, gameStage } = contextRefs;
-  const { setSlowCount, setPoints, setGameCounter } = contextValues;
+  const { slowCount, players, gameStage } = contextRefs;
+  const { setSlowCount, setPlayers, setGameCounter } = contextValues;
 
   const isSlow = slowCount.current > 0;
   const slowCountEffect = isSlow ? 20 : 10;
@@ -15,11 +15,16 @@ export default function frameCounterLogic(
   setSlowCount((prev) => countDownTo0(prev, isSlow));
 
   function updatePoints(index: number) {
-    setPoints(updatePointsFunc(slowCountEffect, index));
+    setPlayers((prev) =>
+      setPlayerValue(prev, index, {
+        points: prev[index].points + slowCountEffect,
+      })
+    );
   }
 
-  if (lives.current[0] !== 0) updatePoints(0);
-  if (isTwoPlayers && lives.current[1] !== 0) updatePoints(1);
+  players.current.forEach((player, i) => {
+    if (isValidPosition(player)) updatePoints(i);
+  });
 
   setGameCounter((prev) => prev + (isSlow ? 1 : 2));
 
@@ -31,9 +36,4 @@ export default function frameCounterLogic(
     gameStage: gameStage.current,
     gameStageMultiplier,
   };
-}
-
-function updatePointsFunc(slowCountEffect: number, index: number) {
-  return (prev: any[]) =>
-    updateItemInArray(prev, index, prev[index] + slowCountEffect);
 }

@@ -1,24 +1,22 @@
 import { useContext, useEffect } from "react";
 import { GameStateContext } from "../context/GameStateContext";
-import { BASE_PRESSED_KEYS } from "../utils/variables";
+import { BASE_PRESSED_KEYS, DEFAULT_ONE_PLAYER } from "../utils/variables";
 import sounds from "../utils/sounds";
 
 export default function GameOverScreen() {
   const context = useContext(GameStateContext);
-  const { isTwoPlayers, points } = context;
+  const { isTwoPlayers, players } = context;
+  const points1 = players[0].points;
+  const points2 = players[1].points;
 
   useEffect(() => {
     function handleKeyUp(e: KeyboardEvent) {
       if (e.code === "Space") {
         context.setFallingObjectPositions([]);
-        context.setHeroVelocityDowns([0, 0]);
-        context.setPoints([0, 0]);
-        context.setLives([3, 3]);
-        context.setInvincibleCounts([0, 0]);
+        context.setPlayers(DEFAULT_ONE_PLAYER);
         context.setSlowCount(0);
         context.setPressedKeys(BASE_PRESSED_KEYS);
         context.setGameCounter(1);
-        context.setIsGameOver(false);
         context.setIsMainMenu(true);
         sounds.theme.playbackRate = 1;
       }
@@ -37,11 +35,10 @@ export default function GameOverScreen() {
       {isTwoPlayers && (
         <>
           <div className="mb-2 text-xl font-bold">
-            Player {points[0] > points[1] ? "1" : "2"} wins with:
+            Player {points1 > points2 ? "1" : "2"} wins with:
           </div>
           <div className="mb-2 text-lg font-bold">
-            {(points[0] > points[1] ? points[0] : points[1]).toLocaleString()}{" "}
-            Points
+            {(points1 > points2 ? points1 : points2).toLocaleString()} Points
           </div>
         </>
       )}
@@ -49,8 +46,7 @@ export default function GameOverScreen() {
         <>
           <div className="mb-2 text-xl font-bold">Score</div>
           <div className="mb-2 text-lg font-bold">
-            {(points[0] > points[1] ? points[0] : points[1]).toLocaleString()}{" "}
-            Points
+            {(points1 > points2 ? points1 : points2).toLocaleString()} Points
           </div>
         </>
       )}

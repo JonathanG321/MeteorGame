@@ -1,8 +1,12 @@
 import { useContext } from "react";
 import { GameStateContext } from "../context/GameStateContext";
 import { HERO_SIZE, SHIELD_WARNING_DURATION } from "../utils/variables";
-import { createObjectStyle, shouldShowFlash } from "../utils/lib";
-import { Direction, Position } from "../utils/types";
+import {
+  createObjectStyle,
+  isValidPosition,
+  shouldShowFlash,
+} from "../utils/lib";
+import { NullablePlayer } from "../utils/types";
 import shield from "../assets/images/powerUps/PixelShield.png";
 import knightRightImage from "../assets/images/heroSprites/PixelKnightRight.png";
 import knightLeftImage from "../assets/images/heroSprites/PixelKnightLeft.png";
@@ -10,26 +14,19 @@ import knightTwoRightImage from "../assets/images/heroSprites/PixelKnightTwoRigh
 import knightTwoLeftImage from "../assets/images/heroSprites/PixelKnightTwoLeft.png";
 
 type Props = {
-  heroOriginPoint: Position;
-  invincibleCount: number;
-  shieldCount: number;
-  lastDirection: Direction;
+  player: NullablePlayer;
   isPlayerTwo?: boolean;
 };
 
-export default function Hero({
-  heroOriginPoint,
-  invincibleCount,
-  shieldCount,
-  lastDirection,
-  isPlayerTwo = false,
-}: Props) {
+export default function Hero({ player, isPlayerTwo = false }: Props) {
   const { slowCount } = useContext(GameStateContext);
+  if (!isValidPosition(player)) return null;
   const style = createObjectStyle({
-    ...heroOriginPoint,
+    ...player,
     size: HERO_SIZE,
     id: "",
   });
+  const { shieldCount, invincibleCount, direction } = player;
   const scale = 4;
   const newHeightNumber = parseInt(style.height.slice(0, -2));
   const newWidthNumber = parseInt(style.width.slice(0, -2));
@@ -64,7 +61,7 @@ export default function Hero({
             height: style.height,
             width: style.width,
             backgroundImage: `url(${
-              lastDirection === "right" ? knightRight : knightLeft
+              direction === "right" ? knightRight : knightLeft
             })`,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
