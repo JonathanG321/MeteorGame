@@ -45,17 +45,11 @@ export type FallingObject = Object & {
   speed: number;
 };
 
-type BaseAnimation = {
-  X: number;
-  Y: number;
-  size: number;
-  id: string;
-};
-type PointsAnimation = BaseAnimation & {
+type PointsAnimation = Object & {
   type: "points";
   points: number;
 };
-type ExplosionAnimation = BaseAnimation & {
+type ExplosionAnimation = Object & {
   type: "explosion";
 };
 export type Animation = PointsAnimation | ExplosionAnimation;
