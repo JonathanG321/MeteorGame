@@ -19,67 +19,129 @@ export default function powerUpsLogic(
   gameStage: number,
   slowCount: number
 ) {
-  if (isCountAtThreshold(slowCount, 75)) playAudio(sounds.timeResume, 1);
-  if (isCountAtThreshold(slowCount, 60)) resetAudio(sounds.clockTicking);
-  if (isCountAtThreshold(slowCount, 1)) sounds.theme.playbackRate = 1;
+  handleSlowCountEffects(slowCount);
   if (!hitObject.type) return;
+
   const { setSlowCount, setPlayers } = contextValues;
-  const bonus = gameStage > 5 ? (gameStage - 5) * 1000 : 0;
+  const bonus = calculateBonus(gameStage);
 
   const index = hitObject.isPlayerTwo ? 1 : 0;
 
   switch (hitObject.type) {
     case "health":
-      setPlayers((prev) =>
-        setPlayerValue(prev, index, {
-          lives: prev[index].lives >= 3 ? 3 : prev[index].lives + 1,
-        })
-      );
-      pointsUpdate(setPlayers, index, bonus, 1000);
-      playAudio(sounds.life);
+      handleHealthPowerUp(setPlayers, index, bonus);
       break;
     case "pointsSmall":
-      pointsUpdate(setPlayers, index, bonus, 3000);
-      playAudio(sounds.coin);
-      break;
     case "pointsMedium":
-      pointsUpdate(setPlayers, index, bonus, 5000);
-      playAudio(sounds.coins);
-      break;
     case "pointsLarge":
-      pointsUpdate(setPlayers, index, bonus, 10000);
-      playAudio(sounds.coinBag);
+      handlePointsPowerUp(setPlayers, index, bonus, hitObject.type);
       break;
     case "shield":
-      setPlayers((prev) =>
-        setPlayerValue(prev, index, {
-          shieldCount: NEW_SHIELD_COUNT,
-          points: prev[index].points + 1000 + bonus,
-        })
-      );
-      playAudio(sounds.shield);
+      handleShieldPowerUp(setPlayers, index, bonus);
       break;
     case "slow":
-      setSlowCount(NEW_SLOW_COUNT);
-      pointsUpdate(setPlayers, index, bonus, 1000);
-      if (sounds.clockTicking.paused) playAudio(sounds.timeSlow, 1);
-      sounds.theme.playbackRate = 0.7;
-      setTimeout(() => {
-        if (sounds.clockTicking.paused) playAudio(sounds.clockTicking, 1);
-      }, 1000);
+      handleSlowPowerUp(setSlowCount, setPlayers, index, bonus);
       break;
   }
 }
 
-function pointsUpdate(
+function handleSlowCountEffects(slowCount: number) {
+  if (isCountAtThreshold(slowCount, 75)) playAudio(sounds.timeResume, 1);
+  if (isCountAtThreshold(slowCount, 60)) resetAudio(sounds.clockTicking);
+  if (isCountAtThreshold(slowCount, 1)) sounds.theme.playbackRate = 1;
+}
+
+function calculateBonus(gameStage: number): number {
+  return gameStage > 5 ? (gameStage - 5) * 1000 : 0;
+}
+
+function handleHealthPowerUp(
+  setPlayers: StateSetter<NullablePlayer[]>,
+  index: number,
+  bonus: number
+) {
+  setPlayers((prev) =>
+    setPlayerValue(prev, index, {
+      lives: Math.min(3, prev[index].lives + 1),
+      points: prev[index].points + 1000 + bonus,
+    })
+  );
+  playAudio(sounds.life);
+}
+
+function handlePointsPowerUp(
   setPlayers: StateSetter<NullablePlayer[]>,
   index: number,
   bonus: number,
-  baseValue: number
+  type: FallingObjectType
 ) {
+  const baseValue = getBasePointsValue(type);
   setPlayers((prev) =>
     setPlayerValue(prev, index, {
       points: prev[index].points + baseValue + bonus,
     })
   );
+  const sound = getPointsAudio(type);
+  if (sound) playAudio(sound);
+}
+
+function handleShieldPowerUp(
+  setPlayers: StateSetter<NullablePlayer[]>,
+  index: number,
+  bonus: number
+) {
+  setPlayers((prev) =>
+    setPlayerValue(prev, index, {
+      shieldCount: NEW_SHIELD_COUNT,
+      points: prev[index].points + 1000 + bonus,
+    })
+  );
+  playAudio(sounds.shield);
+}
+
+function handleSlowPowerUp(
+  setSlowCount: StateSetter<number>,
+  setPlayers: StateSetter<NullablePlayer[]>,
+  index: number,
+  bonus: number
+) {
+  setSlowCount(NEW_SLOW_COUNT);
+  setPlayers((prev) =>
+    setPlayerValue(prev, index, {
+      points: prev[index].points + 1000 + bonus,
+    })
+  );
+
+  if (sounds.clockTicking.paused) playAudio(sounds.timeSlow, 1);
+  sounds.theme.playbackRate = 0.7;
+
+  setTimeout(() => {
+    if (sounds.clockTicking.paused) playAudio(sounds.clockTicking, 1);
+  }, 1000);
+}
+
+function getBasePointsValue(type: FallingObjectType): number {
+  switch (type) {
+    case "pointsSmall":
+      return 3000;
+    case "pointsMedium":
+      return 5000;
+    case "pointsLarge":
+      return 10000;
+    default:
+      return 0;
+  }
+}
+
+function getPointsAudio(type: FallingObjectType): HTMLAudioElement | null {
+  switch (type) {
+    case "pointsSmall":
+      return sounds.coin;
+    case "pointsMedium":
+      return sounds.coins;
+    case "pointsLarge":
+      return sounds.coinBag;
+    default:
+      return null;
+  }
 }
