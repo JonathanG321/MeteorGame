@@ -103,13 +103,13 @@ export function isObjectCollidingWithHero(
   return isHeroColliding ? object.id : "";
 }
 
-export function calcIsHit(
+export function calcIsHits(
   meteorPositions: FallingObject[],
-  heroOriginPoint: NullablePosition
+  players: NullablePlayer[]
 ) {
-  return isValidPosition(heroOriginPoint)
-    ? !!detectCollision(meteorPositions, heroOriginPoint)
-    : false;
+  return players.map((player) =>
+    isValidPosition(player) ? !!detectCollision(meteorPositions, player) : false
+  );
 }
 
 export function notEmpty<TValue>(

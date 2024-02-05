@@ -30,8 +30,9 @@ function damageCalc(
   { setPlayers }: ContextValues,
   {
     players: { current: players },
-    isHit: { current: isHit1 },
-    isHitTwo: { current: isHit2 },
+    isHits: {
+      current: [isHit1, isHit2],
+    },
   }: ObjectWithRefs<ContextValues>,
   isSlow: boolean
 ) {

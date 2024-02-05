@@ -40,7 +40,6 @@ export const GameStateContext = createContext({
   setGameCounter: stateSetterNumber,
   isTwoPlayers: false,
   setIsTwoPlayers: stateSetterBoolean,
-  isHit: false,
-  isHitTwo: false,
+  isHits: [false, false],
   gameStage: 1,
 } as ContextValues);

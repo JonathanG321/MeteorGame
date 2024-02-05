@@ -1,4 +1,4 @@
-import { calcIsHit } from "../utils/lib";
+import { calcIsHits } from "../utils/lib";
 import { ContextValues } from "../utils/types";
 import useBasicState from "./useBasicState";
 import useClick from "./useClick";
@@ -13,14 +13,12 @@ export default function useContextValues(): ContextValues {
     (object) => object.type === "meteor" || object.type === "specialMeteor"
   );
 
-  const isHit = calcIsHit(meteorPositions, players[0]);
-  const isHitTwo = calcIsHit(meteorPositions, players[1]);
+  const isHits = calcIsHits(meteorPositions, players);
 
   return {
     ...basicState,
     ...pressedKeys,
     mousePressPosition,
-    isHit,
-    isHitTwo,
+    isHits,
   };
 }

@@ -75,8 +75,7 @@ export type ObjectWithRefs<T> = {
 export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export type ContextValues = {
-  isHit: boolean;
-  isHitTwo: boolean;
+  isHits: boolean[];
   players: NullablePlayer[];
   setPlayers: StateSetter<NullablePlayer[]>;
   fallingObjectPositions: FallingObject[];
