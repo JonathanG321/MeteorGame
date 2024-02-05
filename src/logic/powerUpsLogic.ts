@@ -15,6 +15,8 @@ import {
 import {
   NEW_SHIELD_COUNT,
   NEW_SLOW_COUNT,
+  POINTS_ANIMATION_OFFSET_X,
+  POINTS_ANIMATION_OFFSET_Y,
   POINTS_ANIMATION_WIDTH,
 } from "../utils/variables";
 
@@ -73,7 +75,8 @@ function handlePowerUp(
   setAnimationPositions((prev) => [
     ...prev,
     {
-      ...position,
+      X: position.X - POINTS_ANIMATION_OFFSET_X,
+      Y: position.Y - POINTS_ANIMATION_OFFSET_Y,
       id: crypto.randomUUID(),
       points: pointsValue + bonus,
       size: POINTS_ANIMATION_WIDTH,
@@ -99,7 +102,8 @@ function handleSlowPowerUp(
   setAnimationPositions((prev) => [
     ...prev,
     {
-      ...position,
+      X: position.X - POINTS_ANIMATION_OFFSET_X,
+      Y: position.Y - POINTS_ANIMATION_OFFSET_Y,
       id: crypto.randomUUID(),
       points: 1000 + bonus,
       size: POINTS_ANIMATION_WIDTH,
