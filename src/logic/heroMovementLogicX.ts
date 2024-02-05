@@ -1,6 +1,7 @@
 import { isValidPosition, setPlayerValueFunction } from "../utils/lib";
 import {
   ContextValues,
+  Direction,
   NullablePlayer,
   ObjectWithRefs,
   Player,
@@ -38,13 +39,41 @@ function singleHeroLogicX(
   const speed = isSlow ? HERO_SPEED / 2 : HERO_SPEED;
   const direction = pressedKeyLeft ? "left" : "right";
 
-  if (player.direction !== direction)
-    setPlayerValueFunction(index, { direction: direction }, setPlayer);
+  updatePlayerDirection(index, direction, player, setPlayer);
 
-  let newX = Math.min(
+  const newX = calculateNewX(player.X, pressedKeyLeft, speed);
+  updatePlayerPosition(index, newX, player.X, setPlayer);
+}
+
+function updatePlayerDirection(
+  index: number,
+  direction: Direction,
+  player: Player,
+  setPlayer: StateSetter<NullablePlayer[]>
+) {
+  if (player.direction !== direction) {
+    setPlayerValueFunction(index, { direction }, setPlayer);
+  }
+}
+
+function calculateNewX(
+  currentX: number,
+  pressedKeyLeft: boolean,
+  speed: number
+): number {
+  return Math.min(
     WIDTH_MINUS_HERO,
-    Math.max(0, player.X + (pressedKeyLeft ? -speed : speed))
+    Math.max(0, currentX + (pressedKeyLeft ? -speed : speed))
   );
+}
 
-  if (newX !== player.X) setPlayerValueFunction(index, { X: newX }, setPlayer);
+function updatePlayerPosition(
+  index: number,
+  newX: number,
+  currentX: number,
+  setPlayer: StateSetter<NullablePlayer[]>
+) {
+  if (newX !== currentX) {
+    setPlayerValueFunction(index, { X: newX }, setPlayer);
+  }
 }
