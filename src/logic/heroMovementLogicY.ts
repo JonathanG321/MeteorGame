@@ -42,38 +42,75 @@ function singleHeroLogicY(
   index: number,
   setPlayer: StateSetter<NullablePlayer[]>
 ) {
-  const isNotFallingOrJumping =
-    !pressedKeyUp && !pressedKeyDown && player.Y === HEIGHT_MINUS_HERO;
-  if (slowCount % 2 !== 0 || isNotFallingOrJumping) return;
+  if (shouldNotCalcY(pressedKeyUp, pressedKeyDown, player.Y, slowCount)) return;
 
-  let newVelocityDown = player.velocityDown;
-
-  const shouldHeroStopFalling =
-    player.Y === HEIGHT_MINUS_HERO &&
-    player.velocityDown !== 0 &&
-    !pressedKeyUp;
+  const shouldHeroStopFalling = getShouldHeroStopFalling(player, pressedKeyUp);
   const shouldHeroJump = pressedKeyUp && player.Y === HEIGHT_MINUS_HERO;
 
+  const newVelocityDown = getNewVelocityDown(
+    player.velocityDown,
+    shouldHeroStopFalling,
+    shouldHeroJump,
+    pressedKeyDown
+  );
+
+  updatePlayerPosition(player, index, newVelocityDown, setPlayer);
+}
+
+function getNewVelocityDown(
+  oldVelocityDown: number,
+  shouldHeroStopFalling: boolean,
+  shouldHeroJump: boolean,
+  shouldFallFast: boolean
+) {
   if (shouldHeroStopFalling) {
-    newVelocityDown = 0;
+    return 0;
   } else if (shouldHeroJump) {
-    newVelocityDown = -HERO_JUMP_SPEED;
     playAudio(sounds.jump);
-  } else if (pressedKeyDown) {
-    newVelocityDown = newVelocityDown + HERO_GRAVITY * 2;
+    return -HERO_JUMP_SPEED;
+  } else if (shouldFallFast) {
+    return oldVelocityDown + HERO_GRAVITY * 2;
   } else {
-    newVelocityDown = Math.min(
-      newVelocityDown + HERO_GRAVITY,
-      MAX_HERO_VELOCITY_DOWN
+    return Math.min(oldVelocityDown + HERO_GRAVITY, MAX_HERO_VELOCITY_DOWN);
+  }
+}
+
+function shouldNotCalcY(
+  pressedKeyUp: boolean,
+  pressedKeyDown: boolean,
+  playerY: number,
+  slowCount: number
+) {
+  const isNotFallingOrJumping =
+    !pressedKeyUp && !pressedKeyDown && playerY === HEIGHT_MINUS_HERO;
+  const isSlowEffect = slowCount % 2 !== 0 || isNotFallingOrJumping;
+
+  return isNotFallingOrJumping || isSlowEffect;
+}
+
+function getShouldHeroStopFalling(player: Player, pressedKeyUp: boolean) {
+  return (
+    player.Y === HEIGHT_MINUS_HERO && player.velocityDown !== 0 && !pressedKeyUp
+  );
+}
+
+function updatePlayerPosition(
+  player: Player,
+  index: number,
+  newVelocityDown: number,
+  setPlayer: StateSetter<NullablePlayer[]>
+) {
+  const newY = calcNewY(player.Y, newVelocityDown);
+
+  if (player.velocityDown !== newVelocityDown || player.Y !== newY) {
+    setPlayerValueFunction(
+      index,
+      { velocityDown: newVelocityDown, Y: newY },
+      setPlayer
     );
   }
+}
 
-  let newY = player.Y + newVelocityDown;
-
-  newY = Math.max(0, Math.min(newY, HEIGHT_MINUS_HERO));
-
-  if (player.velocityDown !== newVelocityDown)
-    setPlayerValueFunction(index, { velocityDown: newVelocityDown }, setPlayer);
-
-  setPlayerValueFunction(index, { Y: newY }, setPlayer);
+function calcNewY(oldY: number, newVelocity: number) {
+  return Math.max(0, Math.min(oldY + newVelocity, HEIGHT_MINUS_HERO));
 }
