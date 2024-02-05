@@ -7,6 +7,7 @@ import Mask from "./components/Mask";
 import HeaderBar from "./components/HeaderBar";
 import FallingObject from "./components/FallingObject";
 import UI from "./components/UI";
+import Animation from "./components/Animation";
 import {
   FRAME_RATE,
   MASK_FACTOR,
@@ -22,9 +23,9 @@ import heroMovementLogicY from "./logic/heroMovementLogicY";
 import objectGravityLogic from "./logic/objectGravityLogic";
 import gameOverLogic from "./logic/gameOverLogic";
 import frameCounterLogic from "./logic/frameCounterLogic";
+import specialMeteorLogic from "./logic/specialMeteorLogic";
 import useContextValues from "./hooks/useContextValues";
 import useUpdatingRefsForObject from "./hooks/useUpdatingRefsForObject";
-import specialMeteorLogic from "./logic/specialMeteorLogic";
 
 function App() {
   const contextValues = useContextValues();
@@ -34,6 +35,7 @@ function App() {
     players,
     isGameOver,
     fallingObjectPositions,
+    animationPositions,
     highScore,
     setHighScore,
   } = contextValues;
@@ -67,7 +69,7 @@ function App() {
       specialMeteorLogic(contextRefs, contextValues);
 
       const hitObject = objectGravityLogic(contextRefs, gameStageMultiplier);
-      powerUpsLogic(contextValues, hitObject, gameStage, slowCount);
+      powerUpsLogic(contextRefs, contextValues, hitObject, gameStage);
     }, FRAME_RATE);
     return () => {
       clearInterval(frameIntervalId);
@@ -90,15 +92,16 @@ function App() {
             <HeaderBar highScore={highScore} />
           </Mask>
           <Canvas>
-            {/* {!isGameOver && !isMainMenu &&  */}
-            <UI />
-            {/* //  */}
+            {!isGameOver && !isMainMenu && <UI />}
             {(isGameOver || isMainMenu) && <Menu />}
             {players.map((player, i) => {
               return <Hero key={i} player={player} isPlayerTwo={i !== 0} />;
             })}
             {fallingObjectPositions.map((object) => (
               <FallingObject key={object.id} object={object} />
+            ))}
+            {animationPositions.map((animation) => (
+              <Animation key={animation.id} animation={animation} />
             ))}
           </Canvas>
           <Mask top={SCREEN_HEIGHT} className="border-t-4 border-black" />

@@ -5,6 +5,7 @@ import {
   FallingObject,
   FallingObjectType,
   ObjectWithRefs,
+  Animation,
 } from "../utils/types";
 import {
   SPECIAL_METEOR_SIZE,
@@ -12,6 +13,8 @@ import {
   SPECIAL_METEOR_EXPLOSION_CHANCE,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
+  EXPLOSION_SIZE_OFFSET,
+  EXPLOSION_HEIGHT_OFFSET,
 } from "../utils/variables";
 
 export default function specialMeteorLogic(
@@ -19,13 +22,14 @@ export default function specialMeteorLogic(
   contextValues: ContextValues
 ) {
   const { fallingObjectPositions } = contextRefs;
-  const { setFallingObjectPositions } = contextValues;
+  const { setFallingObjectPositions, setAnimationPositions } = contextValues;
 
   fallingObjectPositions.current
     .filter((meteor) => meteor.type === "specialMeteor")
     .forEach((meteor) => {
       if (shouldSpecialMeteorExplode(meteor)) {
         playAudio(sounds.meteorExplode, 0.3);
+        setAnimationPositions((prev) => addNewMeteor(prev, meteor));
         setFallingObjectPositions((prev) => [
           ...prev.filter((object) => object.id !== meteor.id),
           ...createThreeNewMeteors(meteor),
@@ -68,4 +72,17 @@ function createThreeNewMeteors(specialMeteor: FallingObject): FallingObject[] {
       };
     })
     .filter(notEmpty);
+}
+
+function addNewMeteor(prev: Animation[], meteor: FallingObject): Animation[] {
+  return [
+    ...prev,
+    {
+      Y: meteor.Y - EXPLOSION_SIZE_OFFSET / 2 + EXPLOSION_HEIGHT_OFFSET,
+      X: Math.max(meteor.X - EXPLOSION_SIZE_OFFSET / 2, 0),
+      id: crypto.randomUUID(),
+      type: "explosion",
+      size: SPECIAL_METEOR_SIZE + EXPLOSION_SIZE_OFFSET,
+    },
+  ];
 }
