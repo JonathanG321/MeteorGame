@@ -6,7 +6,7 @@ export const NORMAL_FPS = BASE_FPS * 2;
 
 export const STAGE_LENGTH = 50 * NORMAL_FPS;
 export const STAGE_DIFFICULTY_SCALE = 1.25;
-export const STARTING_STAGE = 4;
+export const STARTING_STAGE = 1;
 export const STARTING_POINT = STARTING_STAGE * STAGE_LENGTH - STAGE_LENGTH + 1;
 
 export const SCREEN_HEIGHT = 480;
@@ -94,6 +94,8 @@ export const POWER_UP_SPAWN_CHANCE = 0.35; // chance of a powerUp actually spawn
 
 export const POINTS_ANIMATION_WIDTH = 100;
 export const POINTS_ANIMATION_DURATION = 1000;
+export const POINTS_ANIMATION_OFFSET_X = 30;
+export const POINTS_ANIMATION_OFFSET_Y = 20;
 export const EXPLOSION_ANIMATION_DURATION = 1000;
 export const EXPLOSION_SIZE_OFFSET = 50;
 export const EXPLOSION_HEIGHT_OFFSET = 20;
