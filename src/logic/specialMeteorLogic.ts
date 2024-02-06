@@ -9,10 +9,9 @@ import {
 } from "../utils/types";
 import {
   SPECIAL_METEOR_SIZE,
-  SPECIAL_METEOR_SPAWN_RANGE,
+  SPECIAL_METEOR_SPAWN_ANGLE,
   SPECIAL_METEOR_EXPLOSION_CHANCE,
   SCREEN_HEIGHT,
-  SCREEN_WIDTH,
   EXPLOSION_SIZE_OFFSET,
   EXPLOSION_HEIGHT_OFFSET,
 } from "../utils/variables";
@@ -50,25 +49,19 @@ function shouldSpecialMeteorExplode(meteor: FallingObject): boolean {
 
 function createThreeNewMeteors(specialMeteor: FallingObject): FallingObject[] {
   const newSize = SPECIAL_METEOR_SIZE * 0.6;
-  const minPosition = specialMeteor.X - SPECIAL_METEOR_SPAWN_RANGE;
-  const maxPosition = specialMeteor.X + SPECIAL_METEOR_SPAWN_RANGE;
 
-  const xPositions = [
-    minPosition >= 0 ? minPosition : null,
-    specialMeteor.X,
-    maxPosition <= SCREEN_WIDTH - newSize ? maxPosition : null,
-  ];
+  const angles = [-SPECIAL_METEOR_SPAWN_ANGLE, 0, SPECIAL_METEOR_SPAWN_ANGLE];
 
-  return xPositions
-    .map((X) => {
-      if (!X) return;
+  return angles
+    .map((Offset) => {
       return {
         Y: specialMeteor.Y,
-        X,
+        X: specialMeteor.X,
         id: crypto.randomUUID(),
         type: "meteor" as FallingObjectType,
         size: newSize,
         speed: specialMeteor.speed,
+        angleOffset: Offset,
       };
     })
     .filter(notEmpty);
