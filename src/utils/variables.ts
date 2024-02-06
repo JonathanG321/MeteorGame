@@ -74,7 +74,7 @@ export const OBJECT_GRAVITY = 2;
 export const MIN_GRAVITY_INTERVAL = 0.5;
 export const OBJECT_SIZE = 60;
 export const SPECIAL_METEOR_SIZE = 110;
-export const OBJECT_COLLISION_THRESHOLD = 8;
+export const OBJECT_COLLISION_THRESHOLD = 0.25; // this is a percentage of the objects radius
 export const OBJECT_STARTING_HEIGHT = -(OBJECT_SIZE * 2);
 export const MIN_OBJECT_SIZE_MODIFIER = -8;
 export const MAX_OBJECT_SIZE_MODIFIER = 15;
@@ -100,6 +100,7 @@ export const POINTS_ANIMATION_OFFSET_Y = 20;
 export const EXPLOSION_ANIMATION_DURATION = 1000;
 export const EXPLOSION_SIZE_OFFSET = 50;
 export const EXPLOSION_HEIGHT_OFFSET = 20;
+export const HALF_OVER_PI = 180 / Math.PI;
 
 export const BASE_PRESSED_KEYS: PressedKeys = {
   ArrowUp: false,

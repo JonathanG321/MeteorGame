@@ -8,7 +8,11 @@ import {
   Position,
   StateSetter,
 } from "./types";
-import { HERO_SIZE, OBJECT_COLLISION_THRESHOLD } from "./variables";
+import {
+  HALF_OVER_PI,
+  HERO_SIZE,
+  OBJECT_COLLISION_THRESHOLD,
+} from "./variables";
 
 export function createObjectStyle(object: Object) {
   return {
@@ -86,10 +90,12 @@ export function isObjectCollidingWithHero(
   const heroRight = heroLeft + HERO_SIZE;
   const heroBottom = heroTop + HERO_SIZE;
 
-  const objectLeft = object.X + OBJECT_COLLISION_THRESHOLD;
-  const objectTop = object.Y + OBJECT_COLLISION_THRESHOLD;
+  const collisionThreshold = object.size * OBJECT_COLLISION_THRESHOLD;
 
-  const calcObjectSize = object.size - OBJECT_COLLISION_THRESHOLD * 2;
+  const objectLeft = object.X + collisionThreshold;
+  const objectTop = object.Y + collisionThreshold;
+
+  const calcObjectSize = object.size - collisionThreshold * 2;
 
   const objectRight = objectLeft + calcObjectSize;
   const objectBottom = objectTop + calcObjectSize;
@@ -110,6 +116,10 @@ export function calcIsHits(
   return players.map((player) =>
     isValidPosition(player) ? !!detectCollision(meteorPositions, player) : false
   );
+}
+
+export function calcRotationAngle(offset: number, speed: number) {
+  return Math.atan(offset / -speed) * HALF_OVER_PI;
 }
 
 export function notEmpty<TValue>(
