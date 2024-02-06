@@ -6,7 +6,7 @@ import {
   NullablePosition,
   ObjectWithRefs,
 } from "../utils/types";
-import { OBJECT_SIZE, SCREEN_HEIGHT } from "../utils/variables";
+import { OBJECT_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH } from "../utils/variables";
 
 export default function objectGravityLogic(
   contextRefs: ObjectWithRefs<ContextValues>,
@@ -65,7 +65,11 @@ export default function objectGravityLogic(
 }
 
 function isObjectOutOfBounds(object: FallingObject) {
-  return !(object.Y <= SCREEN_HEIGHT + OBJECT_SIZE);
+  return !(
+    object.Y <= SCREEN_HEIGHT + OBJECT_SIZE ||
+    object.X === SCREEN_WIDTH ||
+    object.X === -object.size
+  );
 }
 
 function isMeteorOrSpecialMeteor(object: FallingObject) {
@@ -78,6 +82,7 @@ function calcObjectsFalling(
 ) {
   return {
     ...object,
+    X: object.X + object.angleOffset,
     Y: object.Y + object.speed * calcDifficultyModifier,
   };
 }

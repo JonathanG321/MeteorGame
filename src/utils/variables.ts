@@ -68,7 +68,7 @@ export const DEFAULT_TWO_PLAYERS: NullablePlayer[] = [
 
 export const METEOR_SPAWN_CHANCE = 3; // chance for a meteor to actually spawn on attempt
 export const SPECIAL_METEOR_SPAWN_CHANCE = 0.15; // chance for a special meteor to actually spawn on attempt
-export const SPECIAL_METEOR_SPAWN_RANGE = 100;
+export const SPECIAL_METEOR_SPAWN_ANGLE = 1;
 export const SPECIAL_METEOR_EXPLOSION_CHANCE = 1;
 export const OBJECT_GRAVITY = 2;
 export const MIN_GRAVITY_INTERVAL = 0.5;
@@ -79,6 +79,7 @@ export const OBJECT_STARTING_HEIGHT = -(OBJECT_SIZE * 2);
 export const MIN_OBJECT_SIZE_MODIFIER = -8;
 export const MAX_OBJECT_SIZE_MODIFIER = 15;
 export const OBJECT_SIZE_VARIATION = 0.25;
+export const OBJECT_ANGLE_VARIATION = 1;
 export const MASK_FACTOR = 2.5;
 
 export const INVINCIBILITY_DURATION = 1; // This is in seconds

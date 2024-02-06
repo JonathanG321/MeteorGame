@@ -43,6 +43,7 @@ export type Object = Position & {
 export type FallingObject = Object & {
   type: FallingObjectType;
   speed: number;
+  angleOffset: number;
 };
 
 type PointsAnimation = Object & {

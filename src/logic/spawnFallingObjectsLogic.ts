@@ -21,6 +21,7 @@ import {
   STAGE_DIFFICULTY_SCALE,
   SPECIAL_METEOR_SPAWN_CHANCE,
   SPECIAL_METEOR_SIZE,
+  OBJECT_ANGLE_VARIATION,
 } from "../utils/variables";
 
 export default function spawnFallingObjectLogic(
@@ -85,14 +86,24 @@ function spawnFallingObjectGroup(
   const newObjectX = calculateObjectX(mousePressPosition, newObjectSize);
   const newGravity = calculateObjectGravity(sizeStageMultiplier);
   const newSpeed = calculateObjectSpeed(newGravity);
+  const newType = getRandomType(possibleTypes);
+
+  const setMultiplier = sizeStageMultiplier || 1;
+
+  const angleVariation = Math.max(
+    0,
+    OBJECT_ANGLE_VARIATION * setMultiplier - OBJECT_ANGLE_VARIATION * 1.75
+  );
 
   const newObjectPosition: FallingObject = {
     Y: OBJECT_STARTING_HEIGHT,
     X: newObjectX,
     id: crypto.randomUUID(),
-    type: getRandomType(possibleTypes),
+    type: newType,
     size: newObjectSize,
     speed: newSpeed,
+    angleOffset:
+      newType === "meteor" ? randomInRange(-angleVariation, angleVariation) : 0,
   };
   setObjectPositions((oldValue) => [...oldValue, newObjectPosition]);
 }
@@ -119,11 +130,11 @@ function calculateObjectX(
   newObjectSize: number
 ): number {
   const mouseX = mousePressPosition?.X;
-  const maxPosition = SCREEN_WIDTH - newObjectSize;
+  const maxPosition = SCREEN_WIDTH;
 
   if (!mouseX) return Math.round(Math.random() * maxPosition);
 
-  const minX = Math.max(0, mouseX - newObjectSize / 2);
+  const minX = Math.max(-newObjectSize, mouseX - newObjectSize / 2);
   return Math.min(minX, maxPosition);
 }
 
