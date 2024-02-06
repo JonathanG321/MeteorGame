@@ -26,6 +26,7 @@ import frameCounterLogic from "./logic/frameCounterLogic";
 import specialMeteorLogic from "./logic/specialMeteorLogic";
 import useContextValues from "./hooks/useContextValues";
 import useUpdatingRefsForObject from "./hooks/useUpdatingRefsForObject";
+import SideMask from "./components/SideMask";
 
 function App() {
   const contextValues = useContextValues();
@@ -85,12 +86,20 @@ function App() {
           className="relative"
           style={{
             height: SCREEN_HEIGHT + borderWidth,
-            width: SCREEN_WIDTH + borderWidth,
+            width: SCREEN_WIDTH,
           }}
         >
           <Mask top={-(OBJECT_SIZE * MASK_FACTOR)}>
             <HeaderBar highScore={highScore} />
           </Mask>
+          <SideMask
+            left={-(OBJECT_SIZE * MASK_FACTOR)}
+            className="border-r-4"
+          />
+          <SideMask
+            right={-(OBJECT_SIZE * MASK_FACTOR)}
+            className="border-l-4"
+          />
           <Canvas>
             {!isGameOver && !isMainMenu && <UI />}
             {(isGameOver || isMainMenu) && <Menu />}
