@@ -9,14 +9,15 @@ type Props = PropsWithChildren<{
 }>;
 
 export default function SideMask({ right, left, className, children }: Props) {
+  const maskWidth = OBJECT_SIZE * MASK_FACTOR;
   return (
     <div
       style={{
-        width: OBJECT_SIZE * MASK_FACTOR,
+        width: maskWidth,
         right,
         left,
-        height: SCREEN_HEIGHT * 1.5,
-        top: -OBJECT_SIZE * MASK_FACTOR,
+        height: SCREEN_HEIGHT + maskWidth * 2,
+        top: -maskWidth,
       }}
       className={classNames(
         "absolute z-20 flex w-full flex-col justify-end border-black bg-white",
