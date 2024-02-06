@@ -65,10 +65,10 @@ export default function objectGravityLogic(
 }
 
 function isObjectOutOfBounds(object: FallingObject) {
-  return !(
-    object.Y <= SCREEN_HEIGHT + OBJECT_SIZE ||
-    object.X === SCREEN_WIDTH ||
-    object.X === -object.size
+  return (
+    object.Y >= SCREEN_HEIGHT + OBJECT_SIZE ||
+    object.X >= SCREEN_WIDTH ||
+    object.X <= -object.size
   );
 }
 
