@@ -1,4 +1,4 @@
-import { getPowerUpList, randomInRange } from "../utils/lib";
+import { calcRotationAngle, getPowerUpList, randomInRange } from "../utils/lib";
 import {
   ContextValues,
   FallingObject,
@@ -82,18 +82,18 @@ function spawnFallingObjectGroup(
   sizeStageMultiplier?: number,
   setSize?: number
 ) {
+  const setMultiplier = sizeStageMultiplier || 1;
+  const angleVariation = Math.max(
+    0,
+    OBJECT_ANGLE_VARIATION * setMultiplier - OBJECT_ANGLE_VARIATION * 1.75
+  );
   const newObjectSize = setSize ?? calculateObjectSize(sizeStageMultiplier);
   const newObjectX = calculateObjectX(mousePressPosition, newObjectSize);
   const newGravity = calculateObjectGravity(sizeStageMultiplier);
   const newSpeed = calculateObjectSpeed(newGravity);
   const newType = getRandomType(possibleTypes);
-
-  const setMultiplier = sizeStageMultiplier || 1;
-
-  const angleVariation = Math.max(
-    0,
-    OBJECT_ANGLE_VARIATION * setMultiplier - OBJECT_ANGLE_VARIATION * 1.75
-  );
+  const newAngleOffset =
+    newType === "meteor" ? randomInRange(-angleVariation, angleVariation) : 0;
 
   const newObjectPosition: FallingObject = {
     Y: OBJECT_STARTING_HEIGHT,
@@ -102,8 +102,8 @@ function spawnFallingObjectGroup(
     type: newType,
     size: newObjectSize,
     speed: newSpeed,
-    angleOffset:
-      newType === "meteor" ? randomInRange(-angleVariation, angleVariation) : 0,
+    angleOffset: newAngleOffset,
+    rotationAngle: calcRotationAngle(newAngleOffset, newSpeed),
   };
   setObjectPositions((oldValue) => [...oldValue, newObjectPosition]);
 }

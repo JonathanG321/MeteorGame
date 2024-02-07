@@ -43,16 +43,19 @@ export default function FallingObject({ object }: Props) {
       texture = hourglass;
       break;
   }
+
+  const rotationStyle = {
+    transform: `rotate(${object.rotationAngle}deg)`,
+  };
+
+  const graphicId = `?dummy="${object.id}"`;
+
   return (
     <div
-      style={style}
-      {...style}
+      style={{ ...style, ...rotationStyle }}
       className={classNames("absolute", object.type)}
     >
-      <img
-        src={texture + `?dummy="${object.id}"`}
-        className="absolute bottom-0 left-0"
-      />
+      <img src={texture + graphicId} className="absolute bottom-0 left-0" />
     </div>
   );
 }

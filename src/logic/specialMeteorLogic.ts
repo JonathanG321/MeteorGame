@@ -1,4 +1,4 @@
-import { notEmpty, playAudio } from "../utils/lib";
+import { calcRotationAngle, notEmpty, playAudio } from "../utils/lib";
 import sounds from "../utils/sounds";
 import {
   ContextValues,
@@ -53,7 +53,7 @@ function createThreeNewMeteors(specialMeteor: FallingObject): FallingObject[] {
   const angles = [-SPECIAL_METEOR_SPAWN_ANGLE, 0, SPECIAL_METEOR_SPAWN_ANGLE];
 
   return angles
-    .map((Offset) => {
+    .map((offset) => {
       return {
         Y: specialMeteor.Y,
         X: specialMeteor.X,
@@ -61,7 +61,8 @@ function createThreeNewMeteors(specialMeteor: FallingObject): FallingObject[] {
         type: "meteor" as FallingObjectType,
         size: newSize,
         speed: specialMeteor.speed,
-        angleOffset: Offset,
+        angleOffset: offset,
+        rotationAngle: calcRotationAngle(offset, specialMeteor.speed),
       };
     })
     .filter(notEmpty);
