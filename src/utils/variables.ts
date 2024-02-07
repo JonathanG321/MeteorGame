@@ -1,8 +1,10 @@
 import { NullablePosition, Player, NullablePlayer, PressedKeys } from "./types";
 
 export const HEADER_HEIGHT = 80;
-export const SCREEN_HEIGHT = 480 + HEADER_HEIGHT;
+export const SCREEN_HEIGHT = 480;
+export const GAME_HEIGHT = SCREEN_HEIGHT + HEADER_HEIGHT;
 export const SCREEN_WIDTH = 800;
+export const BORDER_WIDTH = 4;
 
 export const BASE_FPS = 60;
 export const FRAME_RATE = Math.floor(1000 / BASE_FPS);
@@ -15,8 +17,8 @@ export const STARTING_POINT = STARTING_STAGE * STAGE_LENGTH - STAGE_LENGTH + 1;
 
 export const HERO_SIZE = 30;
 
-export const WIDTH_MINUS_HERO = SCREEN_WIDTH - HERO_SIZE;
-export const HEIGHT_MINUS_HERO = SCREEN_HEIGHT - HERO_SIZE;
+export const WIDTH_MINUS_HERO = SCREEN_WIDTH - HERO_SIZE - BORDER_WIDTH * 2;
+export const HEIGHT_MINUS_HERO = SCREEN_HEIGHT - HERO_SIZE - BORDER_WIDTH;
 
 export const HERO_SPEED = 6;
 export const HERO_JUMP_SPEED = 20;
