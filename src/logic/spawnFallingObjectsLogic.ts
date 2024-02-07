@@ -17,21 +17,20 @@ import {
   OBJECT_SIZE_VARIATION,
   OBJECT_STARTING_HEIGHT,
   POWER_UP_SPAWN_CHANCE,
-  SCREEN_WIDTH,
   STAGE_DIFFICULTY_SCALE,
   SPECIAL_METEOR_SPAWN_CHANCE,
   SPECIAL_METEOR_SIZE,
   OBJECT_ANGLE_VARIATION,
 } from "../utils/variables";
 
-export default function spawnFallingObjectLogic(
+export default function spawnFallingObjectsLogic(
   contextRefs: ObjectWithRefs<ContextValues>,
   contextValues: ContextValues,
   gameStageMultiplier: number
 ) {
   const { slowCount, gameStage } = contextRefs;
   const isSlow = !!slowCount.current;
-  const { setFallingObjectPositions } = contextValues;
+  const { setFallingObjectPositions, screenWidth } = contextValues;
   const powerUpList = getPowerUpList(gameStage.current);
   const difficultyModifier = gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2;
 
@@ -54,6 +53,7 @@ export default function spawnFallingObjectLogic(
       setFallingObjectPositions,
       ["specialMeteor"],
       contextRefs.mousePressPosition.current,
+      screenWidth,
       gameStageMultiplier,
       SPECIAL_METEOR_SIZE
     );
@@ -62,7 +62,8 @@ export default function spawnFallingObjectLogic(
     spawnFallingObjectGroup(
       setFallingObjectPositions,
       powerUpList,
-      contextRefs.mousePressPosition.current
+      contextRefs.mousePressPosition.current,
+      screenWidth
     );
   }
   if (shouldMeteorsSpawn) {
@@ -70,6 +71,7 @@ export default function spawnFallingObjectLogic(
       setFallingObjectPositions,
       ["meteor"],
       contextRefs.mousePressPosition.current,
+      screenWidth,
       gameStageMultiplier
     );
   }
@@ -79,6 +81,7 @@ function spawnFallingObjectGroup(
   setObjectPositions: StateSetter<FallingObject[]>,
   possibleTypes: FallingObjectType[],
   mousePressPosition: NullablePosition,
+  screenWidth: number,
   sizeStageMultiplier?: number,
   setSize?: number
 ) {
@@ -88,7 +91,11 @@ function spawnFallingObjectGroup(
     OBJECT_ANGLE_VARIATION * setMultiplier - OBJECT_ANGLE_VARIATION * 1.75
   );
   const newObjectSize = setSize ?? calculateObjectSize(sizeStageMultiplier);
-  const newObjectX = calculateObjectX(mousePressPosition, newObjectSize);
+  const newObjectX = calculateObjectX(
+    mousePressPosition,
+    newObjectSize,
+    screenWidth
+  );
   const newGravity = calculateObjectGravity(sizeStageMultiplier);
   const newSpeed = calculateObjectSpeed(newGravity);
   const newType = getRandomType(possibleTypes);
@@ -127,10 +134,11 @@ function calculateObjectSize(sizeStageMultiplier?: number): number {
 
 function calculateObjectX(
   mousePressPosition: NullablePosition,
-  newObjectSize: number
+  newObjectSize: number,
+  screenWidth: number
 ): number {
   const mouseX = mousePressPosition?.X;
-  const maxPosition = SCREEN_WIDTH;
+  const maxPosition = screenWidth;
 
   if (!mouseX) return Math.round(Math.random() * maxPosition);
 

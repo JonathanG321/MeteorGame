@@ -4,7 +4,10 @@ import useBasicState from "./useBasicState";
 import useClick from "./useClick";
 import usePressedKeys from "./usePressedKeys";
 
-export default function useContextValues(): ContextValues {
+export default function useContextValues(
+  screenHeight: number,
+  screenWidth: number
+): ContextValues {
   const basicState = useBasicState();
   const { players, fallingObjectPositions } = basicState;
   const pressedKeys = usePressedKeys();
@@ -20,5 +23,7 @@ export default function useContextValues(): ContextValues {
     ...pressedKeys,
     mousePressPosition,
     isHits,
+    screenHeight,
+    screenWidth,
   };
 }

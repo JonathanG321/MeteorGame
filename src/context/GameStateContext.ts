@@ -23,6 +23,8 @@ function stateSetterFallingObjects(
 ): void {}
 
 export const GameStateContext = createContext({
+  screenWidth: 0,
+  screenHeight: 0,
   players: DEFAULT_ONE_PLAYER,
   setPlayers: stateSetterPlayers,
   setSlowCount: stateSetterNumber,

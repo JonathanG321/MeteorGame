@@ -6,7 +6,7 @@ import {
   NullablePosition,
   ObjectWithRefs,
 } from "../utils/types";
-import { OBJECT_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH } from "../utils/variables";
+import { OBJECT_SIZE } from "../utils/variables";
 
 export default function objectGravityLogic(
   contextRefs: ObjectWithRefs<ContextValues>,
@@ -19,6 +19,8 @@ export default function objectGravityLogic(
     players: { current: players },
     slowCount: { current: slowCount },
     setFallingObjectPositions: { current: setFallingObjectPositions },
+    screenHeight: { current: screenHeight },
+    screenWidth: { current: screenWidth },
   } = contextRefs;
 
   const isSlow = !!slowCount;
@@ -29,7 +31,7 @@ export default function objectGravityLogic(
   const calcDifficultyModifier = gameStageMultiplier * speedMultiplier;
 
   function filterAndCheckHeroCollisions(object: FallingObject) {
-    if (isObjectOutOfBounds(object)) {
+    if (isObjectOutOfBounds(object, screenHeight, screenWidth)) {
       return false;
     } else if (isMeteorOrSpecialMeteor(object)) {
       return true;
@@ -64,10 +66,14 @@ export default function objectGravityLogic(
   return { type, isPlayerTwo };
 }
 
-function isObjectOutOfBounds(object: FallingObject) {
+function isObjectOutOfBounds(
+  object: FallingObject,
+  screenHeight: number,
+  screenWidth: number
+) {
   return (
-    object.Y >= SCREEN_HEIGHT + OBJECT_SIZE ||
-    object.X >= SCREEN_WIDTH ||
+    object.Y >= screenHeight + OBJECT_SIZE ||
+    object.X >= screenWidth ||
     object.X <= -object.size
   );
 }

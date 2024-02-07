@@ -86,6 +86,8 @@ export type ObjectWithRefs<T> = {
 export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export type ContextValues = {
+  screenWidth: number;
+  screenHeight: number;
   isHits: boolean[];
   players: NullablePlayer[];
   setPlayers: StateSetter<NullablePlayer[]>;

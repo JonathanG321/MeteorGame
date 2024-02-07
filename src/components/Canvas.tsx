@@ -1,28 +1,32 @@
 import { PropsWithChildren } from "react";
 import classNames from "classnames";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../utils/variables";
 import castle from "../assets/images/PixelCastle.png";
 
 export default function Canvas({
   children,
   className,
+  height,
+  width,
   ...rest
 }: PropsWithChildren<
-  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+  React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > & { height: number; width: number }
 >) {
   return (
     <div
       id="canvas"
       {...rest}
       style={{
-        height: SCREEN_HEIGHT,
-        width: SCREEN_WIDTH,
+        height,
+        width,
         backgroundImage: `url(${castle})`,
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        backgroundSize: "cover",
       }}
-      className={classNames("relative", className)}
+      className={classNames(
+        `relative overflow-hidden border-x-4 border-b-4 border-black bg-cover bg-center bg-no-repeat`,
+        className
+      )}
     >
       {children}
     </div>
