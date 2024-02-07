@@ -9,7 +9,8 @@ export const STAGE_DIFFICULTY_SCALE = 1.25;
 export const STARTING_STAGE = 1;
 export const STARTING_POINT = STARTING_STAGE * STAGE_LENGTH - STAGE_LENGTH + 1;
 
-export const SCREEN_HEIGHT = 480;
+export const HEADER_HEIGHT = 80;
+export const SCREEN_HEIGHT = 480 + HEADER_HEIGHT;
 export const SCREEN_WIDTH = 800;
 
 export const HERO_SIZE = 30;
