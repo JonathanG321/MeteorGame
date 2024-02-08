@@ -1,6 +1,7 @@
 import { useContext } from "react";
-import { GameStateContext } from "../context/GameStateContext";
 import classNames from "classnames";
+import { GameStateContext } from "../context/GameStateContext";
+import { getFontSize } from "../utils/lib";
 
 type Props = {
   header?: string;
@@ -19,7 +20,7 @@ export default function ScoreDisplay({
   isSecondPlayer = false,
   className,
 }: Props) {
-  const { players } = useContext(GameStateContext);
+  const { players, scale } = useContext(GameStateContext);
   const pointsToDisplay =
     displayPoints ?? (isSecondPlayer ? players[1].points : players[0].points);
   const pointsDigits = pointsToDisplay.toLocaleString().split("").reverse();
@@ -29,23 +30,23 @@ export default function ScoreDisplay({
 
   return (
     <div
-      className={classNames(
-        "flex min-w-48 flex-col justify-center",
-        className,
-        { "items-center": !left }
-      )}
+      style={{ minWidth: `${192 * scale}px` }}
+      className={classNames("flex flex-col justify-center", className, {
+        "items-center": !left,
+      })}
     >
-      <div className="text-lg font-bold">{header ?? "Score"}</div>
+      <div style={{ ...getFontSize("lg", scale) }} className="font-bold">
+        {header ?? "Score"}
+      </div>
       <div
-        className={classNames("font-outline-1 flex font-bold", {
-          "text-3xl": large,
-          "text-2xl": !large,
-        })}
+        style={getFontSize(large ? "3xl" : "2xl", scale)}
+        className="font-outline-1 flex font-bold"
       >
         <DisplayPoints
           displayPoints={displayPoints}
           formattedPoints={formattedPoints}
           large
+          scale={scale}
         />
       </div>
     </div>
@@ -62,32 +63,39 @@ function formatPoints(pointsDigits: string[]): string[] {
     .reverse();
 }
 
-function getClassNamesForChar(char: string, large: boolean): string {
-  const widthClass =
-    char === "," ? (large ? "w-3" : "w-2") : large ? "w-[26px]" : "w-[22px]";
-  return classNames("flex justify-center text-center", widthClass);
-}
-
 type DisplayPointsProps = {
   large: boolean;
   formattedPoints?: string[];
   displayPoints?: number;
+  scale: number;
 };
 
 function DisplayPoints({
   large,
   formattedPoints,
   displayPoints,
+  scale,
 }: DisplayPointsProps) {
   if (!!displayPoints || !formattedPoints)
     return <>{displayPoints?.toLocaleString()}</>;
   return (
     <>
       {formattedPoints.map((char, i) => (
-        <div key={char + i} className={getClassNamesForChar(char, large)}>
+        <div
+          key={char + i}
+          style={getStylesForChar(char, large, scale)}
+          className="flex justify-center text-center"
+        >
           {char}
         </div>
       ))}
     </>
   );
+}
+
+function getStylesForChar(char: string, large: boolean, scale: number) {
+  if (char === ",") {
+    return { width: large ? `${12 * scale}px` : `${8 * scale}px` };
+  }
+  return { width: large ? `${26 * scale}px` : `${22 * scale}px` };
 }

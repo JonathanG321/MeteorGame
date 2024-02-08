@@ -30,7 +30,7 @@ export default function spawnFallingObjectsLogic(
 ) {
   const { slowCount, gameStage } = contextRefs;
   const isSlow = !!slowCount.current;
-  const { setFallingObjectPositions, screenWidth } = contextValues;
+  const { setFallingObjectPositions, screenWidth, scale } = contextValues;
   const powerUpList = getPowerUpList(gameStage.current);
   const difficultyModifier = gameStageMultiplier * STAGE_DIFFICULTY_SCALE ** 2;
 
@@ -52,6 +52,7 @@ export default function spawnFallingObjectsLogic(
     spawnFallingObjectGroup(
       setFallingObjectPositions,
       ["specialMeteor"],
+      scale,
       contextRefs.mousePressPosition.current,
       screenWidth,
       gameStageMultiplier,
@@ -62,6 +63,7 @@ export default function spawnFallingObjectsLogic(
     spawnFallingObjectGroup(
       setFallingObjectPositions,
       powerUpList,
+      scale,
       contextRefs.mousePressPosition.current,
       screenWidth
     );
@@ -70,6 +72,7 @@ export default function spawnFallingObjectsLogic(
     spawnFallingObjectGroup(
       setFallingObjectPositions,
       ["meteor"],
+      scale,
       contextRefs.mousePressPosition.current,
       screenWidth,
       gameStageMultiplier
@@ -80,6 +83,7 @@ export default function spawnFallingObjectsLogic(
 function spawnFallingObjectGroup(
   setObjectPositions: StateSetter<FallingObject[]>,
   possibleTypes: FallingObjectType[],
+  scale: number,
   mousePressPosition: NullablePosition,
   screenWidth: number,
   sizeStageMultiplier?: number,
@@ -103,14 +107,14 @@ function spawnFallingObjectGroup(
     newType === "meteor" ? randomInRange(-angleVariation, angleVariation) : 0;
 
   const newObjectPosition: FallingObject = {
-    Y: OBJECT_STARTING_HEIGHT,
-    X: newObjectX,
+    Y: OBJECT_STARTING_HEIGHT * scale,
+    X: newObjectX * scale,
     id: crypto.randomUUID(),
     type: newType,
-    size: newObjectSize,
-    speed: newSpeed,
+    size: newObjectSize * scale,
+    speed: newSpeed * scale,
     angleOffset: newAngleOffset,
-    rotationAngle: calcRotationAngle(newAngleOffset, newSpeed),
+    rotationAngle: calcRotationAngle(newAngleOffset, newSpeed * scale),
   };
   setObjectPositions((oldValue) => [...oldValue, newObjectPosition]);
 }

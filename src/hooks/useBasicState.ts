@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { FallingObject, NullablePlayer, Animation } from "../utils/types";
-import {
-  STAGE_LENGTH,
-  STARTING_POINT,
-  DEFAULT_ONE_PLAYER,
-} from "../utils/variables";
+import { GAME_HEIGHT, STAGE_LENGTH, STARTING_POINT } from "../utils/variables";
+import { getDefaultOnePlayer } from "../utils/lib";
 
-export default function useBasicState() {
+export default function useBasicState(screenHeight: number) {
+  const scale = screenHeight / GAME_HEIGHT;
   const [gameCounter, setGameCounter] = useState(STARTING_POINT);
   const [isTwoPlayers, setIsTwoPlayers] = useState(false);
-  const [players, setPlayers] = useState<NullablePlayer[]>(DEFAULT_ONE_PLAYER);
+  const [players, setPlayers] = useState<NullablePlayer[]>(
+    getDefaultOnePlayer(scale)
+  );
   const [isMainMenu, setIsMainMenu] = useState(true);
   const [slowCount, setSlowCount] = useState(0);
   const [highScore, setHighScore] = useState(
@@ -25,6 +25,7 @@ export default function useBasicState() {
   const isGameOver = !isTwoPlayers ? !isP1Alive : !isP1Alive && !isP2Alive;
 
   return {
+    scale,
     players,
     setPlayers,
     fallingObjectPositions,

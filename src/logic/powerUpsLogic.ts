@@ -58,7 +58,7 @@ export default function powerUpsLogic(
 }
 
 function handlePowerUp(
-  { setPlayers, setAnimationPositions }: ContextValues,
+  { setPlayers, setAnimationPositions, scale }: ContextValues,
   index: number,
   bonus: number,
   position: Position,
@@ -75,11 +75,11 @@ function handlePowerUp(
   setAnimationPositions((prev) => [
     ...prev,
     {
-      X: position.X - POINTS_ANIMATION_OFFSET_X,
-      Y: position.Y - POINTS_ANIMATION_OFFSET_Y,
+      X: position.X - POINTS_ANIMATION_OFFSET_X * scale,
+      Y: position.Y - POINTS_ANIMATION_OFFSET_Y * scale,
       id: crypto.randomUUID(),
       points: pointsValue + bonus,
-      size: POINTS_ANIMATION_WIDTH,
+      size: POINTS_ANIMATION_WIDTH * scale,
       type: "points",
     },
   ]);
@@ -88,7 +88,7 @@ function handlePowerUp(
 }
 
 function handleSlowPowerUp(
-  { setSlowCount, setPlayers, setAnimationPositions }: ContextValues,
+  { setSlowCount, setPlayers, setAnimationPositions, scale }: ContextValues,
   index: number,
   bonus: number,
   position: Position
@@ -102,11 +102,11 @@ function handleSlowPowerUp(
   setAnimationPositions((prev) => [
     ...prev,
     {
-      X: position.X - POINTS_ANIMATION_OFFSET_X,
-      Y: position.Y - POINTS_ANIMATION_OFFSET_Y,
+      X: position.X - POINTS_ANIMATION_OFFSET_X * scale,
+      Y: position.Y - POINTS_ANIMATION_OFFSET_Y * scale,
       id: crypto.randomUUID(),
       points: 1000 + bonus,
-      size: POINTS_ANIMATION_WIDTH,
+      size: POINTS_ANIMATION_WIDTH * scale,
       type: "points",
     },
   ]);

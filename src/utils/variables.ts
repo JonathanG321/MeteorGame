@@ -2,8 +2,10 @@ import { NullablePosition, Player, NullablePlayer, PressedKeys } from "./types";
 
 export const HEADER_HEIGHT = 80;
 export const SCREEN_HEIGHT = 480;
+
 export const GAME_HEIGHT = SCREEN_HEIGHT + HEADER_HEIGHT;
 export const SCREEN_WIDTH = 800;
+export const WIDTH_SCALE = SCREEN_WIDTH / GAME_HEIGHT;
 export const BORDER_WIDTH = 4;
 
 export const BASE_FPS = 60;
@@ -24,50 +26,6 @@ export const HERO_SPEED = 6;
 export const HERO_JUMP_SPEED = 20;
 export const HERO_GRAVITY = 1;
 export const MAX_HERO_VELOCITY_DOWN = 10;
-export const HERO_SPAWN_POINT: NullablePosition = {
-  X: SCREEN_WIDTH / 2 - HERO_SIZE,
-  Y: HEIGHT_MINUS_HERO,
-};
-export const FIRST_PLAYER_SPAWN_POINT: NullablePosition = {
-  X: SCREEN_WIDTH / 3 - HERO_SIZE,
-  Y: HEIGHT_MINUS_HERO,
-};
-export const SECOND_PLAYER_SPAWN_POINT: NullablePosition = {
-  X: (SCREEN_WIDTH / 3) * 2 - HERO_SIZE,
-  Y: HEIGHT_MINUS_HERO,
-};
-export const NULL_POSITION: NullablePosition = {
-  X: null,
-  Y: null,
-};
-const basicPlayerValues: Omit<Player, "X" | "Y"> = {
-  points: 0,
-  velocityDown: 0,
-  direction: "right",
-  invincibleCount: 0,
-  lives: 3,
-  shieldCount: 0,
-};
-export const DEFAULT_ONE_PLAYER: NullablePlayer[] = [
-  {
-    ...HERO_SPAWN_POINT,
-    ...basicPlayerValues,
-  },
-  {
-    ...NULL_POSITION,
-    ...basicPlayerValues,
-  },
-];
-export const DEFAULT_TWO_PLAYERS: NullablePlayer[] = [
-  {
-    ...FIRST_PLAYER_SPAWN_POINT,
-    ...basicPlayerValues,
-  },
-  {
-    ...SECOND_PLAYER_SPAWN_POINT,
-    ...basicPlayerValues,
-  },
-];
 
 export const METEOR_SPAWN_CHANCE = 3; // chance for a meteor to actually spawn on attempt
 export const SPECIAL_METEOR_SPAWN_CHANCE = 0.15; // chance for a special meteor to actually spawn on attempt
@@ -84,6 +42,11 @@ export const MAX_OBJECT_SIZE_MODIFIER = 15;
 export const OBJECT_SIZE_VARIATION = 0.25;
 export const OBJECT_ANGLE_VARIATION = 1;
 export const MASK_FACTOR = 2.5;
+
+export const NULL_POSITION: NullablePosition = {
+  X: null,
+  Y: null,
+};
 
 export const INVINCIBILITY_DURATION = 1; // This is in seconds
 export const SHIELD_DURATION = 20; // This is in seconds

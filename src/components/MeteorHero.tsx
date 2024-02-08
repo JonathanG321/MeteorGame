@@ -10,7 +10,7 @@ import spawnFallingObjectsLogic from "../logic/spawnFallingObjectsLogic";
 import specialMeteorLogic from "../logic/specialMeteorLogic";
 import objectGravityLogic from "../logic/objectGravityLogic";
 import powerUpsLogic from "../logic/powerUpsLogic";
-import { FRAME_RATE, HEADER_HEIGHT } from "../utils/variables";
+import { FRAME_RATE, HEADER_HEIGHT, WIDTH_SCALE } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
 import HeaderBar from "./HeaderBar";
 import Canvas from "./Canvas";
@@ -20,9 +20,10 @@ import Hero from "./Hero";
 import FallingObject from "./FallingObject";
 import Animation from "./Animation";
 
-type Props = { width: number; height: number };
+type Props = { height: number };
 
-function MeteorHero({ height, width }: Props) {
+function MeteorHero({ height }: Props) {
+  const width = height * WIDTH_SCALE;
   const contextValues = useContextValues(height, width);
   const {
     isMainMenu,
@@ -31,6 +32,7 @@ function MeteorHero({ height, width }: Props) {
     fallingObjectPositions,
     animationPositions,
     highScore,
+    scale,
     setHighScore,
   } = contextValues;
 
@@ -74,7 +76,11 @@ function MeteorHero({ height, width }: Props) {
   return (
     <div className="flex flex-col overflow-hidden font-pix-con">
       <GameStateContext.Provider value={contextValues}>
-        <HeaderBar highScore={highScore} width={width} height={HEADER_HEIGHT} />
+        <HeaderBar
+          highScore={highScore}
+          width={width}
+          height={HEADER_HEIGHT * scale}
+        />
         <Canvas height={height - HEADER_HEIGHT} width={width}>
           {isGameOver || isMainMenu ? (
             <Menu />

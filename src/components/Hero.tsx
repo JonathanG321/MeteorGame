@@ -19,19 +19,19 @@ type Props = {
 };
 
 export default function Hero({ player, isPlayerTwo = false }: Props) {
-  const { slowCount } = useContext(GameStateContext);
+  const { slowCount, scale: gameScale } = useContext(GameStateContext);
   if (!isValidPosition(player)) return null;
   const style = createObjectStyle({
     ...player,
-    size: HERO_SIZE,
+    size: HERO_SIZE * gameScale,
     id: "",
   });
   const { shieldCount, invincibleCount, direction } = player;
-  const scale = 4;
+  const shieldScale = 4;
   const newHeightNumber = parseInt(style.height.slice(0, -2));
   const newWidthNumber = parseInt(style.width.slice(0, -2));
-  const newHeight = newHeightNumber + scale * 2 + "px";
-  const newWidth = newWidthNumber + scale * 2 + "px";
+  const newHeight = newHeightNumber + shieldScale * 2 + "px";
+  const newWidth = newWidthNumber + shieldScale * 2 + "px";
 
   const knightRight = isPlayerTwo ? knightTwoRightImage : knightRightImage;
   const knightLeft = isPlayerTwo ? knightTwoLeftImage : knightLeftImage;
@@ -44,8 +44,8 @@ export default function Hero({ player, isPlayerTwo = false }: Props) {
           <img
             src={shield}
             style={{
-              top: -scale,
-              left: -scale,
+              top: -shieldScale,
+              left: -shieldScale,
               height: newHeight,
               minWidth: newWidth,
             }}

@@ -23,14 +23,22 @@ export default function heroMovementLogicY(
   contextValues: ContextValues
 ) {
   const { players, pressedKeys, slowCount } = contextRefs;
-  const { setPlayers } = contextValues;
+  const { setPlayers, scale } = contextValues;
   const { ArrowUp, ArrowDown, w, s } = pressedKeys.current;
 
   players.current.forEach((player, index) => {
     if (!isValidPosition(player)) return;
     const up = index === 0 ? ArrowUp : w;
     const down = index === 0 ? ArrowDown : s;
-    singleHeroLogicY(player, up, down, slowCount.current, index, setPlayers);
+    singleHeroLogicY(
+      player,
+      up,
+      down,
+      slowCount.current,
+      index,
+      scale,
+      setPlayers
+    );
   });
 }
 
@@ -40,38 +48,49 @@ function singleHeroLogicY(
   pressedKeyDown: boolean,
   slowCount: number,
   index: number,
+  scale: number,
   setPlayer: StateSetter<NullablePlayer[]>
 ) {
-  if (shouldNotCalcY(pressedKeyUp, pressedKeyDown, player.Y, slowCount)) return;
+  if (shouldNotCalcY(pressedKeyUp, pressedKeyDown, player.Y, slowCount, scale))
+    return;
 
-  const shouldHeroStopFalling = getShouldHeroStopFalling(player, pressedKeyUp);
-  const shouldHeroJump = pressedKeyUp && player.Y === HEIGHT_MINUS_HERO;
+  const shouldHeroStopFalling = getShouldHeroStopFalling(
+    player,
+    pressedKeyUp,
+    scale
+  );
+  const shouldHeroJump = pressedKeyUp && player.Y === HEIGHT_MINUS_HERO * scale;
 
   const newVelocityDown = getNewVelocityDown(
     player.velocityDown,
     shouldHeroStopFalling,
     shouldHeroJump,
-    pressedKeyDown
+    pressedKeyDown,
+    scale
   );
 
-  updatePlayerPosition(player, index, newVelocityDown, setPlayer);
+  updatePlayerPosition(player, index, newVelocityDown, scale, setPlayer);
 }
 
 function getNewVelocityDown(
   oldVelocityDown: number,
   shouldHeroStopFalling: boolean,
   shouldHeroJump: boolean,
-  shouldFallFast: boolean
+  shouldFallFast: boolean,
+  scale: number
 ) {
   if (shouldHeroStopFalling) {
     return 0;
   } else if (shouldHeroJump) {
     playAudio(sounds.jump);
-    return -HERO_JUMP_SPEED;
+    return -HERO_JUMP_SPEED * scale;
   } else if (shouldFallFast) {
-    return oldVelocityDown + HERO_GRAVITY * 2;
+    return oldVelocityDown + HERO_GRAVITY * scale * 2;
   } else {
-    return Math.min(oldVelocityDown + HERO_GRAVITY, MAX_HERO_VELOCITY_DOWN);
+    return Math.min(
+      oldVelocityDown + HERO_GRAVITY * scale,
+      MAX_HERO_VELOCITY_DOWN * scale
+    );
   }
 }
 
@@ -79,18 +98,25 @@ function shouldNotCalcY(
   pressedKeyUp: boolean,
   pressedKeyDown: boolean,
   playerY: number,
-  slowCount: number
+  slowCount: number,
+  scale: number
 ) {
   const isNotFallingOrJumping =
-    !pressedKeyUp && !pressedKeyDown && playerY === HEIGHT_MINUS_HERO;
+    !pressedKeyUp && !pressedKeyDown && playerY === HEIGHT_MINUS_HERO * scale;
   const isSlowEffect = slowCount % 2 !== 0 || isNotFallingOrJumping;
 
   return isNotFallingOrJumping || isSlowEffect;
 }
 
-function getShouldHeroStopFalling(player: Player, pressedKeyUp: boolean) {
+function getShouldHeroStopFalling(
+  player: Player,
+  pressedKeyUp: boolean,
+  scale: number
+) {
   return (
-    player.Y === HEIGHT_MINUS_HERO && player.velocityDown !== 0 && !pressedKeyUp
+    player.Y === HEIGHT_MINUS_HERO * scale &&
+    player.velocityDown !== 0 &&
+    !pressedKeyUp
   );
 }
 
@@ -98,9 +124,10 @@ function updatePlayerPosition(
   player: Player,
   index: number,
   newVelocityDown: number,
+  scale: number,
   setPlayer: StateSetter<NullablePlayer[]>
 ) {
-  const newY = calcNewY(player.Y, newVelocityDown);
+  const newY = calcNewY(player.Y, newVelocityDown, scale);
 
   if (player.velocityDown !== newVelocityDown || player.Y !== newY) {
     setPlayerValueFunction(
@@ -111,6 +138,6 @@ function updatePlayerPosition(
   }
 }
 
-function calcNewY(oldY: number, newVelocity: number) {
-  return Math.max(0, Math.min(oldY + newVelocity, HEIGHT_MINUS_HERO));
+function calcNewY(oldY: number, newVelocity: number, scale: number) {
+  return Math.max(0, Math.min(oldY + newVelocity, HEIGHT_MINUS_HERO * scale));
 }

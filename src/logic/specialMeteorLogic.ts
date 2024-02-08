@@ -20,18 +20,22 @@ export default function specialMeteorLogic(
   contextValues: ContextValues
 ) {
   const { fallingObjectPositions } = contextRefs;
-  const { setFallingObjectPositions, setAnimationPositions, screenHeight } =
-    contextValues;
+  const {
+    setFallingObjectPositions,
+    setAnimationPositions,
+    screenHeight,
+    scale,
+  } = contextValues;
 
   fallingObjectPositions.current
     .filter((meteor) => meteor.type === "specialMeteor")
     .forEach((meteor) => {
       if (shouldSpecialMeteorExplode(meteor, screenHeight)) {
         playAudio(sounds.meteorExplode, 0.3);
-        setAnimationPositions((prev) => addNewMeteor(prev, meteor));
+        setAnimationPositions((prev) => addNewMeteor(prev, meteor, scale));
         setFallingObjectPositions((prev) => [
           ...prev.filter((object) => object.id !== meteor.id),
-          ...createThreeNewMeteors(meteor),
+          ...createThreeNewMeteors(meteor, scale),
         ]);
       }
     });
@@ -50,8 +54,11 @@ function shouldSpecialMeteorExplode(
   return meteorExplodesRandom || meteorExplodesFall;
 }
 
-function createThreeNewMeteors(specialMeteor: FallingObject): FallingObject[] {
-  const newSize = SPECIAL_METEOR_SIZE * 0.6;
+function createThreeNewMeteors(
+  specialMeteor: FallingObject,
+  scale: number
+): FallingObject[] {
+  const newSize = SPECIAL_METEOR_SIZE * 0.6 * scale;
 
   const angles = [-SPECIAL_METEOR_SPAWN_ANGLE, 0, SPECIAL_METEOR_SPAWN_ANGLE];
 
@@ -71,15 +78,22 @@ function createThreeNewMeteors(specialMeteor: FallingObject): FallingObject[] {
     .filter(notEmpty);
 }
 
-function addNewMeteor(prev: Animation[], meteor: FallingObject): Animation[] {
+function addNewMeteor(
+  prev: Animation[],
+  meteor: FallingObject,
+  scale: number
+): Animation[] {
   return [
     ...prev,
     {
-      Y: meteor.Y - EXPLOSION_SIZE_OFFSET / 2 + EXPLOSION_HEIGHT_OFFSET,
-      X: Math.max(meteor.X - EXPLOSION_SIZE_OFFSET / 2, 0),
+      Y:
+        meteor.Y -
+        (EXPLOSION_SIZE_OFFSET * scale) / 2 +
+        EXPLOSION_HEIGHT_OFFSET * scale,
+      X: Math.max(meteor.X - (EXPLOSION_SIZE_OFFSET * scale) / 2, 0),
       id: crypto.randomUUID(),
       type: "explosion",
-      size: SPECIAL_METEOR_SIZE + EXPLOSION_SIZE_OFFSET,
+      size: SPECIAL_METEOR_SIZE * scale + EXPLOSION_SIZE_OFFSET * scale,
     },
   ];
 }

@@ -21,6 +21,7 @@ export default function objectGravityLogic(
     setFallingObjectPositions: { current: setFallingObjectPositions },
     screenHeight: { current: screenHeight },
     screenWidth: { current: screenWidth },
+    scale: { current: scale },
   } = contextRefs;
 
   const isSlow = !!slowCount;
@@ -31,7 +32,7 @@ export default function objectGravityLogic(
   const calcDifficultyModifier = gameStageMultiplier * speedMultiplier;
 
   function filterAndCheckHeroCollisions(object: FallingObject) {
-    if (isObjectOutOfBounds(object, screenHeight, screenWidth)) {
+    if (isObjectOutOfBounds(object, screenHeight, screenWidth, scale)) {
       return false;
     } else if (isMeteorOrSpecialMeteor(object)) {
       return true;
@@ -40,7 +41,8 @@ export default function objectGravityLogic(
     const { isHittingHero, isHittingHeroTwo } = heroCollisionCalcs(
       object,
       players[0],
-      players[1]
+      players[1],
+      scale
     );
 
     if (!isHittingHero && !isHittingHeroTwo) {
@@ -69,10 +71,11 @@ export default function objectGravityLogic(
 function isObjectOutOfBounds(
   object: FallingObject,
   screenHeight: number,
-  screenWidth: number
+  screenWidth: number,
+  scale: number
 ) {
   return (
-    object.Y >= screenHeight + OBJECT_SIZE ||
+    object.Y >= screenHeight + OBJECT_SIZE * scale ||
     object.X >= screenWidth ||
     object.X <= -object.size
   );
@@ -96,14 +99,16 @@ function calcObjectsFalling(
 function heroCollisionCalcs(
   object: FallingObject,
   heroOriginPoint: NullablePosition,
-  heroTwoOriginPoint: NullablePosition
+  heroTwoOriginPoint: NullablePosition,
+  scale: number
 ) {
   const isHeroValid = isValidPosition(heroOriginPoint);
   const isHeroTwoValid = isValidPosition(heroTwoOriginPoint);
 
   const isHittingHero =
-    isHeroValid && isObjectCollidingWithHero(object, heroOriginPoint);
+    isHeroValid && isObjectCollidingWithHero(object, heroOriginPoint, scale);
   const isHittingHeroTwo =
-    isHeroTwoValid && isObjectCollidingWithHero(object, heroTwoOriginPoint);
+    isHeroTwoValid &&
+    isObjectCollidingWithHero(object, heroTwoOriginPoint, scale);
   return { isHittingHero, isHittingHeroTwo };
 }

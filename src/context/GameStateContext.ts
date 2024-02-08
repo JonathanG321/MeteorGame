@@ -1,9 +1,5 @@
 import { createContext } from "react";
-import {
-  BASE_PRESSED_KEYS,
-  DEFAULT_ONE_PLAYER,
-  NULL_POSITION,
-} from "../utils/variables";
+import { BASE_PRESSED_KEYS, NULL_POSITION } from "../utils/variables";
 import {
   FallingObject,
   NullablePosition,
@@ -12,6 +8,7 @@ import {
   NullablePlayer,
   Animation,
 } from "../utils/types";
+import { getDefaultOnePlayer } from "../utils/lib";
 
 function stateSetterNumber(_: React.SetStateAction<number>): void {}
 function stateSetterPlayers(_: React.SetStateAction<NullablePlayer[]>): void {}
@@ -23,9 +20,10 @@ function stateSetterFallingObjects(
 ): void {}
 
 export const GameStateContext = createContext({
+  scale: 1,
   screenWidth: 0,
   screenHeight: 0,
-  players: DEFAULT_ONE_PLAYER,
+  players: getDefaultOnePlayer(1),
   setPlayers: stateSetterPlayers,
   setSlowCount: stateSetterNumber,
   slowCount: 0,

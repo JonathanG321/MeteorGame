@@ -7,11 +7,15 @@ import {
   NullablePlayer,
   Position,
   StateSetter,
+  FontSize,
 } from "./types";
 import {
   HALF_OVER_PI,
+  HEIGHT_MINUS_HERO,
   HERO_SIZE,
   OBJECT_COLLISION_THRESHOLD,
+  SCREEN_WIDTH,
+  NULL_POSITION,
 } from "./variables";
 
 export function createObjectStyle(object: Object) {
@@ -72,23 +76,26 @@ export function playAudio(audio: HTMLAudioElement, volume = 0.7) {
 
 export function detectCollision(
   objectPositions: FallingObject[],
-  heroPosition: Position
+  heroPosition: Position,
+  scale: number
 ) {
   return objectPositions.reduce(
     (result, object) =>
-      result || isObjectCollidingWithHero(object, heroPosition),
+      result || isObjectCollidingWithHero(object, heroPosition, scale),
     ""
   );
 }
 
 export function isObjectCollidingWithHero(
   object: Object,
-  heroPosition: Position
+  heroPosition: Position,
+  scale: number
 ) {
+  const heroSize = HERO_SIZE * scale;
   const heroLeft = heroPosition.X;
   const heroTop = heroPosition.Y;
-  const heroRight = heroLeft + HERO_SIZE;
-  const heroBottom = heroTop + HERO_SIZE;
+  const heroRight = heroLeft + heroSize;
+  const heroBottom = heroTop + heroSize;
 
   const collisionThreshold = object.size * OBJECT_COLLISION_THRESHOLD;
 
@@ -111,10 +118,13 @@ export function isObjectCollidingWithHero(
 
 export function calcIsHits(
   meteorPositions: FallingObject[],
-  players: NullablePlayer[]
+  players: NullablePlayer[],
+  scale: number
 ) {
   return players.map((player) =>
-    isValidPosition(player) ? !!detectCollision(meteorPositions, player) : false
+    isValidPosition(player)
+      ? !!detectCollision(meteorPositions, player, scale)
+      : false
   );
 }
 
@@ -144,4 +154,75 @@ export function setPlayerValueFunction(
   setPlayer: StateSetter<NullablePlayer[]>
 ) {
   setPlayer((prev) => setPlayerValue(prev, index, newPlayer));
+}
+
+export function getFontSize(size: FontSize, scale: number) {
+  switch (size) {
+    case "sm":
+      return { fontSize: `${14 * scale}px`, lineHeight: `${20 * scale}px` };
+    case "md":
+      return { fontSize: `${16 * scale}px`, lineHeight: `${24 * scale}px` };
+    case "lg":
+      return { fontSize: `${18 * scale}px`, lineHeight: `${28 * scale}px` };
+    case "xl":
+      return { fontSize: `${20 * scale}px`, lineHeight: `${28 * scale}px` };
+    case "2xl":
+      return { fontSize: `${24 * scale}px`, lineHeight: `${32 * scale}px` };
+    case "3xl":
+      return { fontSize: `${30 * scale}px`, lineHeight: `${36 * scale}px` };
+    case "4xl":
+      return { fontSize: `${36 * scale}px`, lineHeight: `${40 * scale}px` };
+    case "5xl":
+      return { fontSize: `${48 * scale}px`, lineHeight: 1 };
+  }
+}
+export function getHeroSpawnPoint(scale: number): NullablePosition {
+  return {
+    X: (SCREEN_WIDTH * scale) / 2 - HERO_SIZE * scale,
+    Y: HEIGHT_MINUS_HERO * scale,
+  };
+}
+export function getFirstPlayerSpawnPoint(scale: number): NullablePosition {
+  return {
+    X: (SCREEN_WIDTH * scale) / 3 - HERO_SIZE * scale,
+    Y: HEIGHT_MINUS_HERO * scale,
+  };
+}
+export function getSecondPlayerSpawnPoint(scale: number): NullablePosition {
+  return {
+    X: ((SCREEN_WIDTH * scale) / 3) * 2 - HERO_SIZE * scale,
+    Y: HEIGHT_MINUS_HERO * scale,
+  };
+}
+const basicPlayerValues: Omit<Player, "X" | "Y"> = {
+  points: 0,
+  velocityDown: 0,
+  direction: "right",
+  invincibleCount: 0,
+  lives: 3,
+  shieldCount: 0,
+};
+export function getDefaultOnePlayer(scale: number): NullablePlayer[] {
+  return [
+    {
+      ...getHeroSpawnPoint(scale),
+      ...basicPlayerValues,
+    },
+    {
+      ...NULL_POSITION,
+      ...basicPlayerValues,
+    },
+  ];
+}
+export function getDefaultTwoPlayers(scale: number): NullablePlayer[] {
+  return [
+    {
+      ...getHeroSpawnPoint(scale),
+      ...basicPlayerValues,
+    },
+    {
+      ...getSecondPlayerSpawnPoint(scale),
+      ...basicPlayerValues,
+    },
+  ];
 }

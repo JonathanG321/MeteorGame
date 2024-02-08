@@ -14,7 +14,7 @@ export default function heroMovementLogicX(
   contextValues: ContextValues
 ) {
   const { players, pressedKeys, slowCount } = contextRefs;
-  const { setPlayers } = contextValues;
+  const { setPlayers, scale } = contextValues;
   const { ArrowLeft, ArrowRight, a, d } = pressedKeys.current;
   const isSlow = !!slowCount.current;
 
@@ -22,7 +22,7 @@ export default function heroMovementLogicX(
     if (!isValidPosition(player)) return;
     const left = index === 0 ? ArrowLeft : a;
     const right = index === 0 ? ArrowRight : d;
-    singleHeroLogicX(player, left, right, isSlow, index, setPlayers);
+    singleHeroLogicX(player, left, right, isSlow, index, scale, setPlayers);
   });
 }
 
@@ -32,16 +32,18 @@ function singleHeroLogicX(
   pressedKeyRight: boolean,
   isSlow: boolean,
   index: number,
+  scale: number,
   setPlayer: StateSetter<NullablePlayer[]>
 ) {
   if (!pressedKeyLeft && !pressedKeyRight) return;
+  const heroSpeed = HERO_SPEED * scale;
 
-  const speed = isSlow ? HERO_SPEED / 2 : HERO_SPEED;
+  const speed = isSlow ? heroSpeed / 2 : heroSpeed;
   const direction = pressedKeyLeft ? "left" : "right";
 
   updatePlayerDirection(index, direction, player, setPlayer);
 
-  const newX = calculateNewX(player.X, pressedKeyLeft, speed);
+  const newX = calculateNewX(player.X, pressedKeyLeft, speed, scale);
   updatePlayerPosition(index, newX, player.X, setPlayer);
 }
 
@@ -59,10 +61,11 @@ function updatePlayerDirection(
 function calculateNewX(
   currentX: number,
   pressedKeyLeft: boolean,
-  speed: number
+  speed: number,
+  scale: number
 ): number {
   return Math.min(
-    WIDTH_MINUS_HERO,
+    WIDTH_MINUS_HERO * scale,
     Math.max(0, currentX + (pressedKeyLeft ? -speed : speed))
   );
 }

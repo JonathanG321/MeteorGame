@@ -1,12 +1,13 @@
 import { useContext, useEffect } from "react";
-import {
-  BASE_PRESSED_KEYS,
-  DEFAULT_ONE_PLAYER,
-  DEFAULT_TWO_PLAYERS,
-} from "../utils/variables";
+import { BASE_PRESSED_KEYS } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
 import sounds from "../utils/sounds";
-import { playAudio } from "../utils/lib";
+import {
+  playAudio,
+  getFontSize,
+  getDefaultOnePlayer,
+  getDefaultTwoPlayers,
+} from "../utils/lib";
 import SelectButton from "./SelectButton";
 
 export default function MenuScreen() {
@@ -17,6 +18,7 @@ export default function MenuScreen() {
     setPlayers,
     setIsTwoPlayers,
     isTwoPlayers,
+    scale,
   } = useContext(GameStateContext);
 
   useEffect(() => {
@@ -24,7 +26,11 @@ export default function MenuScreen() {
       if (e.code === "Space") {
         setFallingObjectPositions([]);
         setPressedKeys(BASE_PRESSED_KEYS);
-        setPlayers(!isTwoPlayers ? DEFAULT_ONE_PLAYER : DEFAULT_TWO_PLAYERS);
+        setPlayers(
+          !isTwoPlayers
+            ? getDefaultOnePlayer(scale)
+            : getDefaultTwoPlayers(scale)
+        );
         setIsMainMenu(false);
         playAudio(sounds.theme, 0.5);
       } else if (e.code === "ArrowRight") {
@@ -43,9 +49,22 @@ export default function MenuScreen() {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="mb-1 text-5xl font-extrabold">Meteor</div>
-      <div className="mb-4 text-5xl font-extrabold">Hero</div>
-      <div className="my-2 flex w-full justify-around text-sm">
+      <div
+        style={{ ...getFontSize("5xl", scale) }}
+        className="mb-1 font-extrabold"
+      >
+        Meteor
+      </div>
+      <div
+        style={{ ...getFontSize("5xl", scale) }}
+        className="mb-4 font-extrabold"
+      >
+        Hero
+      </div>
+      <div
+        style={{ ...getFontSize("sm", scale) }}
+        className="my-2 flex w-full justify-around"
+      >
         <SelectButton
           isSelected={!isTwoPlayers}
           onClick={() => setIsTwoPlayers(false)}
@@ -57,7 +76,9 @@ export default function MenuScreen() {
           title="2 Players"
         />
       </div>
-      <div className="text-xl font-semibold">Press Space to Start</div>
+      <div style={{ ...getFontSize("xl", scale) }} className="font-semibold">
+        Press Space to Start
+      </div>
     </div>
   );
 }

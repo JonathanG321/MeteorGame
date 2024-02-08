@@ -2,6 +2,16 @@ import { MutableRefObject } from "react";
 
 export type Direction = "right" | "left";
 
+export type FontSize =
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "2xl"
+  | "3xl"
+  | "4xl"
+  | "5xl";
+
 export type PressedKeys = {
   ArrowUp: boolean;
   ArrowDown: boolean;
@@ -88,6 +98,7 @@ export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
 export type ContextValues = {
   screenWidth: number;
   screenHeight: number;
+  scale: number;
   isHits: boolean[];
   players: NullablePlayer[];
   setPlayers: StateSetter<NullablePlayer[]>;

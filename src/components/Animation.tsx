@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function FallingObject({ animation }: Props) {
-  const { setAnimationPositions } = useContext(GameStateContext);
+  const { setAnimationPositions, scale } = useContext(GameStateContext);
   const [offset, setOffset] = useState(0);
   const style = createObjectStyle({ ...animation, Y: animation.Y - offset });
   let points: number | null = null;
@@ -42,7 +42,14 @@ export default function FallingObject({ animation }: Props) {
       {animation.type === "points" && (
         <>
           <div>+{animation.points}</div>
-          <img src={pointsSmall} className="mt-[5px] h-[17px] w-[17px]" />
+          <img
+            src={pointsSmall}
+            style={{
+              marginTop: `${5 * scale}px`,
+              height: `${17 * scale}px`,
+              width: `${17 * scale}px`,
+            }}
+          />
         </>
       )}
       {animation.type === "explosion" && (
