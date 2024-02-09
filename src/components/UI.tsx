@@ -7,15 +7,34 @@ import { getFontSize } from "../utils/lib";
 export default function UI() {
   const { players, gameStage, isTwoPlayers, scale } =
     useContext(GameStateContext);
+  const marginStyles = { marginTop: `${8 * scale}px` };
+  const paddingStyle = `${12 * scale}px`;
   return (
-    <div className="absolute z-10 flex w-full justify-between px-3 pt-3">
+    <div
+      style={{
+        paddingLeft: paddingStyle,
+        paddingRight: paddingStyle,
+        paddingTop: paddingStyle,
+      }}
+      className="absolute z-10 flex w-full justify-between"
+    >
       <div className="flex h-full w-1/3 flex-col">
         {isTwoPlayers && <LivesDisplay start lives={players[0].lives} />}
-        <ScoreDisplay large left className="mt-2 text-white" header="" />
+        <ScoreDisplay
+          style={marginStyles}
+          large
+          left
+          className="text-white"
+          header=""
+        />
       </div>
       <div
-        style={getFontSize("3xl", scale)}
-        className="font-outline-1 mt-2 flex h-full w-1/3 items-center justify-center font-bold text-white"
+        style={{
+          ...getFontSize("3xl", scale),
+          WebkitTextStroke: `${1 * scale}px black`,
+          ...marginStyles,
+        }}
+        className="flex h-full w-1/3 items-center justify-center font-bold text-white"
       >
         STAGE {gameStage}
       </div>
@@ -28,7 +47,8 @@ export default function UI() {
             isSecondPlayer
             large
             left
-            className="mt-2 text-white"
+            style={marginStyles}
+            className="text-white"
             header=""
           />
         )}
