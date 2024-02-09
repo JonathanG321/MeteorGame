@@ -50,20 +50,27 @@ export default function MenuScreen() {
   return (
     <div className="flex flex-col items-center">
       <div
-        style={{ ...getFontSize("5xl", scale) }}
-        className="mb-1 font-extrabold"
+        style={{ ...getFontSize("5xl", scale), marginBottom: `${4 * scale}px` }}
+        className="font-extrabold"
       >
         Meteor
       </div>
       <div
-        style={{ ...getFontSize("5xl", scale) }}
-        className="mb-4 font-extrabold"
+        style={{
+          ...getFontSize("5xl", scale),
+          marginBottom: `${16 * scale}px`,
+        }}
+        className="font-extrabold"
       >
         Hero
       </div>
       <div
-        style={{ ...getFontSize("sm", scale) }}
-        className="my-2 flex w-full justify-around"
+        style={{
+          ...getFontSize("sm", scale),
+          marginLeft: `${8 * scale}px`,
+          marginRight: `${8 * scale}px`,
+        }}
+        className="flex w-full justify-around"
       >
         <SelectButton
           isSelected={!isTwoPlayers}
@@ -76,7 +83,10 @@ export default function MenuScreen() {
           title="2 Players"
         />
       </div>
-      <div style={{ ...getFontSize("xl", scale) }} className="font-semibold">
+      <div
+        style={{ ...getFontSize("xl", scale), marginTop: `${16 * scale}px` }}
+        className="font-semibold"
+      >
         Press Space to Start
       </div>
     </div>
