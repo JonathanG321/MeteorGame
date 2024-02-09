@@ -8,7 +8,7 @@ export default function App() {
       style={{ backgroundImage: `url(${bricks})` }}
       className="flex h-screen w-full items-center justify-center bg-cover bg-center bg-no-repeat"
     >
-      <MeteorHero height={GAME_HEIGHT / 2} />
+      <MeteorHero height={GAME_HEIGHT} />
     </div>
   );
 }
