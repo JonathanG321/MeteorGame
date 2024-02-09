@@ -73,15 +73,13 @@ function MeteorHero({ height }: Props) {
     };
   }, [players[0].lives, players[1].lives, isMainMenu, isGameOver]);
 
+  const headerHeight = HEADER_HEIGHT * scale;
+
   return (
     <div className="flex flex-col overflow-hidden font-pix-con">
       <GameStateContext.Provider value={contextValues}>
-        <HeaderBar
-          highScore={highScore}
-          width={width}
-          height={HEADER_HEIGHT * scale}
-        />
-        <Canvas height={height - HEADER_HEIGHT} width={width}>
+        <HeaderBar highScore={highScore} width={width} height={headerHeight} />
+        <Canvas height={height - headerHeight} width={width} scale={scale}>
           {isGameOver || isMainMenu ? (
             <Menu />
           ) : (
