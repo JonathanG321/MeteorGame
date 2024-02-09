@@ -58,7 +58,8 @@ function createThreeNewMeteors(
   specialMeteor: FallingObject,
   scale: number
 ): FallingObject[] {
-  const newSize = SPECIAL_METEOR_SIZE * 0.6 * scale;
+  const specialMeteorSize = SPECIAL_METEOR_SIZE * scale;
+  const newSize = specialMeteorSize * 0.6;
 
   const angles = [-SPECIAL_METEOR_SPAWN_ANGLE, 0, SPECIAL_METEOR_SPAWN_ANGLE];
 
@@ -66,7 +67,7 @@ function createThreeNewMeteors(
     .map((offset) => {
       return {
         Y: specialMeteor.Y,
-        X: specialMeteor.X,
+        X: specialMeteor.X + specialMeteorSize / 2 - newSize / 2,
         id: crypto.randomUUID(),
         type: "meteor" as FallingObjectType,
         size: newSize,
