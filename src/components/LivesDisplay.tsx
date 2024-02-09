@@ -24,8 +24,7 @@ export default function LivesDisplay({ lives, start = false }: Props) {
         return (
           <div
             key={i + heart}
-            style={{ height: size, width: size }}
-            className="m-1"
+            style={{ height: size, width: size, margin: `${4 * scale}px` }}
           >
             <img
               src={i < lives ? heart : darkHeart}
