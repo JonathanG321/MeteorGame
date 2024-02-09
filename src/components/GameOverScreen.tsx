@@ -30,25 +30,33 @@ export default function GameOverScreen() {
     };
   }, []);
 
+  const marginBottomTwo = { marginBottom: `${8 * scale}px` };
+
   return (
     <div className="flex flex-col items-center">
       <div
-        style={{ ...getFontSize("4xl", scale) }}
-        className="mb-4 font-extrabold"
+        style={{
+          ...getFontSize("4xl", scale),
+          marginBottom: `${16 * scale}px`,
+        }}
+        className="font-extrabold"
       >
         Game Over!
       </div>
       {isTwoPlayers && (
         <>
           <div
-            style={{ ...getFontSize("xl", scale) }}
-            className="mb-2 font-bold"
+            style={{
+              ...getFontSize("xl", scale),
+              ...marginBottomTwo,
+            }}
+            className="font-bold"
           >
             Player {points1 > points2 ? "1" : "2"} wins with:
           </div>
           <div
-            style={{ ...getFontSize("lg", scale) }}
-            className="mb-2 font-bold"
+            style={{ ...getFontSize("lg", scale), ...marginBottomTwo }}
+            className="font-bold"
           >
             {(points1 > points2 ? points1 : points2).toLocaleString()} Points
           </div>
@@ -57,20 +65,23 @@ export default function GameOverScreen() {
       {!isTwoPlayers && (
         <>
           <div
-            style={{ ...getFontSize("xl", scale) }}
-            className="mb-2 font-bold"
+            style={{ ...getFontSize("xl", scale), ...marginBottomTwo }}
+            className="font-bold"
           >
             Score
           </div>
           <div
-            style={{ ...getFontSize("lg", scale) }}
-            className="mb-2 font-bold"
+            style={{ ...getFontSize("lg", scale), ...marginBottomTwo }}
+            className="font-bold"
           >
             {(points1 > points2 ? points1 : points2).toLocaleString()} Points
           </div>
         </>
       )}
-      <div style={{ ...getFontSize("lg", scale) }} className="font-semibold">
+      <div
+        style={{ ...getFontSize("lg", scale), marginTop: `${16 * scale}px` }}
+        className="font-semibold"
+      >
         Press Space to Restart
       </div>
     </div>
