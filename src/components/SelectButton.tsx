@@ -12,8 +12,12 @@ export default function SelectButton({ isSelected, onClick, title }: Props) {
   const { scale } = useContext(GameStateContext);
   return (
     <button
-      style={{ ...getFontSize("sm", scale), width: `${124 * scale}px` }}
-      className="mr-2 flex justify-end"
+      style={{
+        ...getFontSize("sm", scale),
+        width: `${124 * scale}px`,
+        marginRight: `${8 * scale}px`,
+      }}
+      className="flex justify-end"
       onClick={onClick}
     >
       {isSelected && <div className="w-1/12">{">"}</div>}
