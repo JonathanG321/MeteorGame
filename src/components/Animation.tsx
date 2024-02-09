@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { GameStateContext } from "../context/GameStateContext";
 import { createObjectStyle } from "../utils/lib";
 import { POINTS_ANIMATION_DURATION } from "../utils/variables";
+import { getFontSize } from "../utils/lib";
 
 type Props = {
   animation: Animation;
@@ -33,11 +34,12 @@ export default function FallingObject({ animation }: Props) {
 
   return (
     <div
-      style={style}
-      className={classNames(
-        "font-outline-1 absolute flex text-white",
-        animation.type
-      )}
+      style={{
+        ...style,
+        WebkitTextStroke: `${1 * scale}px black`,
+        ...getFontSize("md", scale),
+      }}
+      className={classNames("absolute flex text-white", animation.type)}
     >
       {animation.type === "points" && (
         <>
