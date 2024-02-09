@@ -27,9 +27,9 @@ export default function Hero({ player, isPlayerTwo = false }: Props) {
     id: "",
   });
   const { shieldCount, invincibleCount, direction } = player;
-  const shieldScale = 4;
-  const newHeightNumber = parseInt(style.height.slice(0, -2));
-  const newWidthNumber = parseInt(style.width.slice(0, -2));
+  const shieldScale = 4 * gameScale;
+  const newHeightNumber = parseInt(style.height.slice(0, -(2 * gameScale)));
+  const newWidthNumber = parseInt(style.width.slice(0, -(2 * gameScale)));
   const newHeight = newHeightNumber + shieldScale * 2 + "px";
   const newWidth = newWidthNumber + shieldScale * 2 + "px";
 
