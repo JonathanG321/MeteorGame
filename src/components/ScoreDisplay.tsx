@@ -10,6 +10,7 @@ type Props = {
   left?: boolean;
   large?: boolean;
   isSecondPlayer?: boolean;
+  style?: React.CSSProperties;
 };
 
 export default function ScoreDisplay({
@@ -19,6 +20,7 @@ export default function ScoreDisplay({
   large = false,
   isSecondPlayer = false,
   className,
+  style,
 }: Props) {
   const { players, scale } = useContext(GameStateContext);
   const pointsToDisplay =
@@ -30,7 +32,7 @@ export default function ScoreDisplay({
 
   return (
     <div
-      style={{ minWidth: `${192 * scale}px` }}
+      style={{ minWidth: `${192 * scale}px`, ...style }}
       className={classNames("flex flex-col justify-center", className, {
         "items-center": !left,
       })}
@@ -39,8 +41,11 @@ export default function ScoreDisplay({
         {header ?? "Score"}
       </div>
       <div
-        style={getFontSize(large ? "3xl" : "2xl", scale)}
-        className="font-outline-1 flex font-bold"
+        style={{
+          ...getFontSize(large ? "3xl" : "2xl", scale),
+          WebkitTextStroke: `${1 * scale}px black`,
+        }}
+        className="flex font-bold"
       >
         <DisplayPoints
           displayPoints={displayPoints}
