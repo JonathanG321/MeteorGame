@@ -33,13 +33,14 @@ function MeteorHero({ height }: Props) {
     animationPositions,
     highScore,
     scale,
+    isPaused,
     setHighScore,
   } = contextValues;
 
   const contextRefs = useUpdatingRefsForObject(contextValues, isGameOver);
 
   useEffect(() => {
-    const gameStopped = isGameOver || isMainMenu;
+    const gameStopped = isGameOver || isMainMenu || isPaused;
     const points = contextRefs.players.current[0].points;
     const pointsTwo = contextRefs.players.current[1].points;
     gameOverLogic(
@@ -71,7 +72,7 @@ function MeteorHero({ height }: Props) {
     return () => {
       clearInterval(frameIntervalId);
     };
-  }, [players[0].lives, players[1].lives, isMainMenu, isGameOver]);
+  }, [players[0].lives, players[1].lives, isMainMenu, isGameOver, isPaused]);
 
   const headerHeight = HEADER_HEIGHT * scale;
 
