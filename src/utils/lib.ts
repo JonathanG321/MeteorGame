@@ -73,6 +73,12 @@ export function playAudio(audio: HTMLAudioElement, volume = 0.7) {
   audio.volume = volume;
   audio.play();
 }
+export function pauseAudio(audio: HTMLAudioElement, volume = 0.7) {
+  audio.pause();
+}
+export function resumeAudio(audio: HTMLAudioElement, volume = 0.7) {
+  if (audio.currentTime !== 0) audio.play();
+}
 
 export function detectCollision(
   objectPositions: FallingObject[],
