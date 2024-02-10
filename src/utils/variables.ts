@@ -60,7 +60,7 @@ export const NEW_SLOW_COUNT = SLOW_DURATION * BASE_FPS;
 export const POWER_UP_SPAWN_CHANCE = 0.35; // chance of a powerUp actually spawn on attempt
 
 export const POINTS_ANIMATION_WIDTH = 100;
-export const POINTS_ANIMATION_DURATION = 1000;
+export const POINTS_ANIMATION_DURATION = 40;
 export const POINTS_ANIMATION_OFFSET_X = 30;
 export const POINTS_ANIMATION_OFFSET_Y = 20;
 export const EXPLOSION_ANIMATION_DURATION = 1000;

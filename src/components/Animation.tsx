@@ -13,24 +13,29 @@ type Props = {
 };
 
 export default function FallingObject({ animation }: Props) {
-  const { setAnimationPositions, scale } = useContext(GameStateContext);
+  const { setAnimationPositions, scale, isPaused } =
+    useContext(GameStateContext);
   const [offset, setOffset] = useState(0);
-  const style = createObjectStyle({ ...animation, Y: animation.Y - offset });
+  const style = createObjectStyle({
+    ...animation,
+    Y: animation.type === "points" ? animation.Y - offset : animation.Y,
+  });
   let points: number | null = null;
 
   if (animation.type === "points") points = animation.points;
 
   useEffect(() => {
+    if (isPaused) return;
     const intervalId = setInterval(() => setOffset((prev) => prev + 1), 40);
-    setTimeout(() => {
+    if (offset >= POINTS_ANIMATION_DURATION) {
       setAnimationPositions((prev) =>
         prev.filter((ani) => ani.id !== animation.id)
       );
-    }, POINTS_ANIMATION_DURATION);
+    }
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, [offset, isPaused]);
 
   return (
     <div
