@@ -121,4 +121,5 @@ export type ContextValues = {
   gameStage: number;
   isTwoPlayers: boolean;
   setIsTwoPlayers: StateSetter<boolean>;
+  isPaused: boolean;
 };

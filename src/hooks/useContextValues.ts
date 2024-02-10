@@ -3,6 +3,7 @@ import { ContextValues } from "../utils/types";
 import { GAME_HEIGHT } from "../utils/variables";
 import useBasicState from "./useBasicState";
 import useClick from "./useClick";
+import usePause from "./usePause";
 import usePressedKeys from "./usePressedKeys";
 
 export default function useContextValues(
@@ -13,6 +14,7 @@ export default function useContextValues(
   const { players, fallingObjectPositions } = basicState;
   const pressedKeys = usePressedKeys();
   const mousePressPosition = useClick();
+  const isPaused = usePause();
   const meteorPositions = fallingObjectPositions.filter(
     (object) => object.type === "meteor" || object.type === "specialMeteor"
   );
@@ -22,6 +24,7 @@ export default function useContextValues(
   return {
     ...basicState,
     ...pressedKeys,
+    isPaused,
     scale: basicState.scale,
     mousePressPosition,
     isHits,
