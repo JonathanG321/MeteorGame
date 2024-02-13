@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { pauseAudio, resumeAudio } from "../utils/lib";
+import { pauseAudio, playAudio, resumeAudio } from "../utils/lib";
 import sounds from "../utils/sounds";
 
 export default function usePause() {
@@ -19,6 +19,7 @@ export default function usePause() {
           resumeAudio(sounds.clockTicking);
           resumeAudio(sounds.timeResume);
         }
+        playAudio(sounds.uIBeep);
       }
     }
 
