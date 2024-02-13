@@ -50,6 +50,7 @@ export const NULL_POSITION: NullablePosition = {
 
 export const INVINCIBILITY_DURATION = 1; // This is in seconds
 export const SHIELD_DURATION = 20; // This is in seconds
+export const SHIELD_HIT_DELAY = 30; // This is in frames
 export const SLOW_DURATION = 10; // This is in seconds
 
 export const SHIELD_WARNING_DURATION = 2 * NORMAL_FPS;
