@@ -81,9 +81,8 @@ function MeteorHero({ height }: Props) {
       <GameStateContext.Provider value={contextValues}>
         <HeaderBar highScore={highScore} width={width} height={headerHeight} />
         <Canvas height={height - headerHeight} width={width} scale={scale}>
-          {isGameOver || isMainMenu || isPaused ? (
-            <Menu />
-          ) : (
+          {(isGameOver || isMainMenu || isPaused) && <Menu />}
+          {!(isGameOver || isMainMenu) && (
             <>
               <UI />
               {players.map((player, i) => {
