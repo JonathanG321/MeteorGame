@@ -13,8 +13,12 @@ import jump from "../assets/sounds/Jump.mp3";
 import meteorExplode from "../assets/sounds/MeteorExplode.mp3";
 import uIBeep from "../assets/sounds/UIBeep.mp3";
 
+const themeSound = new Audio(theme);
+
+themeSound.loop = true;
+
 export default {
-  theme: new Audio(theme),
+  theme: themeSound,
   gameOver: new Audio(gameOver),
   jump: new Audio(jump),
   hit: new Audio(hit),
