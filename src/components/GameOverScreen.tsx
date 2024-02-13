@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { GameStateContext } from "../context/GameStateContext";
 import { BASE_PRESSED_KEYS } from "../utils/variables";
 import { getDefaultOnePlayer, getFontSize } from "../utils/lib";
-import sounds from "../utils/sounds";
+import setSounds from "../utils/sounds";
 
 export default function GameOverScreen() {
   const context = useContext(GameStateContext);
@@ -19,7 +19,7 @@ export default function GameOverScreen() {
         context.setPressedKeys(BASE_PRESSED_KEYS);
         context.setGameCounter(1);
         context.setIsMainMenu(true);
-        sounds.theme.playbackRate = 1;
+        setSounds.theme.playbackRate = 1;
       }
     }
 

@@ -1,5 +1,9 @@
-import { calcRotationAngle, notEmpty, playAudio } from "../utils/lib";
-import sounds from "../utils/sounds";
+import {
+  calcRotationAngle,
+  notEmpty,
+  playAudio,
+  playNewAudio,
+} from "../utils/lib";
 import {
   ContextValues,
   FallingObject,
@@ -14,6 +18,7 @@ import {
   EXPLOSION_SIZE_OFFSET,
   EXPLOSION_HEIGHT_OFFSET,
 } from "../utils/variables";
+import meteorExplode from "../assets/sounds/MeteorExplode.mp3";
 
 export default function specialMeteorLogic(
   contextRefs: ObjectWithRefs<ContextValues>,
@@ -31,7 +36,7 @@ export default function specialMeteorLogic(
     .filter((meteor) => meteor.type === "specialMeteor")
     .forEach((meteor) => {
       if (shouldSpecialMeteorExplode(meteor, screenHeight)) {
-        playAudio(sounds.meteorExplode, 0.3);
+        playNewAudio(meteorExplode, 0.3);
         setAnimationPositions((prev) => addNewMeteor(prev, meteor, scale));
         setFallingObjectPositions((prev) => [
           ...prev.filter((object) => object.id !== meteor.id),

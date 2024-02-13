@@ -73,6 +73,11 @@ export function playAudio(audio: HTMLAudioElement, volume = 0.7) {
   audio.volume = volume;
   audio.play();
 }
+export function playNewAudio(audio: string, volume = 0.7) {
+  const newAudio = new Audio(audio);
+  newAudio.volume = volume;
+  newAudio.play();
+}
 export function pauseAudio(audio: HTMLAudioElement, volume = 0.7) {
   audio.pause();
 }
@@ -207,6 +212,7 @@ const basicPlayerValues: Omit<Player, "X" | "Y"> = {
   invincibleCount: 0,
   lives: 3,
   shieldCount: 0,
+  shieldInvincibility: 0,
 };
 export function getDefaultOnePlayer(scale: number): NullablePlayer[] {
   return [

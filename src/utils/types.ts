@@ -32,6 +32,7 @@ export type NullablePlayer = NullablePosition & {
   velocityDown: number;
   points: number;
   shieldCount: number;
+  shieldInvincibility: number;
   invincibleCount: number;
   direction: Direction;
   lives: number;
@@ -40,6 +41,7 @@ export type Player = Position & {
   velocityDown: number;
   points: number;
   shieldCount: number;
+  shieldInvincibility: number;
   invincibleCount: number;
   direction: Direction;
   lives: number;

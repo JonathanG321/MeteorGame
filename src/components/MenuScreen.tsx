@@ -1,14 +1,16 @@
 import { useContext, useEffect } from "react";
 import { BASE_PRESSED_KEYS } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
-import sounds from "../utils/sounds";
+import setSounds from "../utils/sounds";
+import SelectButton from "./SelectButton";
+import uIBeep from "../assets/sounds/UIBeep.mp3";
 import {
   playAudio,
   getFontSize,
   getDefaultOnePlayer,
   getDefaultTwoPlayers,
+  playNewAudio,
 } from "../utils/lib";
-import SelectButton from "./SelectButton";
 
 export default function MenuScreen() {
   const {
@@ -24,7 +26,7 @@ export default function MenuScreen() {
   function selectPlayers(playerSetting: boolean) {
     if (isTwoPlayers !== playerSetting) {
       setIsTwoPlayers(playerSetting);
-      playAudio(sounds.uIBeep);
+      playNewAudio(uIBeep);
     }
   }
 
@@ -39,7 +41,7 @@ export default function MenuScreen() {
             : getDefaultTwoPlayers(scale)
         );
         setIsMainMenu(false);
-        playAudio(sounds.theme, 0.5);
+        playAudio(setSounds.theme, 0.5);
       } else if (e.code === "ArrowRight") {
         selectPlayers(true);
       } else if (e.code === "ArrowLeft") {

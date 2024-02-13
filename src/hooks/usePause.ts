@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { pauseAudio, playAudio, resumeAudio } from "../utils/lib";
-import sounds from "../utils/sounds";
+import { pauseAudio, playNewAudio, resumeAudio } from "../utils/lib";
+import setSounds from "../utils/sounds";
+import uIBeep from "../assets/sounds/UIBeep.mp3";
 
 export default function usePause() {
   const [isPaused, setIsPaused] = useState(false);
@@ -10,16 +11,16 @@ export default function usePause() {
       if (e.key === "p") {
         if (!isPaused) {
           setIsPaused(true);
-          pauseAudio(sounds.theme);
-          pauseAudio(sounds.clockTicking);
-          pauseAudio(sounds.timeResume);
+          pauseAudio(setSounds.theme);
+          pauseAudio(setSounds.clockTicking);
+          pauseAudio(setSounds.timeResume);
         } else {
           setIsPaused(false);
-          resumeAudio(sounds.theme);
-          resumeAudio(sounds.clockTicking);
-          resumeAudio(sounds.timeResume);
+          resumeAudio(setSounds.theme);
+          resumeAudio(setSounds.clockTicking);
+          resumeAudio(setSounds.timeResume);
         }
-        playAudio(sounds.uIBeep);
+        playNewAudio(uIBeep);
       }
     }
 

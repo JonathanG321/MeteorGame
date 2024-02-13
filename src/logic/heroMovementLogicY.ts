@@ -1,9 +1,9 @@
 import {
   isValidPosition,
   playAudio,
+  playNewAudio,
   setPlayerValueFunction,
 } from "../utils/lib";
-import sounds from "../utils/sounds";
 import {
   ContextValues,
   ObjectWithRefs,
@@ -17,6 +17,7 @@ import {
   HERO_JUMP_SPEED,
   MAX_HERO_VELOCITY_DOWN,
 } from "../utils/variables";
+import jump from "../assets/sounds/Jump.mp3";
 
 export default function heroMovementLogicY(
   contextRefs: ObjectWithRefs<ContextValues>,
@@ -82,7 +83,7 @@ function getNewVelocityDown(
   if (shouldHeroStopFalling) {
     return 0;
   } else if (shouldHeroJump) {
-    playAudio(sounds.jump);
+    playNewAudio(jump);
     return -HERO_JUMP_SPEED * scale;
   } else if (shouldFallFast) {
     return oldVelocityDown + HERO_GRAVITY * scale * 2;

@@ -2,10 +2,16 @@ import {
   isCountAtThreshold,
   isValidPosition,
   playAudio,
+  playNewAudio,
   resetAudio,
   setPlayerValue,
 } from "../utils/lib";
-import sounds from "../utils/sounds";
+import setSounds from "../utils/sounds";
+import coin from "../assets/sounds/Coin.mp3";
+import coins from "../assets/sounds/Coins.mp3";
+import coinBag from "../assets/sounds/CoinBag.mp3";
+import shield from "../assets/sounds/Shield.mp3";
+import life from "../assets/sounds/Life.mp3";
 import {
   ContextValues,
   FallingObjectType,
@@ -46,7 +52,7 @@ export default function powerUpsLogic(
       const baseValue = getBasePointsValue(hitObject.type);
       handlePowerUp(contextValues, index, bonus, player, "points", baseValue);
       const sound = getPointsAudio(hitObject.type);
-      if (sound) playAudio(sound);
+      if (sound) playNewAudio(sound);
       break;
     case "shield":
       handlePowerUp(contextValues, index, bonus, player, "shield", 1000);
@@ -84,7 +90,7 @@ function handlePowerUp(
     },
   ]);
   if (type === "points") return;
-  playAudio(type === "shield" ? sounds.shield : sounds.life);
+  playNewAudio(type === "shield" ? shield : life);
 }
 
 function handleSlowPowerUp(
@@ -111,18 +117,18 @@ function handleSlowPowerUp(
     },
   ]);
 
-  if (sounds.clockTicking.paused) playAudio(sounds.timeSlow, 1);
-  sounds.theme.playbackRate = 0.7;
+  if (setSounds.clockTicking.paused) playAudio(setSounds.timeSlow, 1);
+  setSounds.theme.playbackRate = 0.7;
 
   setTimeout(() => {
-    if (sounds.clockTicking.paused) playAudio(sounds.clockTicking, 1);
+    if (setSounds.clockTicking.paused) playAudio(setSounds.clockTicking, 1);
   }, 1000);
 }
 
 function handleSlowCountEffects(slowCount: number) {
-  if (isCountAtThreshold(slowCount, 75)) playAudio(sounds.timeResume, 1);
-  if (isCountAtThreshold(slowCount, 60)) resetAudio(sounds.clockTicking);
-  if (isCountAtThreshold(slowCount, 1)) sounds.theme.playbackRate = 1;
+  if (isCountAtThreshold(slowCount, 75)) playAudio(setSounds.timeResume, 1);
+  if (isCountAtThreshold(slowCount, 60)) resetAudio(setSounds.clockTicking);
+  if (isCountAtThreshold(slowCount, 1)) setSounds.theme.playbackRate = 1;
 }
 
 function calculateBonus(gameStage: number): number {
@@ -142,14 +148,14 @@ function getBasePointsValue(type: FallingObjectType): number {
   }
 }
 
-function getPointsAudio(type: FallingObjectType): HTMLAudioElement | null {
+function getPointsAudio(type: FallingObjectType): string | null {
   switch (type) {
     case "pointsSmall":
-      return sounds.coin;
+      return coin;
     case "pointsMedium":
-      return sounds.coins;
+      return coins;
     case "pointsLarge":
-      return sounds.coinBag;
+      return coinBag;
     default:
       return null;
   }

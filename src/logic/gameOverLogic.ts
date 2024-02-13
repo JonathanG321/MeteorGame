@@ -1,6 +1,7 @@
 import { StateSetter } from "../utils/types";
-import sounds from "../utils/sounds";
-import { playAudio, resetAudio } from "../utils/lib";
+import setSounds from "../utils/sounds";
+import { playNewAudio, resetAudio } from "../utils/lib";
+import gameOver from "../assets/sounds/GameOver.mp3";
 
 export default function gameOverLogic(
   isGameOver: boolean,
@@ -13,10 +14,10 @@ export default function gameOverLogic(
       setHighScore(points);
       localStorage.setItem("highScore", points.toString());
     }
-    resetAudio(sounds.clockTicking);
-    resetAudio(sounds.timeResume);
-    resetAudio(sounds.timeSlow);
-    resetAudio(sounds.theme);
-    playAudio(sounds.gameOver);
+    resetAudio(setSounds.clockTicking);
+    resetAudio(setSounds.timeResume);
+    resetAudio(setSounds.timeSlow);
+    resetAudio(setSounds.theme);
+    playNewAudio(gameOver);
   }
 }
