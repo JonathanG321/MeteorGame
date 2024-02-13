@@ -21,6 +21,13 @@ export default function MenuScreen() {
     scale,
   } = useContext(GameStateContext);
 
+  function selectPlayers(playerSetting: boolean) {
+    if (isTwoPlayers !== playerSetting) {
+      setIsTwoPlayers(playerSetting);
+      playAudio(sounds.uIBeep);
+    }
+  }
+
   useEffect(() => {
     function handleKeyUp(e: KeyboardEvent) {
       if (e.code === "Space") {
@@ -34,9 +41,9 @@ export default function MenuScreen() {
         setIsMainMenu(false);
         playAudio(sounds.theme, 0.5);
       } else if (e.code === "ArrowRight") {
-        setIsTwoPlayers(true);
+        selectPlayers(true);
       } else if (e.code === "ArrowLeft") {
-        setIsTwoPlayers(false);
+        selectPlayers(false);
       }
     }
 
