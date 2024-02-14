@@ -12,6 +12,7 @@ import coins from "../assets/sounds/Coins.mp3";
 import coinBag from "../assets/sounds/CoinBag.mp3";
 import shield from "../assets/sounds/Shield.mp3";
 import life from "../assets/sounds/Life.mp3";
+import flight from "../assets/sounds/Flight.mp3";
 import {
   ContextValues,
   FallingObjectType,
@@ -19,6 +20,7 @@ import {
   ObjectWithRefs,
 } from "../utils/types";
 import {
+  NEW_FLIGHT_COUNT,
   NEW_SHIELD_COUNT,
   NEW_SLOW_COUNT,
   POINTS_ANIMATION_OFFSET_X,
@@ -60,6 +62,9 @@ export default function powerUpsLogic(
     case "slow":
       handleSlowPowerUp(contextValues, index, bonus, player);
       break;
+    case "flight":
+      handlePowerUp(contextValues, index, bonus, player, "flight", 1000);
+      break;
   }
 }
 
@@ -68,13 +73,14 @@ function handlePowerUp(
   index: number,
   bonus: number,
   position: Position,
-  type: "life" | "points" | "shield",
+  type: "life" | "points" | "shield" | "flight",
   pointsValue: number
 ) {
   setPlayers((prev) =>
     setPlayerValue(prev, index, {
-      ...(type === "life" ? { lives: Math.min(3, prev[index].lives + 1) } : {}),
-      ...(type === "shield" ? { shieldCount: NEW_SHIELD_COUNT } : {}),
+      ...(type === "life" && { lives: Math.min(3, prev[index].lives + 1) }),
+      ...(type === "shield" && { shieldCount: NEW_SHIELD_COUNT }),
+      ...(type === "flight" && { flightCount: NEW_FLIGHT_COUNT }),
       points: prev[index].points + pointsValue + bonus,
     })
   );
@@ -89,8 +95,17 @@ function handlePowerUp(
       type: "points",
     },
   ]);
-  if (type === "points") return;
-  playNewAudio(type === "shield" ? shield : life);
+  switch (type) {
+    case "shield":
+      playNewAudio(shield);
+      break;
+    case "life":
+      playNewAudio(life);
+      break;
+    case "flight":
+      playNewAudio(flight);
+      break;
+  }
 }
 
 function handleSlowPowerUp(
