@@ -24,6 +24,7 @@ export const HEIGHT_MINUS_HERO = SCREEN_HEIGHT - HERO_SIZE - BORDER_WIDTH;
 
 export const HERO_SPEED = 6;
 export const HERO_JUMP_SPEED = 20;
+export const HERO_FLIGHT_SPEED = 7;
 export const HERO_GRAVITY = 1;
 export const MAX_HERO_VELOCITY_DOWN = 10;
 
@@ -50,12 +51,14 @@ export const NULL_POSITION: NullablePosition = {
 
 export const INVINCIBILITY_DURATION = 1; // This is in seconds
 export const SHIELD_DURATION = 20; // This is in seconds
+export const FLIGHT_DURATION = 15; // This is in seconds
 export const SHIELD_HIT_DELAY = 30; // This is in frames
 export const SLOW_DURATION = 10; // This is in seconds
 
-export const SHIELD_WARNING_DURATION = 2 * NORMAL_FPS;
+export const WARNING_DURATION = 2 * NORMAL_FPS;
 export const NEW_INVINCIBLE_COUNT = INVINCIBILITY_DURATION * NORMAL_FPS;
 export const NEW_SHIELD_COUNT = SHIELD_DURATION * NORMAL_FPS;
+export const NEW_FLIGHT_COUNT = FLIGHT_DURATION * NORMAL_FPS;
 export const NEW_SLOW_COUNT = SLOW_DURATION * BASE_FPS;
 
 export const POWER_UP_SPAWN_CHANCE = 0.35; // chance of a powerUp actually spawn on attempt
