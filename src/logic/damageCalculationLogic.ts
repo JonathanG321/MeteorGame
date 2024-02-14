@@ -14,7 +14,7 @@ import {
 import {
   NEW_INVINCIBLE_COUNT,
   SHIELD_HIT_DELAY,
-  SHIELD_WARNING_DURATION,
+  WARNING_DURATION,
 } from "../utils/variables";
 import hit from "../assets/sounds/Hit.mp3";
 import shield from "../assets/sounds/Shield.mp3";
@@ -47,8 +47,8 @@ function damageCalc(
       const hasNoProtection = invincibleCount <= 0 && shieldCount <= 0;
       if (hasNoProtection) {
         handleHitWithoutProtection(index, setPlayers);
-      } else if (shieldCount > SHIELD_WARNING_DURATION) {
-        handleHitWithShield(SHIELD_WARNING_DURATION, setPlayers, index);
+      } else if (shieldCount > WARNING_DURATION) {
+        handleHitWithShield(WARNING_DURATION, setPlayers, index);
       } else if (shieldCount > 0 && shieldInvincibility <= 0) {
         handleShieldActiveHit();
       }
@@ -59,6 +59,7 @@ function damageCalc(
       return setPlayerValue(prev, index, {
         invincibleCount: countDownTo0(prev[index].invincibleCount, isSlow),
         shieldCount: countDownTo0(prev[index].shieldCount, isSlow),
+        flightCount: countDownTo0(prev[index].flightCount, isSlow),
         shieldInvincibility: wasHitWithShield
           ? SHIELD_HIT_DELAY
           : countDownTo0(prev[index].shieldInvincibility, isSlow),
