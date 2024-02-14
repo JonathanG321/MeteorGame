@@ -13,6 +13,7 @@ import {
 } from "../utils/types";
 import {
   HEIGHT_MINUS_HERO,
+  HERO_FLIGHT_SPEED,
   HERO_GRAVITY,
   HERO_JUMP_SPEED,
   MAX_HERO_VELOCITY_DOWN,
@@ -55,22 +56,33 @@ function singleHeroLogicY(
   if (shouldNotCalcY(pressedKeyUp, pressedKeyDown, player.Y, slowCount, scale))
     return;
 
-  const shouldHeroStopFalling = getShouldHeroStopFalling(
-    player,
-    pressedKeyUp,
-    scale
-  );
-  const shouldHeroJump = pressedKeyUp && player.Y === HEIGHT_MINUS_HERO * scale;
+  const isFlight = player.flightCount > 0;
 
-  const newVelocityDown = getNewVelocityDown(
-    player.velocityDown,
-    shouldHeroStopFalling,
-    shouldHeroJump,
-    pressedKeyDown,
-    scale
-  );
+  if (isFlight) {
+    let newVelocityDown = 0;
+    const flightSpeed = HERO_FLIGHT_SPEED * scale;
+    if (pressedKeyDown) newVelocityDown = flightSpeed;
+    if (pressedKeyUp) newVelocityDown = -flightSpeed;
+    updatePlayerPosition(player, index, newVelocityDown, scale, setPlayer);
+  } else {
+    const shouldHeroStopFalling = getShouldHeroStopFalling(
+      player,
+      pressedKeyUp,
+      scale
+    );
+    const shouldHeroJump =
+      pressedKeyUp && player.Y === HEIGHT_MINUS_HERO * scale;
 
-  updatePlayerPosition(player, index, newVelocityDown, scale, setPlayer);
+    const newVelocityDown = getNewVelocityDown(
+      player.velocityDown,
+      shouldHeroStopFalling,
+      shouldHeroJump,
+      pressedKeyDown,
+      scale
+    );
+
+    updatePlayerPosition(player, index, newVelocityDown, scale, setPlayer);
+  }
 }
 
 function getNewVelocityDown(
