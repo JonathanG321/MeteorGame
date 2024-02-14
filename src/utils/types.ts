@@ -28,24 +28,19 @@ export type Box = { topLeft: Position; bottomRight: Position };
 export type Position = { X: number; Y: number };
 export type NullablePosition = Position | { X: null; Y: null };
 
-export type NullablePlayer = NullablePosition & {
+type BasePlayer = {
   velocityDown: number;
   points: number;
   shieldCount: number;
+  flightCount: number;
   shieldInvincibility: number;
   invincibleCount: number;
   direction: Direction;
   lives: number;
 };
-export type Player = Position & {
-  velocityDown: number;
-  points: number;
-  shieldCount: number;
-  shieldInvincibility: number;
-  invincibleCount: number;
-  direction: Direction;
-  lives: number;
-};
+
+export type NullablePlayer = NullablePosition & BasePlayer;
+export type Player = Position & BasePlayer;
 
 export type Object = Position & {
   size: number;
@@ -76,7 +71,8 @@ export type FallingObjectType =
   | "pointsMedium"
   | "pointsLarge"
   | "shield"
-  | "slow";
+  | "slow"
+  | "flight";
 
 export type FallingObjectOptionsNoCollectable = {
   spawnChance?: number;

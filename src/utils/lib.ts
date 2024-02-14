@@ -49,8 +49,8 @@ export function getPowerUpList(gameStage: number): FallingObjectType[] {
   const powerUpList: FallingObjectType[] = ["pointsSmall", "health"];
 
   if (gameStage >= 2) powerUpList.push("pointsMedium");
-  if (gameStage >= 3) powerUpList.push("shield");
-  if (gameStage >= 4) powerUpList.push("pointsLarge", "pointsSmall");
+  if (gameStage >= 3) powerUpList.push("shield", "pointsSmall");
+  if (gameStage >= 4) powerUpList.push("pointsLarge", "health", "flight");
   if (gameStage >= 5) powerUpList.push("slow", "pointsMedium", "pointsSmall");
 
   return powerUpList;
@@ -211,6 +211,7 @@ const basicPlayerValues: Omit<Player, "X" | "Y"> = {
   direction: "right",
   invincibleCount: 0,
   lives: 3,
+  flightCount: 0,
   shieldCount: 0,
   shieldInvincibility: 0,
 };
