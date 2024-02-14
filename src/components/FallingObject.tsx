@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { useContext } from "react";
 import { createObjectStyle } from "../utils/lib";
 import { FallingObject as TypeFallingObject } from "../utils/types";
+import wing from "../assets/images/powerUps/Wing.png";
 import heart from "../assets/images/powerUps/PixelHeart.png";
 import pointsSmall from "../assets/images/powerUps/PixelCoin.gif";
 import pointsMedium from "../assets/images/powerUps/PixelCrown.png";
@@ -44,6 +45,9 @@ export default function FallingObject({ object }: Props) {
       break;
     case "slow":
       texture = hourglass;
+      break;
+    case "flight":
+      texture = wing;
       break;
   }
 
