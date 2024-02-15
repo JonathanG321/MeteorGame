@@ -25,7 +25,6 @@ export default function heroMovementLogicY(
   contextValues: ContextValues
 ) {
   const { players, pressedKeys, slowCount } = contextRefs;
-  const { setPlayers, scale } = contextValues;
   const { ArrowUp, ArrowDown, w, s } = pressedKeys.current;
 
   players.current.forEach((player, index) => {
@@ -38,8 +37,8 @@ export default function heroMovementLogicY(
       down,
       slowCount.current,
       index,
-      scale,
-      setPlayers
+      contextRefs,
+      contextValues
     );
   });
 }
@@ -50,9 +49,10 @@ function singleHeroLogicY(
   pressedKeyDown: boolean,
   slowCount: number,
   index: number,
-  scale: number,
-  setPlayer: StateSetter<NullablePlayer[]>
+  contextRefs: ObjectWithRefs<ContextValues>,
+  contextValues: ContextValues
 ) {
+  const { scale, setPlayers } = contextValues;
   if (shouldNotCalcY(pressedKeyUp, pressedKeyDown, player.Y, slowCount, scale))
     return;
 
@@ -63,15 +63,33 @@ function singleHeroLogicY(
     const flightSpeed = HERO_FLIGHT_SPEED * scale;
     if (pressedKeyDown) newVelocityDown = flightSpeed;
     if (pressedKeyUp) newVelocityDown = -flightSpeed;
-    updatePlayerPosition(player, index, newVelocityDown, scale, setPlayer);
+    updatePlayerPosition(player, index, newVelocityDown, scale, setPlayers);
   } else {
     const shouldHeroStopFalling = getShouldHeroStopFalling(
       player,
       pressedKeyUp,
       scale
     );
-    const shouldHeroJump =
-      pressedKeyUp && player.Y === HEIGHT_MINUS_HERO * scale;
+    const playerOnGround = player.Y === HEIGHT_MINUS_HERO * scale;
+    const shouldHeroJumpNormal = pressedKeyUp && playerOnGround;
+
+    if (!playerOnGround && !player.jumped && !pressedKeyUp) {
+      setPlayerValueFunction(index, { jumped: true }, setPlayers);
+    } else if (playerOnGround) {
+      setPlayerValueFunction(index, { jumped: false }, setPlayers);
+    }
+    const shouldDoubleJump =
+      player.canJump &&
+      player.velocityDown > -10 &&
+      pressedKeyUp &&
+      player.jumped;
+
+    const shouldHeroJump = shouldHeroJumpNormal || shouldDoubleJump;
+
+    if (!shouldHeroJumpNormal && shouldDoubleJump)
+      setPlayerValueFunction(index, { canJump: false }, setPlayers);
+    if (shouldHeroJumpNormal && !shouldDoubleJump)
+      setPlayerValueFunction(index, { canJump: true }, setPlayers);
 
     const newVelocityDown = getNewVelocityDown(
       player.velocityDown,
@@ -81,7 +99,7 @@ function singleHeroLogicY(
       scale
     );
 
-    updatePlayerPosition(player, index, newVelocityDown, scale, setPlayer);
+    updatePlayerPosition(player, index, newVelocityDown, scale, setPlayers);
   }
 }
 
