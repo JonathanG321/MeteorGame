@@ -214,6 +214,8 @@ const basicPlayerValues: Omit<Player, "X" | "Y"> = {
   flightCount: 0,
   shieldCount: 0,
   shieldInvincibility: 0,
+  canJump: true,
+  jumped: false,
 };
 export function getDefaultOnePlayer(scale: number): NullablePlayer[] {
   return [

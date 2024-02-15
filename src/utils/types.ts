@@ -37,6 +37,8 @@ type BasePlayer = {
   invincibleCount: number;
   direction: Direction;
   lives: number;
+  canJump: boolean;
+  jumped: boolean;
 };
 
 export type NullablePlayer = NullablePosition & BasePlayer;
