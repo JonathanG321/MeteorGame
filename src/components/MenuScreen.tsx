@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BASE_PRESSED_KEYS } from "../utils/variables";
 import { GameStateContext } from "../context/GameStateContext";
 import setSounds from "../utils/sounds";
@@ -19,33 +19,46 @@ export default function MenuScreen() {
     setPressedKeys,
     setPlayers,
     setIsTwoPlayers,
+    setIsSettings,
     isTwoPlayers,
     scale,
   } = useContext(GameStateContext);
-
-  function selectPlayers(playerSetting: boolean) {
-    if (isTwoPlayers !== playerSetting) {
-      setIsTwoPlayers(playerSetting);
-      playNewAudio(uIBeep);
-    }
-  }
+  const [selected, setSelected] = useState(0);
 
   useEffect(() => {
     function handleKeyUp(e: KeyboardEvent) {
       if (e.code === "Space") {
-        setFallingObjectPositions([]);
-        setPressedKeys(BASE_PRESSED_KEYS);
-        setPlayers(
-          !isTwoPlayers
-            ? getDefaultOnePlayer(scale)
-            : getDefaultTwoPlayers(scale)
-        );
-        setIsMainMenu(false);
-        playAudio(setSounds.theme, 0.5);
-      } else if (e.code === "ArrowRight") {
-        selectPlayers(true);
-      } else if (e.code === "ArrowLeft") {
-        selectPlayers(false);
+        if (selected === 0) {
+          setIsSettings(true);
+          setIsMainMenu(false);
+        } else {
+          if (selected === 1) {
+            setIsTwoPlayers(false);
+          } else {
+            setIsTwoPlayers(false);
+          }
+          setFallingObjectPositions([]);
+          setPressedKeys(BASE_PRESSED_KEYS);
+          setPlayers(
+            selected === 1
+              ? getDefaultOnePlayer(scale)
+              : getDefaultTwoPlayers(scale)
+          );
+          setIsMainMenu(false);
+          playAudio(setSounds.theme, 0.5);
+        }
+      } else if (e.code === "ArrowRight" || e.code === "ArrowDown") {
+        setSelected((prev) => {
+          if (prev >= 2) return prev;
+          playNewAudio(uIBeep, 0.5);
+          return prev + 1;
+        });
+      } else if (e.code === "ArrowLeft" || e.code === "ArrowUp") {
+        setSelected((prev) => {
+          if (prev <= 0) return prev;
+          playNewAudio(uIBeep, 0.5);
+          return prev - 1;
+        });
       }
     }
 
@@ -79,16 +92,30 @@ export default function MenuScreen() {
           marginLeft: `${8 * scale}px`,
           marginRight: `${8 * scale}px`,
         }}
+        className="flex w-full justify-center"
+      >
+        <SelectButton
+          isSelected={selected === 0}
+          onClick={() => setSelected(0)}
+          title="Settings"
+        />
+      </div>
+      <div
+        style={{
+          ...getFontSize("sm", scale),
+          marginLeft: `${8 * scale}px`,
+          marginRight: `${8 * scale}px`,
+        }}
         className="flex w-full justify-around"
       >
         <SelectButton
-          isSelected={!isTwoPlayers}
-          onClick={() => setIsTwoPlayers(false)}
+          isSelected={selected === 1}
+          onClick={() => setSelected(1)}
           title="1 Player"
         />
         <SelectButton
-          isSelected={isTwoPlayers}
-          onClick={() => setIsTwoPlayers(true)}
+          isSelected={selected === 2}
+          onClick={() => setSelected(2)}
           title="2 Players"
         />
       </div>
