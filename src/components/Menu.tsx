@@ -7,10 +7,17 @@ import PauseScreen from "./PauseScreen";
 import classNames from "classnames";
 
 export default function Menu() {
-  const { isGameOver, isMainMenu, screenHeight, screenWidth, scale, isPaused } =
-    useContext(GameStateContext);
+  const {
+    isGameOver,
+    isMainMenu,
+    screenHeight,
+    screenWidth,
+    scale,
+    isPaused,
+    isSettings,
+  } = useContext(GameStateContext);
 
-  const shouldShowPanel = !isPaused && (isGameOver || isMainMenu);
+  const shouldShowPanel = !isPaused && (isGameOver || isMainMenu || isSettings);
 
   const panelStyles = {
     width: screenWidth / 2,
@@ -37,6 +44,7 @@ export default function Menu() {
           }
         )}
       >
+        {/* {isSettings && <SettingsScreen />} */}
         {isGameOver && <GameOverScreen />}
         {isPaused && <PauseScreen />}
         {isMainMenu && <MenuScreen />}
