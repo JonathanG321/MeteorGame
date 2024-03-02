@@ -20,6 +20,8 @@ function stateSetterFallingObjects(
 ): void {}
 
 export const GameStateContext = createContext({
+  isSettings: false,
+  setIsSettings: stateSetterBoolean,
   isPaused: false,
   scale: 1,
   screenWidth: 0,

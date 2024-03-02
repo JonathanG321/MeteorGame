@@ -122,4 +122,6 @@ export type ContextValues = {
   isTwoPlayers: boolean;
   setIsTwoPlayers: StateSetter<boolean>;
   isPaused: boolean;
+  isSettings: boolean;
+  setIsSettings: StateSetter<boolean>;
 };

@@ -1,6 +1,5 @@
 import { calcIsHits } from "../utils/lib";
 import { ContextValues } from "../utils/types";
-import { GAME_HEIGHT } from "../utils/variables";
 import useBasicState from "./useBasicState";
 import useClick from "./useClick";
 import usePause from "./usePause";

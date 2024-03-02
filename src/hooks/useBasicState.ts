@@ -7,6 +7,7 @@ export default function useBasicState(screenHeight: number) {
   const scale = screenHeight / GAME_HEIGHT;
   const [gameCounter, setGameCounter] = useState(STARTING_POINT);
   const [isTwoPlayers, setIsTwoPlayers] = useState(false);
+  const [isSettings, setIsSettings] = useState(false);
   const [players, setPlayers] = useState<NullablePlayer[]>(
     getDefaultOnePlayer(scale)
   );
@@ -44,5 +45,7 @@ export default function useBasicState(screenHeight: number) {
     gameStage,
     isTwoPlayers,
     setIsTwoPlayers,
+    isSettings,
+    setIsSettings,
   };
 }
