@@ -34,13 +34,14 @@ function MeteorHero({ height }: Props) {
     highScore,
     scale,
     isPaused,
+    isSettings,
     setHighScore,
   } = contextValues;
 
   const contextRefs = useUpdatingRefsForObject(contextValues, isGameOver);
 
   useEffect(() => {
-    const gameStopped = isGameOver || isMainMenu || isPaused;
+    const gameStopped = isGameOver || isMainMenu || isPaused || isSettings;
     const points = contextRefs.players.current[0].points;
     const pointsTwo = contextRefs.players.current[1].points;
     gameOverLogic(
@@ -72,7 +73,7 @@ function MeteorHero({ height }: Props) {
     return () => {
       clearInterval(frameIntervalId);
     };
-  }, [players[0].lives, players[1].lives, isMainMenu, isGameOver, isPaused]);
+  }, [players[0].lives, players[1].lives, isMainMenu, isGameOver, isSettings]);
 
   const headerHeight = HEADER_HEIGHT * scale;
 
@@ -81,7 +82,7 @@ function MeteorHero({ height }: Props) {
       <GameStateContext.Provider value={contextValues}>
         <HeaderBar highScore={highScore} width={width} height={headerHeight} />
         <Canvas height={height - headerHeight} width={width} scale={scale}>
-          {(isGameOver || isMainMenu || isPaused) && <Menu />}
+          {(isGameOver || isMainMenu || isPaused || isSettings) && <Menu />}
           {!(isGameOver || isMainMenu) && (
             <>
               <UI />
